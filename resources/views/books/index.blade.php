@@ -127,8 +127,8 @@
 
                                 <!-- Photo -->
                                 <div class="flex-1 flex justify-center items-center h-80">
-                                    <img src="{{ $book->mainImage ? asset('books/' . $book->id . '/' . $book->mainImage->image_path) : asset('images/error-image-not-found.png') }}"
-                                        alt="{{ $book->title }}" class="w-full h-48 object-contain">
+                                    <img src="{{ $book->image_url }}" alt="{{ $book->title }}"
+                                        class="w-full h-48 object-contain">
                                 </div>
                             </a>
                         @endforeach

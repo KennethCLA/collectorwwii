@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\BookSeries;
 use App\Models\BookCover;
 use App\Models\BookTopic;
+use Illuminate\Support\Facades\Storage;
 
 
 class Book extends Model
@@ -82,5 +83,19 @@ class Book extends Model
     public function images()
     {
         return $this->hasMany(BookImage::class);
+    }
+
+    public function getImageUrlAttribute()
+    {
+        // Haal mainImage op, met check op geladen relatie
+        $mainImage = $this->relationLoaded('mainImage') ? $this->mainImage : $this->mainImage()->first();
+
+        if (!$mainImage) {
+            return asset('storage/images/error-image-not-found.png');
+        }
+
+        $path = 'books/' . $this->id . '/' . $mainImage->image_path;
+
+        return Storage::disk('b2')->url($path);
     }
 }

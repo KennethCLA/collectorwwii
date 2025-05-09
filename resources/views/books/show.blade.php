@@ -17,9 +17,9 @@
                     <div class="md:col-span-2 p-6 rounded-md">
                         <div class="p-2 rounded-lg">
                             @if ($book->images && $book->images->count())
-                                <a href="{{ asset('books/' . $book->id . '/' . $book->mainImage->image_path) }}"
+                                <a href="{{ env('B2_BUCKET_URL') . '/books/' . $book->id . '/' . $book->mainImage->image_path }}"
                                     data-fancybox="gallery">
-                                    <img src="{{ asset('books/' . $book->id . '/' . $book->mainImage->image_path) }}"
+                                    <img src="{{ env('B2_BUCKET_URL') . '/books/' . $book->id . '/' . $book->mainImage->image_path }}"
                                         class="w-full object-contain rounded-lg max-h-96">
                                 </a>
                             @else
@@ -35,7 +35,7 @@
                             <!-- Hoofdafbeelding als eerste thumbnail, maar zonder extra Fancybox-entry -->
                             <div
                                 class="w-16 h-16 border rounded overflow-hidden flex items-center justify-center bg-[#343933]">
-                                <img src="{{ asset('books/' . $book->id . '/' . $book->mainImage->image_path) }}"
+                                <img src="{{ env('B2_BUCKET_URL') . '/books/' . $book->id . '/' . $book->mainImage->image_path }}"
                                     class="w-full h-full object-contain cursor-pointer hover:opacity-75"
                                     onclick="document.querySelector('[data-fancybox=gallery]').click();">
                             </div>
@@ -43,11 +43,11 @@
                             <!-- Overige afbeeldingen in de Fancybox -->
                             @foreach ($book->images as $image)
                                 @if ($image->id !== $book->mainImage->id)
-                                    <a href="{{ asset('books/' . $book->id . '/' . $image->image_path) }}"
+                                    <a href="{{ env('B2_BUCKET_URL') . '/books/' . $book->id . '/' . $image->image_path }}"
                                         data-fancybox="gallery" class="bg-[#343933]">
                                         <div
                                             class="w-16 h-16 border rounded overflow-hidden flex items-center justify-center">
-                                            <img src="{{ asset('books/' . $book->id . '/' . $image->image_path) }}"
+                                            <img src="{{ env('B2_BUCKET_URL') . '/books/' . $book->id . '/' . $image->image_path }}"
                                                 class="w-full h-full object-contain cursor-pointer hover:opacity-75">
                                         </div>
                                     </a>

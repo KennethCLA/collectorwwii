@@ -41,7 +41,7 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,
@@ -60,6 +60,18 @@ return [
             'report' => false,
         ],
 
+        'b2' => [
+            'driver' => 's3',
+            'key' => env('AWS_ACCESS_KEY_ID'),
+            'secret' => env('AWS_SECRET_ACCESS_KEY'),
+            'region' => env('AWS_DEFAULT_REGION'),
+            'bucket' => env('AWS_BUCKET'),
+            'endpoint' => 'https://s3.eu-central-003.backblazeb2.com',
+            'use_path_style_endpoint' => true,
+            'url' => env('B2_BUCKET_URL'), // voor Storage::url()
+            'throw' => false,
+            'report' => false,
+        ],
     ],
 
     /*
