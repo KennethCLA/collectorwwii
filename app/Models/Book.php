@@ -87,7 +87,6 @@ class Book extends Model
 
     public function getImageUrlAttribute()
     {
-        // Haal mainImage op, met check op geladen relatie
         $mainImage = $this->relationLoaded('mainImage') ? $this->mainImage : $this->mainImage()->first();
 
         if (!$mainImage) {

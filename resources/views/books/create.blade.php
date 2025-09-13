@@ -58,10 +58,13 @@
                             class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]">
                             <option value="">Select a topic</option>
                             @foreach ($topics as $topic)
-                                <option value="{{ $topic->id }}">{{ $topic->name }}</option>
+                            <option value="{{ $topic->id }}"
+                                {{ old('topic_id') == $topic->id ? 'selected' : '' }}>
+                                {{ $topic->name }}
+                            </option>
                             @endforeach
                         </select>
-                        <button type="button" id="add-topic" data-add-option="/add-topic" data-select-id="topic_id"
+                        <button type="button" data-add-option="/topics/ajax/store" data-select-id="topic_id"
                             class="w-32 bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-700">
                             Add Topic
                         </button>
@@ -84,7 +87,7 @@
                         </label>
                         <input type="number" id="copyright_year" name="copyright_year"
                             class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
-                            value="{{ old('copyright_year', $bookData['items'][0]['volumeInfo']['publishedDate'] ?? '') }}">
+                            value="{{ old('copyright_year', data_get($bookData, 'publishedDate', '')) }}">
                     </div>
 
                     <!-- Translator -->
@@ -92,7 +95,7 @@
                         <label for="translator" class="w-32 text-sm font-medium text-gray-700">Translator</label>
                         <input type="text" id="translator" name="translator"
                             class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
-                            value="{{ old('translator', $bookData['items'][0]['volumeInfo']['translator'] ?? '') }}">
+                            value="{{ old('translator', data_get($bookData, 'translator', '')) }}">
                     </div>
 
                     <!-- Issue Number -->
@@ -100,7 +103,7 @@
                         <label for="issue_number" class="w-32 text-sm font-medium text-gray-700">Issue Number</label>
                         <input type="text" id="issue_number" name="issue_number"
                             class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
-                            value="{{ old('issue_number', $bookData['items'][0]['volumeInfo']['issueNumber'] ?? '') }}">
+                            value="{{ old('issue_number', data_get($bookData, 'items.0.volumeInfo.issueNumber', '')) }}">
                     </div>
 
                     <!-- Issue Year -->
@@ -110,7 +113,7 @@
                         </label>
                         <input type="number" id="issue_year" name="issue_year"
                             class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
-                            value="{{ old('issue_year', $bookData['items'][0]['volumeInfo']['issueDate'] ?? '') }}">
+                            value="{{ old('issue_year', data_get($bookData, 'items.0.volumeInfo.issueDate', '')) }}">
                     </div>
 
                     <!-- Series -->
@@ -120,11 +123,10 @@
                             class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]">
                             <option value="">Select a series</option>
                             @foreach ($series as $serie)
-                                <option value="{{ $serie->id }}">{{ $serie->name }}</option>
+                            <option value="{{ $serie->id }}">{{ $serie->name }}</option>
                             @endforeach
                         </select>
-                        <button type="button" id="add-series" data-add-option="/add-series"
-                            data-select-id="series_id"
+                        <button type="button" data-add-option="/series/ajax/store" data-select-id="series_id"
                             class="w-32 bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-700">Add
                             Series</button>
                     </div>
@@ -144,10 +146,10 @@
                             class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]">
                             <option value="">Select a cover</option>
                             @foreach ($covers as $cover)
-                                <option value="{{ $cover->id }}">{{ $cover->name }}</option>
+                            <option value="{{ $cover->id }}">{{ $cover->name }}</option>
                             @endforeach
                         </select>
-                        <button type="button" id="add-cover" data-add-option="/add-cover" data-select-id="cover_id"
+                        <button type="button" data-add-option="/covers/ajax/store" data-select-id="cover_id"
                             class="w-32 bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-700">
                             Add Cover
                         </button>
@@ -158,7 +160,7 @@
                         <label for="pages" class="w-32 text-sm font-medium text-gray-700">Pages</label>
                         <input type="number" id="pages" name="pages"
                             class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
-                            value="{{ old('pages', $bookData['items'][0]['volumeInfo']['pageCount'] ?? '') }}">
+                            value="{{ old('pages', data_get($bookData, 'items.0.volumeInfo.pageCount', '')) }}">
                     </div>
 
                     <!-- Title (First Edition) -->
@@ -167,7 +169,7 @@
                             (First Edition)</label>
                         <input type="text" id="title_first_edition" name="title_first_edition"
                             class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
-                            value="{{ old('title_first_edition', $bookData['items'][0]['volumeInfo']['title_first_edition'] ?? '') }}">
+                            value="{{ old('title_first_edition', data_get($bookData, 'items.0.volumeInfo.title_first_edition', '')) }}">
                     </div>
 
                     <!-- Subtitle (First Edition) -->
@@ -176,7 +178,7 @@
                             (First Edition)</label>
                         <input type="text" id="subtitle_first_edition" name="subtitle_first_edition"
                             class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
-                            value="{{ old('subtitle_first_edition', $bookData['items'][0]['volumeInfo']['subtitle_first_edition'] ?? '') }}">
+                            value="{{ old('subtitle_first_edition', data_get($bookData, 'items.0.volumeInfo.subtitle_first_edition', '')) }}">
                     </div>
 
                     <!-- Publisher (First Issue) -->
@@ -185,7 +187,7 @@
                             (First Issue)</label>
                         <input type="text" id="publisher_first_issue" name="publisher_first_issue"
                             class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
-                            value="{{ old('publisher_first_issue', $bookData['items'][0]['volumeInfo']['publisher_first_issue'] ?? '') }}">
+                            value="{{ old('publisher_first_issue', data_get($bookData, 'items.0.volumeInfo.publisher_first_issue', '')) }}">
                     </div>
 
                     <!-- Copyright Year (First Edition) -->
@@ -194,7 +196,7 @@
                             class="w-32 text-sm font-medium text-gray-700">Copyright Year (First Edition)</label>
                         <input type="number" id="copyright_year_first_edition" name="copyright_year_first_edition"
                             class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
-                            value="{{ old('copyright_year_first_edition', $bookData['items'][0]['volumeInfo']['publishedDate_first_edition'] ?? '') }}">
+                            value="{{ old('copyright_year_first_edition', data_get($bookData, 'items.0.volumeInfo.publishedDate_first_edition', '')) }}">
                     </div>
 
                     <!-- Purchase Date -->
@@ -220,30 +222,42 @@
                         <label for="book-description"
                             class="w-32 text-sm font-medium text-gray-700">Description</label>
                         <textarea id="book-description" name="description" rows="4"
-                            class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]" value="{{ old('description') }}"></textarea>
+                            class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]">{{ trim(old('description')) }}</textarea>
                     </div>
 
                     <!-- Notes -->
                     <div class="flex items-center space-x-4">
                         <label for="notes" class="w-32 text-sm font-medium text-gray-700">Notes</label>
                         <textarea id="notes" name="notes" rows="4"
-                            class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]" value="{{ old('notes') }}"></textarea>
+                            class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]">{{ trim(old('notes')) }}</textarea>
                     </div>
 
-                    <!-- For Sale -->
-                    <div class="flex items-center space-x-4">
-                        <label for="for_sale" class="w-32 text-sm font-medium text-gray-700">For Sale</label>
-                        <input type="checkbox" id="for_sale" name="for_sale" class="mt-1"
-                            {{ old('for_sale') ? 'checked' : '' }}>
-                    </div>
+                    <div
+                        x-data="{forSale: {{ old('for_sale') ? 'true' : 'false' }}, sellingPrice: '{{ old('selling_price') }}' }"
+                        x-init="$watch('forSale', value => { if (!value) sellingPrice = '' })">
 
-                    <!-- Selling Price -->
-                    <div class="flex items-center space-x-4">
-                        <label for="selling-price" class="w-32 text-sm font-medium text-gray-700">Selling
-                            Price</label>
-                        <input type="number" step="0.01" id="selling-price" name="selling_price"
-                            class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
-                            value="{{ old('selling_price') }}">
+                        <!-- For Sale Checkbox -->
+                        <div class="flex items-center space-x-4">
+                            <label for="for_sale" class="w-32 text-sm font-medium text-gray-700">For Sale</label>
+                            <input
+                                type="checkbox"
+                                id="for_sale"
+                                name="for_sale"
+                                x-model="forSale"
+                                class="p-2 border border-gray-900 rounded-md bg-[#565e55]" />
+                        </div>
+
+                        <!-- Selling Price -->
+                        <div x-show="forSale" x-cloak class="flex items-center space-x-4 mt-4">
+                            <label for="selling-price" class="w-32 text-sm font-medium text-gray-700">Selling Price</label>
+                            <input
+                                type="number"
+                                step="0.01"
+                                id="selling-price"
+                                name="selling_price"
+                                x-model="sellingPrice"
+                                class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]" />
+                        </div>
                     </div>
 
                     <!-- Weight -->
@@ -271,7 +285,7 @@
                             class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]">
                             <option value="">Select a location</option>
                             @foreach ($locations as $location)
-                                <option value="{{ $location->id }}">{{ $location->name }}</option>
+                            <option value="{{ $location->id }}">{{ $location->name }}</option>
                             @endforeach
                         </select>
                         <button type="button" id="add-location" data-add-option="/add-location"
@@ -286,7 +300,7 @@
                         <label for="location_detail" class="w-32 text-sm font-medium text-gray-700">Location
                             Details</label>
                         <textarea id="location_detail" name="location_detail" rows="4"
-                            class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"></textarea>
+                            class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]">{{ trim(old('location_detail')) }}</textarea>
                     </div>
 
                     <!-- Attachments -->
@@ -353,7 +367,7 @@
                         alert("Book not found. Please check the ISBN.");
                     }
                 } catch (error) {
-                    console.error("Error fetching book data:", error);
+                    alert("There was an error fetching the book data: " + (error?.message || error));
                 }
             } else {
                 alert("Please enter a valid ISBN.");
@@ -406,7 +420,7 @@
         const addOptionButtons = document.querySelectorAll("[data-add-option]");
 
         addOptionButtons.forEach((button) => {
-            button.addEventListener("click", () => {
+            button.addEventListener("click", async () => {
                 const inputValue = prompt("Add a new option:");
                 if (!inputValue) return;
 
@@ -416,40 +430,70 @@
                     return;
                 }
 
-                fetch(button.dataset.addOption, {
+                button.disabled = true;
+                const originalText = button.textContent;
+                button.textContent = "Adding...";
+
+                try {
+                    const response = await fetch(button.dataset.addOption, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
+                            "Accept": "application/json",
                             "X-CSRF-TOKEN": csrfTokenElement.content
                         },
                         body: JSON.stringify({
                             name: inputValue
                         })
-                    })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data.success) {
-                            const selectElement = document.getElementById(button.dataset
-                                .selectId);
-                            if (selectElement) {
-                                const newOption = document.createElement("option");
-                                newOption.value = data.id;
-                                newOption.textContent = data.name;
-                                selectElement.appendChild(newOption);
-                                selectElement.value = data.id; // Select the new option
-                            } else {
-                                console.error("Select element not found for ID:", button
-                                    .dataset.selectId);
-                            }
-                        } else {
-                            alert("Failed to add option.");
-                        }
-                    })
-                    .catch((error) => {
-                        console.error("Error:", error);
-                        alert("There was an error adding the option. Please try again.");
                     });
+
+                    const rawText = await response.text();
+
+                    if (!response.ok) {
+                        alert("Server error: " + rawText);
+                        return;
+                    }
+
+                    let data;
+                    try {
+                        data = JSON.parse(rawText);
+                    } catch (e) {
+                        alert("Error processing server response. Please try again.");
+                        return;
+                    }
+
+                    const selectElement = document.getElementById(button.dataset.selectId);
+                    if (selectElement && data && data.id && data.name) {
+                        const newOption = document.createElement("option");
+                        newOption.value = data.id;
+                        newOption.textContent = data.name;
+                        selectElement.appendChild(newOption);
+                        selectElement.value = data.id;
+
+                        ["change", "input"].forEach(eventName => {
+                            const event = new Event(eventName, {
+                                bubbles: true,
+                                cancelable: true
+                            });
+                            selectElement.dispatchEvent(event);
+                        });
+
+                        alert(`Option added: ${data.name}`);
+                    } else {
+                        alert("Failed to add option.");
+                    }
+                } catch (error) {
+                    alert("There was an error adding the option: " + (error?.message || error));
+                } finally {
+                    button.disabled = false;
+                    button.textContent = originalText;
+                }
             });
         });
     });
+</script> button.textContent = originalText;
+}
+});
+});
+});
 </script>

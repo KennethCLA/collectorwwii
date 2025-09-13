@@ -1,4 +1,3 @@
-<!-- routes/web.php -->
 <?php
 
 use App\Http\Controllers\BlogController;
@@ -11,6 +10,11 @@ use App\Http\Controllers\PostcardController;
 use App\Http\Controllers\StampController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ItemController;
+
+use App\Http\Controllers\Ajax\BookTopicController;
+use App\Http\Controllers\Ajax\BookSeriesController;
+use App\Http\Controllers\Ajax\BookCoverController;
+
 use App\Models\BookTopic;
 use App\Models\BookCover;
 use App\Models\BookSeries;
@@ -50,34 +54,13 @@ Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
 
-
-Route::post('/add-topic', function (Request $request) {
-    $topic = BookTopic::create(['name' => $request->name]);
-    return response()->json(['success' => true, 'id' => $topic->id, 'name' => $topic->name]);
-});
-
-Route::post('/add-cover', function (Request $request) {
-    $cover = BookCover::create(['name' => $request->name]);
-    return response()->json(['success' => true, 'id' => $cover->id, 'name' => $cover->name]);
-});
-
-Route::post('/add-series', function (Request $request) {
-    // Valideer de naam, bijvoorbeeld als deze niet leeg is
-    $request->validate([
-        'name' => 'required|string|max:255',
-    ]);
-
-    $series = BookSeries::create(['name' => $request->name]);
-
-    return response()->json([
-        'success' => true,
-        'id' => $series->id,
-        'name' => $series->name,
-    ]);
-});
-
-
 Route::post('/add-location', function (Request $request) {
     $location = Location::create(['name' => $request->name]);
     return response()->json(['success' => true, 'id' => $location->id, 'name' => $location->name]);
+});
+
+Route::middleware('auth')->group(function () {
+    Route::post('/topics/ajax/store', [BookTopicController::class, 'storeAjax'])->name('topics.ajax.store');
+    Route::post('/series/ajax/store', [BookSeriesController::class, 'storeAjax'])->name('series.ajax.store');
+    Route::post('/covers/ajax/store', [BookCoverController::class, 'storeAjax'])->name('covers.ajax.store');
 });

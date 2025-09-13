@@ -112,11 +112,12 @@
                 </aside>
 
                 <main class="flex-grow mx-auto">
-                    <h1 class="text-xl w-full mx-auto font-bold mb-4 text-white">Hello {{ $user->name }}</h1>
+                    <h1 class="text-xl w-full mx-auto text-center font-bold mb-4 text-white">Hello {{ $user->name }}
+                    </h1>
 
                     <div class="mb-4">
                         <img src="{{ asset('storage/images/hitlers-gustav-gun.jpg') }}" alt="Hitler's Gustav Gun"
-                            class="w-full h-auto object-cover rounded-md">
+                            class="w-full h-[460px] object-cover rounded-md">
                     </div>
             </div>
         </div>

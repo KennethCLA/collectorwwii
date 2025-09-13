@@ -60,17 +60,19 @@ return [
             'report' => false,
         ],
 
+        // config/filesystems.php
         'b2' => [
             'driver' => 's3',
-            'key' => env('AWS_ACCESS_KEY_ID'),
-            'secret' => env('AWS_SECRET_ACCESS_KEY'),
-            'region' => env('AWS_DEFAULT_REGION'),
-            'bucket' => env('AWS_BUCKET'),
-            'endpoint' => 'https://s3.eu-central-003.backblazeb2.com',
+            'key' => env('B2_KEY_ID'),
+            'secret' => env('B2_APPLICATION_KEY'),
+            'region' => env('B2_REGION', 'eu-central-003'),
+            'bucket' => env('B2_BUCKET'),
+            'endpoint' => env('B2_ENDPOINT'),
+            'url' => env('AWS_URL'),           // <-- CDN/Cloudflare
             'use_path_style_endpoint' => true,
-            'url' => env('B2_BUCKET_URL'), // voor Storage::url()
-            'throw' => false,
-            'report' => false,
+            'throw' => true,
+            'visibility' => 'public',
+            'options' => ['ACL' => 'public-read'], // werkt bij B2; voorkomt ‘private’ ACL
         ],
     ],
 

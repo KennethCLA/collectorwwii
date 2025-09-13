@@ -11,6 +11,7 @@ use App\Models\Location;
 use App\Models\Author;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class BookController extends Controller
 {
@@ -116,6 +117,21 @@ class BookController extends Controller
 
     public function store(Request $request)
     {
+        // Only allow authenticated users
+        if (!auth()->check()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Apply rate limiting (e.g., max 10 uploads per minute per user)
+        if (app('cache')->has('book_upload_' . auth()->id())) {
+            $uploads = app('cache')->increment('book_upload_' . auth()->id());
+            if ($uploads > 10) {
+                abort(429, 'Too many uploads. Please try again later.');
+            }
+        } else {
+            app('cache')->put('book_upload_' . auth()->id(), 1, 60);
+        }
+
         $validated = $request->validate([
             'isbn' => 'required|string|max:255',
             'title' => 'required|string|max:255',
@@ -128,17 +144,30 @@ class BookController extends Controller
             'translator' => 'nullable|string|max:255',
             'purchase_date' => 'nullable|date',
             'pages' => 'nullable|integer|min:1',
-            'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4096',
+            'attachments.*' => 'image|mimes:jpeg,png,jpg,gif|max:8192',
             'authors' => 'required|string',
         ]);
 
         $book = Book::create($validated);
-
         $this->syncAuthors($book, $request->input('authors'));
 
+        // extra afbeeldingen
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file('attachments') as $file) {
+                $path = $file->store("books/{$book->id}", 'b2'); // bv. books/123/xxx.jpg
+                BookImage::create([
+                    'book_id'   => $book->id,
+                    'image_path' => $path,         // bewaar RELATIEF pad
+                    'is_main'   => false,
+                ]);
+            }
+        }
+
+        // cover
         if ($request->hasFile('cover')) {
-            $coverPath = $request->file('cover')->store('covers', 'public');
-            $book->update(['cover' => $coverPath]);
+            $coverPath = $request->file('cover')->store('covers', 'b2');
+            $book->update(['cover' => $coverPath]); // cover bevat enkel pad
         }
 
         return redirect()->route('books.index')->with('success', 'Book successfully added.');
@@ -176,9 +205,7 @@ class BookController extends Controller
 
     public function update(Request $request, Book $book)
     {
-        if (!auth()->user()->isAdmin()) {
-            abort(403, 'Unauthorized action.');
-        }
+        if (!auth()->user()->isAdmin()) abort(403);
 
         $validated = $request->validate([
             'isbn' => 'required|string|max:255',
@@ -192,16 +219,18 @@ class BookController extends Controller
             'translator' => 'nullable|string|max:255',
             'purchase_date' => 'nullable|date',
             'pages' => 'nullable|integer|min:1',
-            'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4096',
             'authors' => 'required|string',
         ]);
 
         $book->update($validated);
-
         $this->syncAuthors($book, $request->input('authors'));
 
         if ($request->hasFile('cover')) {
-            $coverPath = $request->file('cover')->store('covers', 'public');
+            if ($book->cover) {
+                Storage::disk('b2')->delete($book->cover);
+            }
+            $coverPath = $request->file('cover')->store('covers', 'b2');
             $book->update(['cover' => $coverPath]);
         }
 
@@ -210,12 +239,22 @@ class BookController extends Controller
 
     public function destroy(Book $book)
     {
-        if (!auth()->user()->isAdmin()) {
-            abort(403, 'Unauthorized action.');
+        if (!auth()->user()->isAdmin()) abort(403);
+
+        // verwijder alle images uit B2
+        foreach ($book->images as $image) {
+            Storage::disk('b2')->delete($image->image_path);
+            $image->delete();
+        }
+
+        // verwijder cover uit B2
+        if ($book->cover) {
+            Storage::disk('b2')->delete($book->cover);
         }
 
         $book->delete();
-        return redirect()->route('books.index');
+
+        return redirect()->route('books.index')->with('success', 'Book deleted.');
     }
 
     private function syncAuthors(Book $book, string $authors)
