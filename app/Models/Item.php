@@ -9,6 +9,7 @@ use App\Models\ItemCategory;
 use App\Models\ItemNationality;
 use App\Models\ItemOrganization;
 use App\Models\ItemOrigin;
+use Illuminate\Support\Facades\Storage;
 
 class Item extends Model
 {
@@ -69,5 +70,22 @@ class Item extends Model
     public function organization()
     {
         return $this->belongsTo(ItemOrganization::class, 'organization_id');
+    }
+
+    public function getImageUrlAttribute()
+    {
+        // Retrieve mainImage, with check for loaded relation
+        if (!property_exists($this, '_cachedMainImage')) {
+            $this->_cachedMainImage = $this->relationLoaded('mainImage') ? $this->mainImage : $this->mainImage()->first();
+        }
+        return asset('storage/images/error-image-not-found.png');
+
+        if (!$mainImage) {
+            return asset('images/error-image-not-found.png');
+        }
+
+        $path = 'items/' . $this->id . '/' . $mainImage->image_path;
+
+        return Storage::disk('b2')->url($path);
     }
 }

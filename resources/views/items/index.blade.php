@@ -2,7 +2,7 @@
     <x-slot:content>
         <div class="container">
             <div class="container flex justify-between">
-                <div class="breadcrumbs flex items-center pl-4 space-x-2 my-auto">
+                <div class="breadcrumbs flex items-center pl-6 md:pl-12 lg:pl-24 xl:pl-48 space-x-2 my-auto">
                     <a href="{{ route('home') }}" class="pr-2">Home</a> /
                     <a href="{{ route('items.index') }}">Items</a>
                 </div>
@@ -34,21 +34,22 @@
                 </div>
             </div>
 
-            <div class="container mx-auto px-4 py-6">
-                <div class="flex gap-4">
+            <div class="w-full py-6">
+                <div class="flex gap-6">
                     <!-- aside met flex-shrink-0 voor automatische hoogte -->
-                    <aside class="flex-shrink-0 bg-[#697367] text-white p-4 rounded-md w-full md:w-1/4 h-full">
+                    <aside class="sticky top-24 left-0 w-64 shrink-0 bg-[#4f574d] text-white p-4 pt-6
+         md:max-h-[calc(100vh-6rem)] md:overflow-y-auto">
                         <h2 class="text-lg font-bold">Categories</h2>
                         <ul class="text-sm mt-2" x-data="{ showCategories: false }">
                             @foreach ($categories->take(5) as $category)
-                                <li><a href="{{ route('items.index', ['category' => $category->id]) }}"
-                                        class="hover:underline">{{ e($category->name) }}</a></li>
+                            <li><a href="{{ route('items.index', ['category' => $category->id]) }}"
+                                    class="hover:underline">{{ e($category->name) }}</a></li>
                             @endforeach
 
                             <div x-show="showCategories" x-collapse>
                                 @foreach ($categories->skip(5) as $category)
-                                    <li><a href="{{ route('items.index', ['category' => $category->id]) }}"
-                                            class="hover:underline">{{ e($category->name) }}</a></li>
+                                <li><a href="{{ route('items.index', ['category' => $category->id]) }}"
+                                        class="hover:underline">{{ e($category->name) }}</a></li>
                                 @endforeach
                             </div>
 
@@ -63,14 +64,14 @@
                         <h2 class="text-lg font-bold mt-4">Origins</h2>
                         <ul class="text-sm mt-2" x-data="{ showOrigins: false }">
                             @foreach ($origins->take(5) as $origin)
-                                <li><a href="{{ route('items.index', ['origin' => $origin->id]) }}"
-                                        class="hover:underline">{{ e($origin->name) }}</a></li>
+                            <li><a href="{{ route('items.index', ['origin' => $origin->id]) }}"
+                                    class="hover:underline">{{ e($origin->name) }}</a></li>
                             @endforeach
 
                             <div x-show="showOrigins">
                                 @foreach ($origins->skip(5) as $origin)
-                                    <li><a href="{{ route('items.index', ['origin' => $origin->id]) }}"
-                                            class="hover:underline">{{ e($origin->name) }}</a></li>
+                                <li><a href="{{ route('items.index', ['origin' => $origin->id]) }}"
+                                        class="hover:underline">{{ e($origin->name) }}</a></li>
                                 @endforeach
                             </div>
 
@@ -85,14 +86,14 @@
                         <h2 class="text-lg font-bold mt-4">Organizations</h2>
                         <ul class="text-sm mt-2" x-data="{ showOrganizations: false }">
                             @foreach ($organizations->take(5) as $organization)
-                                <li><a href="{{ route('items.index', ['organization' => $organization->id]) }}"
-                                        class="hover:underline">{{ e($organization->name) }}</a></li>
+                            <li><a href="{{ route('items.index', ['organization' => $organization->id]) }}"
+                                    class="hover:underline">{{ e($organization->name) }}</a></li>
                             @endforeach
 
                             <div x-show="showOrganizations">
                                 @foreach ($organizations->skip(5) as $organization)
-                                    <li><a href="{{ route('items.index', ['organization' => $organization->id]) }}"
-                                            class="hover:underline">{{ e($organization->name) }}</a></li>
+                                <li><a href="{{ route('items.index', ['organization' => $organization->id]) }}"
+                                        class="hover:underline">{{ e($organization->name) }}</a></li>
                                 @endforeach
                             </div>
 
@@ -108,14 +109,14 @@
                         <h2 class="text-lg font-bold mt-4">Nationalities</h2>
                         <ul class="text-sm mt-2" x-data="{ showNationalities: false }">
                             @foreach ($nationalities->take(5) as $nationality)
-                                <li><a href="{{ route('items.index', ['nationality' => $nationality->id]) }}"
-                                        class="hover:underline">{{ e($nationality->name) }}</a></li>
+                            <li><a href="{{ route('items.index', ['nationality' => $nationality->id]) }}"
+                                    class="hover:underline">{{ e($nationality->name) }}</a></li>
                             @endforeach
 
                             <div x-show="showNationalities">
                                 @foreach ($nationalities->skip(5) as $nationality)
-                                    <li><a href="{{ route('items.index', ['nationality' => $nationality->id]) }}"
-                                            class="hover:underline">{{ e($nationality->name) }}</a></li>
+                                <li><a href="{{ route('items.index', ['nationality' => $nationality->id]) }}"
+                                        class="hover:underline">{{ e($nationality->name) }}</a></li>
                                 @endforeach
                             </div>
 
@@ -130,9 +131,10 @@
                     </aside>
 
                     <!-- Items Grid -->
-                    <div class="w-full md:w-3/4 flex-grow">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 h-full">
-                            @foreach ($items as $item)
+                    <div class="flex-1 min-w-0">
+                        <div class="mx-auto max-w-screen-xl px-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 h-full">
+                                @foreach ($items as $item)
                                 <a href="{{ route('items.show', $item) }}"
                                     class="bg-[#697367] text-white p-4 rounded-md shadow-md flex flex-col h-full hover:bg-[#5a6452]">
                                     <!-- Title -->
@@ -142,15 +144,17 @@
 
                                     <!-- Photo -->
                                     <div class="flex-1 flex justify-center items-center h-80">
-                                        <img src="{{ $item->mainImage ? asset('items/' . $item->id . '/' . $item->mainImage->image_path) : asset('images/error-image-not-found.png') }}"
-                                            alt="{{ $item->title }}" class="w-full h-48 object-contain mt-2">
+                                        <img src="{{ $item->image_url }}" alt="{{ $item->title }}"
+                                            class="w-full h-48 object-contain"
+                                            width="100%" height="192">
                                     </div>
                                 </a>
-                            @endforeach
-                        </div>
-                        <!-- Pagination -->
-                        <div class="text-white text-center col-span-5 mt-4">
-                            {{ $items->links('pagination::tailwind') }}
+                                @endforeach
+                            </div>
+                            <!-- Pagination -->
+                            <div class="text-white text-center col-span-5 mt-4">
+                                {{ $items->links('pagination::tailwind') }}
+                            </div>
                         </div>
                     </div>
                 </div>
