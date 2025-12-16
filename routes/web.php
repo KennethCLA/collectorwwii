@@ -38,17 +38,6 @@ Route::get('/contact', function () {
     return view('contact');
 })->name('contact');
 
-Route::resource('books', BookController::class);
-Route::resource('items', ItemController::class);
-Route::resource('newspapers', NewspaperController::class);
-Route::resource('magazines', MagazineController::class);
-Route::resource('banknotes', BanknoteController::class);
-Route::resource('coins', CoinController::class);
-Route::resource('postcards', PostcardController::class);
-Route::resource('stamps', StampController::class);
-
-Route::resource('profile', UserController::class);
-
 Auth::routes();
 
 Route::get('/login', function () {
@@ -59,10 +48,4 @@ Route::get('/login', function () {
 Route::post('/add-location', function (Request $request) {
     $location = Location::create(['name' => $request->name]);
     return response()->json(['success' => true, 'id' => $location->id, 'name' => $location->name]);
-});
-
-Route::middleware('auth')->group(function () {
-    Route::post('/topics/ajax/store', [BookTopicController::class, 'storeAjax'])->name('topics.ajax.store');
-    Route::post('/series/ajax/store', [BookSeriesController::class, 'storeAjax'])->name('series.ajax.store');
-    Route::post('/covers/ajax/store', [BookCoverController::class, 'storeAjax'])->name('covers.ajax.store');
 });
