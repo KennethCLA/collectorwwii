@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Ajax;
+namespace App\Http\Controllers\Admin\Ajax;
 
 use App\Models\BookCover;
 use Illuminate\Http\Request;

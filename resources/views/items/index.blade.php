@@ -1,173 +1,99 @@
-<x-layout>
-    <x-slot:content>
-        <div class="container">
-            <div class="container flex justify-between">
-                <div class="breadcrumbs flex items-center pl-6 md:pl-12 lg:pl-24 xl:pl-48 space-x-2 my-auto">
-                    <a href="{{ route('home') }}" class="pr-2">Home</a> /
-                    <a href="{{ route('items.index') }}">Items</a>
-                </div>
-                <div class="flex justify-end space-x-4 pr-4">
-                    <!-- Sorteerformulier zonder knop -->
-                    <form method="GET" action="{{ route('items.index') }}" class="flex">
-                        <select name="sort"
-                            class="p-2 rounded-md border text-white border-gray-300 bg-[#565e55] w-auto min-w-[150px]"
-                            onchange="this.form.submit()">
-                            <option value="title_asc" {{ request('sort') == 'title_asc' ? 'selected' : '' }}>Title (A-Z)
-                            </option>
-                            <option value="title_desc" {{ request('sort') == 'title_desc' ? 'selected' : '' }}>Title
-                                (Z-A)</option>
-                            <option value="created_at_asc" {{ request('sort') == 'created_at_asc' ? 'selected' : '' }}>
-                                Newest First</option>
-                            <option value="created_at_desc"
-                                {{ request('sort') == 'created_at_desc' ? 'selected' : '' }}>
-                                Oldest First</option>
-                        </select>
-                    </form>
+@extends('layouts.app')
+<div>
+    <label class="block text-sm font-medium text-slate-700">Categorie</label>
+    <select name="category" class="mt-1 w-full rounded-xl border-slate-300">
+        <option value="">Alle</option>
+        @foreach($categories as $c)
+        <option value="{{ $c->id }}" @selected((string)request('category')===(string)$c->id)>{{ $c->name }}</option>
+        @endforeach
+    </select>
+</div>
 
-                    <!-- Zoekformulier zonder knop -->
-                    <form method="GET" action="{{ route('items.index') }}" class="flex">
-                        <input type="text" name="search" placeholder="Search items..."
-                            value="{{ request('search') }}"
-                            class="p-2 rounded-md border bg-[#565e55] text-white border-gray-300 w-full"
-                            id="searchInput" />
-                    </form>
-                </div>
+
+<div>
+    <label class="block text-sm font-medium text-slate-700">Origin</label>
+    <select name="origin" class="mt-1 w-full rounded-xl border-slate-300">
+        <option value="">Alle</option>
+        @foreach($origins as $o)
+        <option value="{{ $o->id }}" @selected((string)request('origin')===(string)$o->id)>{{ $o->name }}</option>
+        @endforeach
+    </select>
+</div>
+
+
+<div>
+    <label class="block text-sm font-medium text-slate-700">Organization</label>
+    <select name="organization" class="mt-1 w-full rounded-xl border-slate-300">
+        <option value="">Alle</option>
+        @foreach($organizations as $org)
+        <option value="{{ $org->id }}" @selected((string)request('organization')===(string)$org->id)>{{ $org->name }}</option>
+        @endforeach
+    </select>
+</div>
+
+
+<div>
+    <label class="block text-sm font-medium text-slate-700">Nationality</label>
+    <select name="nationality" class="mt-1 w-full rounded-xl border-slate-300">
+        <option value="">Alle</option>
+        @foreach($nationalities as $n)
+        <option value="{{ $n->id }}" @selected((string)request('nationality')===(string)$n->id)>{{ $n->name }}</option>
+        @endforeach
+    </select>
+</div>
+
+
+<div>
+    <label class="block text-sm font-medium text-slate-700">Sorteer</label>
+    <select name="sort" class="mt-1 w-full rounded-xl border-slate-300">
+        @php($sort = request('sort','title_asc'))
+        <option value="title_asc" @selected($sort==='title_asc' )>Titel A–Z</option>
+        <option value="title_desc" @selected($sort==='title_desc' )>Titel Z–A</option>
+        <option value="created_at_desc" @selected($sort==='created_at_desc' )>Nieuwste</option>
+        <option value="created_at_asc" @selected($sort==='created_at_asc' )>Oudste</option>
+    </select>
+</div>
+
+
+<div class="flex gap-3 pt-2">
+    <a href="{{ route('items.index') }}" class="flex-1 text-center rounded-xl border px-4 py-2">Reset</a>
+    <button class="flex-1 rounded-xl bg-slate-800 text-white px-4 py-2">Toepassen</button>
+</div>
+</form>
+</div>
+</aside>
+
+
+<section class="lg:col-span-9 space-y-5">
+    <div class="flex items-center justify-between">
+        <h1 class="text-xl font-semibold">Items</h1>
+        <p class="text-sm text-slate-500">{{ $items->total() }} resultaten</p>
+    </div>
+
+
+    @if($items->count() === 0)
+    <div class="rounded-2xl bg-white p-10 text-center shadow-sm ring-1 ring-slate-200">
+        <p class="text-slate-600">Geen resultaten. Pas filters of zoekterm aan.</p>
+    </div>
+    @else
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5">
+        @foreach ($items as $item)
+        <a href="{{ route('items.show', $item) }}" class="block rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 hover:shadow-md transition overflow-hidden">
+            <div class="aspect-[4/3] bg-slate-100">
+                @php($main = $item->images()->where('is_main', true)->first())
+                @if($main)
+                <img src="{{ Storage::disk('public')->url($main->image_path) }}" alt="{{ $item->title }}" class="h-full w-full object-cover" loading="lazy">
+                @endif
             </div>
-
-            <div class="w-full py-6">
-                <div class="flex gap-6">
-                    <!-- aside met flex-shrink-0 voor automatische hoogte -->
-                    <aside class="sticky top-24 left-0 w-64 shrink-0 bg-[#4f574d] text-white p-4 pt-6
-         md:max-h-[calc(100vh-6rem)] md:overflow-y-auto">
-                        <h2 class="text-lg font-bold">Categories</h2>
-                        <ul class="text-sm mt-2" x-data="{ showCategories: false }">
-                            @foreach ($categories->take(5) as $category)
-                            <li><a href="{{ route('items.index', ['category' => $category->id]) }}"
-                                    class="hover:underline">{{ e($category->name) }}</a></li>
-                            @endforeach
-
-                            <div x-show="showCategories" x-collapse>
-                                @foreach ($categories->skip(5) as $category)
-                                <li><a href="{{ route('items.index', ['category' => $category->id]) }}"
-                                        class="hover:underline">{{ e($category->name) }}</a></li>
-                                @endforeach
-                            </div>
-
-                            <li>
-                                <button @click="showCategories = !showCategories" class="hover:underline text-blue-400">
-                                    <span x-show="!showCategories">Show More</span>
-                                    <span x-show="showCategories">Show Less</span>
-                                </button>
-                            </li>
-                        </ul>
-
-                        <h2 class="text-lg font-bold mt-4">Origins</h2>
-                        <ul class="text-sm mt-2" x-data="{ showOrigins: false }">
-                            @foreach ($origins->take(5) as $origin)
-                            <li><a href="{{ route('items.index', ['origin' => $origin->id]) }}"
-                                    class="hover:underline">{{ e($origin->name) }}</a></li>
-                            @endforeach
-
-                            <div x-show="showOrigins">
-                                @foreach ($origins->skip(5) as $origin)
-                                <li><a href="{{ route('items.index', ['origin' => $origin->id]) }}"
-                                        class="hover:underline">{{ e($origin->name) }}</a></li>
-                                @endforeach
-                            </div>
-
-                            <li>
-                                <button @click="showOrigins = !showOrigins" class="hover:underline text-blue-400">
-                                    <span x-show="!showOrigins">Show More</span>
-                                    <span x-show="showOrigins">Show Less</span>
-                                </button>
-                            </li>
-                        </ul>
-
-                        <h2 class="text-lg font-bold mt-4">Organizations</h2>
-                        <ul class="text-sm mt-2" x-data="{ showOrganizations: false }">
-                            @foreach ($organizations->take(5) as $organization)
-                            <li><a href="{{ route('items.index', ['organization' => $organization->id]) }}"
-                                    class="hover:underline">{{ e($organization->name) }}</a></li>
-                            @endforeach
-
-                            <div x-show="showOrganizations">
-                                @foreach ($organizations->skip(5) as $organization)
-                                <li><a href="{{ route('items.index', ['organization' => $organization->id]) }}"
-                                        class="hover:underline">{{ e($organization->name) }}</a></li>
-                                @endforeach
-                            </div>
-
-                            <li>
-                                <button @click="showOrganizations = !showOrganizations"
-                                    class="hover:underline text-blue-400">
-                                    <span x-show="!showOrganizations">Show More</span>
-                                    <span x-show="showOrganizations">Show Less</span>
-                                </button>
-                            </li>
-                        </ul>
-
-                        <h2 class="text-lg font-bold mt-4">Nationalities</h2>
-                        <ul class="text-sm mt-2" x-data="{ showNationalities: false }">
-                            @foreach ($nationalities->take(5) as $nationality)
-                            <li><a href="{{ route('items.index', ['nationality' => $nationality->id]) }}"
-                                    class="hover:underline">{{ e($nationality->name) }}</a></li>
-                            @endforeach
-
-                            <div x-show="showNationalities">
-                                @foreach ($nationalities->skip(5) as $nationality)
-                                <li><a href="{{ route('items.index', ['nationality' => $nationality->id]) }}"
-                                        class="hover:underline">{{ e($nationality->name) }}</a></li>
-                                @endforeach
-                            </div>
-
-                            <li>
-                                <button @click="showNationalities = !showNationalities"
-                                    class="hover:underline text-blue-400">
-                                    <span x-show="!showNationalities">Show More</span>
-                                    <span x-show="showNationalities">Show Less</span>
-                                </button>
-                            </li>
-                        </ul>
-                    </aside>
-
-                    <!-- Items Grid -->
-                    <div class="flex-1 min-w-0">
-                        <div class="mx-auto max-w-screen-xl px-4">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 h-full">
-                                @foreach ($items as $item)
-                                <a href="{{ route('items.show', $item) }}"
-                                    class="bg-[#697367] text-white p-4 rounded-md shadow-md flex flex-col h-full hover:bg-[#5a6452]">
-                                    <!-- Title -->
-                                    <div class="mb-1 flex-grow h-auto">
-                                        <h3 class="text-lg font-bold text-center mb-2">{{ $item->title }}</h3>
-                                    </div>
-
-                                    <!-- Photo -->
-                                    <div class="flex-1 flex justify-center items-center h-80">
-                                        <img src="{{ $item->image_url }}" alt="{{ $item->title }}"
-                                            class="w-full h-48 object-contain"
-                                            width="100%" height="192">
-                                    </div>
-                                </a>
-                                @endforeach
-                            </div>
-                            <!-- Pagination -->
-                            <div class="text-white text-center col-span-5 mt-4">
-                                {{ $items->links('pagination::tailwind') }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="p-4">
+                <h3 class="font-medium leading-tight line-clamp-2">{{ $item->title }}</h3>
+                <p class="mt-1 text-xs text-slate-500">{{ optional($item->category)->name ?? '—' }}</p>
             </div>
-
-            <script>
-                const searchInput = document.getElementById('searchInput');
-
-                searchInput.addEventListener('keydown', function(event) {
-                    if (event.key === 'Enter') {
-                        searchInput.form.submit(); // Alleen indienen bij Enter-toets
-                    }
-                });
-            </script>
-    </x-slot:content>
-</x-layout>
+        </a>
+        @endforeach
+    </div>
+    <div class="pt-4">{{ $items->onEachSide(1)->links('pagination::tailwind') }}</div>
+    @endif
+</section>
+</div>
+@endsection

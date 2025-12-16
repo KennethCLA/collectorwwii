@@ -1,19 +1,21 @@
 <?php
 
-use App\Http\Controllers\BlogController;
-use App\Http\Controllers\BookController;
-use App\Http\Controllers\BanknoteController;
-use App\Http\Controllers\CoinController;
-use App\Http\Controllers\MagazineController;
-use App\Http\Controllers\NewspaperController;
-use App\Http\Controllers\PostcardController;
-use App\Http\Controllers\StampController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\ItemController;
+use App\Http\Controllers\Public\HomeController;
+use App\Http\Controllers\Public\BlogController;
 
-use App\Http\Controllers\Ajax\BookTopicController;
-use App\Http\Controllers\Ajax\BookSeriesController;
-use App\Http\Controllers\Ajax\BookCoverController;
+use App\Http\Controllers\Admin\BookController;
+use App\Http\Controllers\Admin\BanknoteController;
+use App\Http\Controllers\Admin\CoinController;
+use App\Http\Controllers\Admin\MagazineController;
+use App\Http\Controllers\Admin\NewspaperController;
+use App\Http\Controllers\Admin\PostcardController;
+use App\Http\Controllers\Admin\StampController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ItemController;
+
+use App\Http\Controllers\Admin\Ajax\BookTopicController;
+use App\Http\Controllers\Admin\Ajax\BookSeriesController;
+use App\Http\Controllers\Admin\Ajax\BookCoverController;
 
 use App\Models\BookTopic;
 use App\Models\BookCover;
