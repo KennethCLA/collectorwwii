@@ -16,6 +16,11 @@ use Illuminate\Support\Facades\Storage;
 
 class BookController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Book::class, 'book');
+    }
+
     public function index(Request $request)
     {
         $query = Book::with('authors');

@@ -14,6 +14,11 @@ use Illuminate\Support\Facades\Storage;
 
 class ItemController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Item::class, 'item');
+    }
+
     public function index(Request $request)
     {
         // 1. Base query: haal items op met hun relaties
