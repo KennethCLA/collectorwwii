@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\{
     NewspaperController,
     PostcardController,
     StampController,
+    DashboardController,
     UserController
 };
 
@@ -20,7 +21,8 @@ use App\Http\Controllers\Admin\Ajax\{
     BookCoverController
 };
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'is_admin'])->group(function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
 
     Route::resource('books', BookController::class);
     Route::resource('items', ItemController::class);

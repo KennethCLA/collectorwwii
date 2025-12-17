@@ -11,7 +11,7 @@ class LoginController extends Controller
 {
     use AuthenticatesUsers;
 
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/admin';
 
     public function __construct()
     {
@@ -21,13 +21,13 @@ class LoginController extends Controller
 
     public function username()
     {
-        return 'name';
+        return 'email';
     }
 
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'name' => ['required', 'string'],
+            'email' => ['required', 'string', 'email'],
             'password' => ['required'],
         ]);
 
@@ -37,7 +37,7 @@ class LoginController extends Controller
         }
 
         return back()->withErrors([
-            'name' => 'The provided credentials do not match our records.',
+            'email' => 'The provided credentials do not match our records.',
         ]);
     }
 

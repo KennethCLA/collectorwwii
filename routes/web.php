@@ -41,9 +41,13 @@ Route::get('/contact', function () {
 Auth::routes();
 
 Route::get('/login', function () {
-    session(['url.intended' => url()->previous()]); // Bewaar de vorige pagina
+    if (auth()->check()) {
+        return redirect()->route('admin.dashboard');
+    }
+
     return view('auth.login');
-})->name('login');
+})->middleware('guest')->name('login');
+
 
 Route::post('/add-location', function (Request $request) {
     $location = Location::create(['name' => $request->name]);
