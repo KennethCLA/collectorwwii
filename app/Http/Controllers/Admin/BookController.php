@@ -10,9 +10,11 @@ use App\Models\BookSeries;
 use App\Models\BookImage;
 use App\Models\Location;
 use App\Models\Author;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Log;
 
 class BookController extends Controller
 {
@@ -23,7 +25,7 @@ class BookController extends Controller
 
     public function index(Request $request)
     {
-        $query = Book::with('authors');
+        $query = Book::with(['authors', 'images']);
 
         if ($request->has('topic')) {
             $query->where('topic_id', $request->topic);
@@ -91,52 +93,66 @@ class BookController extends Controller
 
     public function create(Request $request)
     {
-        // Verkrijg ISBN uit request als deze aanwezig is
-        $isbn = $request->input('isbn');
+        $isbn = trim((string) $request->input('isbn', ''));
+        $isbnLookupFailed = false;
         $bookData = null;
 
-        // Als er een ISBN is, probeer dan boekgegevens op te halen via een externe API
-        if ($isbn) {
-            $response = Http::get('https://www.googleapis.com/books/v1/volumes', [
+        if ($isbn !== '') {
+            $response = Http::timeout(5)->get('https://www.googleapis.com/books/v1/volumes', [
                 'q' => "isbn:{$isbn}",
             ]);
 
-            dd($response->json()); // Debugging: kijk wat de API teruggeeft
+            Log::info('Google Books API response', [
+                'isbn' => $isbn,
+                'status' => $response->status(),
+            ]);
 
             if ($response->successful()) {
                 $data = $response->json();
-                if (!empty($data['items'][0]['volumeInfo'])) {
-                    $bookData = $data['items'][0]['volumeInfo'];
+                $info = $data['items'][0]['volumeInfo'] ?? null;
+
+                if (is_array($info)) {
+                    $publishedDate = $info['publishedDate'] ?? null;
+
+                    $bookData = [
+                        'isbn' => $isbn,
+                        'title' => $info['title'] ?? null,
+                        'subtitle' => $info['subtitle'] ?? null,
+                        'authors' => !empty($info['authors']) ? implode(', ', $info['authors']) : null,
+                        'publisher_name' => $info['publisher'] ?? null,
+                        'copyright_year' => $publishedDate ? (int) substr((string) $publishedDate, 0, 4) : null,
+                        'pages' => $info['pageCount'] ?? null,
+                        'description' => $info['description'] ?? null,
+                    ];
+                } else {
+                    $isbnLookupFailed = true;
                 }
+            } else {
+                $isbnLookupFailed = true;
             }
         }
 
-        // Haal andere gegevens op zoals topics, series, covers, etc.
         return view('books.create', [
             'topics' => BookTopic::orderBy('name', 'asc')->get(),
             'series' => BookSeries::orderBy('name', 'asc')->get(),
             'covers' => BookCover::orderBy('name', 'asc')->get(),
             'locations' => Location::orderBy('name', 'asc')->get(),
-            'bookData' => $bookData,  // Dit is de informatie die we ophalen op basis van het ISBN
+            'isbn' => $isbn,
+            'bookData' => $bookData,
+            'isbnLookupFailed' => $isbnLookupFailed,
         ]);
     }
 
     public function store(Request $request)
     {
-        // Only allow authenticated users
-        if (!auth()->check()) {
-            abort(403, 'Unauthorized action.');
+        $userId = (int) auth()->id();
+        $key = "books:create:{$userId}";
+
+        if (RateLimiter::tooManyAttempts($key, 10)) {
+            abort(429, 'Too many uploads. Please try again later.');
         }
 
-        // Apply rate limiting (e.g., max 10 uploads per minute per user)
-        if (app('cache')->has('book_upload_' . auth()->id())) {
-            $uploads = app('cache')->increment('book_upload_' . auth()->id());
-            if ($uploads > 10) {
-                abort(429, 'Too many uploads. Please try again later.');
-            }
-        } else {
-            app('cache')->put('book_upload_' . auth()->id(), 1, 60);
-        }
+        RateLimiter::hit($key, 60);
 
         $validated = $request->validate([
             'isbn' => 'required|string|max:255',
@@ -160,12 +176,13 @@ class BookController extends Controller
 
         // extra afbeeldingen
         if ($request->hasFile('attachments')) {
-            foreach ($request->file('attachments') as $file) {
-                $path = $file->store("books/{$book->id}", 'b2'); // bv. books/123/xxx.jpg
+            foreach ($request->file('attachments') as $index => $file) {
+                $path = $file->store("books/{$book->id}", 'b2');
+
                 BookImage::create([
-                    'book_id'   => $book->id,
-                    'image_path' => $path,         // bewaar RELATIEF pad
-                    'is_main'   => false,
+                    'book_id' => $book->id,
+                    'image_path' => $path,
+                    'is_main' => $index === 0, // eerste = main
                 ]);
             }
         }
@@ -196,11 +213,6 @@ class BookController extends Controller
 
     public function edit(Book $book)
     {
-        // Controleer of de gebruiker een admin is
-        if (!auth()->user()->isAdmin()) {
-            abort(403, 'Unauthorized action.');
-        }
-
         return view('books.edit', [
             'book' => $book,
             'topics' => BookTopic::orderBy('name', 'asc')->get(),
@@ -211,8 +223,6 @@ class BookController extends Controller
 
     public function update(Request $request, Book $book)
     {
-        if (!auth()->user()->isAdmin()) abort(403);
-
         $validated = $request->validate([
             'isbn' => 'required|string|max:255',
             'title' => 'required|string|max:255',
@@ -245,8 +255,6 @@ class BookController extends Controller
 
     public function destroy(Book $book)
     {
-        if (!auth()->user()->isAdmin()) abort(403);
-
         // verwijder alle images uit B2
         foreach ($book->images as $image) {
             Storage::disk('b2')->delete($image->image_path);

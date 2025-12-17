@@ -167,6 +167,7 @@ class ItemController extends Controller
 
     public function destroy(Item $item)
     {
+        $item->load('images');
         // Verwijder alle afbeeldingen uit de storage
         Storage::disk('public')->deleteDirectory('items/' . $item->id);
 

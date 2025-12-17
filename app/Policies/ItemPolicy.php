@@ -2,49 +2,29 @@
 
 namespace App\Policies;
 
-use App\Models\Item;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use App\Models\Item;
 
-class ItemPolicy
+class ItemPolicy extends AdminOnlyPolicy
 {
-    private function isAdmin(User $user): bool
+    public function viewAny(?User $user): bool
     {
-        return (int) $user->role_id === 1;
+        return $this->deny();
     }
-
-    public function viewAny(User $user): bool
+    public function view(?User $user, Item $item): bool
     {
-        return $this->isAdmin($user);
+        return $this->deny();
     }
-
-    public function view(User $user, Item $item): bool
+    public function create(?User $user): bool
     {
-        return $this->isAdmin($user);
+        return $this->deny();
     }
-
-    public function create(User $user): bool
+    public function update(?User $user, Item $item): bool
     {
-        return $this->isAdmin($user);
+        return $this->deny();
     }
-
-    public function update(User $user, Item $item): bool
+    public function delete(?User $user, Item $item): bool
     {
-        return $this->isAdmin($user);
-    }
-
-    public function delete(User $user, Item $item): bool
-    {
-        return $this->isAdmin($user);
-    }
-
-    public function restore(User $user, Item $item): bool
-    {
-        return $this->isAdmin($user);
-    }
-
-    public function forceDelete(User $user, Item $item): bool
-    {
-        return $this->isAdmin($user);
+        return $this->deny();
     }
 }

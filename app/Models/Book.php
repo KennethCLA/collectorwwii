@@ -85,16 +85,27 @@ class Book extends Model
         return $this->hasMany(BookImage::class);
     }
 
-    public function getImageUrlAttribute()
+    public function getImageUrlAttribute(): string
     {
-        $mainImage = $this->relationLoaded('mainImage') ? $this->mainImage : $this->mainImage()->first();
+        $b2 = rtrim((string) env('B2_BUCKET_URL'), '/');
 
-        if (!$mainImage) {
-            return asset('storage/images/error-image-not-found.png');
+        $image = $this->relationLoaded('images')
+            ? ($this->images->firstWhere('is_main', true) ?? $this->images->first())
+            : $this->images()->orderByDesc('is_main')->orderBy('id')->first();
+
+        $path = $image?->image_path;
+        if (!$path) {
+            return asset('images/error-image-not-found.png');
         }
 
-        $path = 'books/' . $this->id . '/' . $mainImage->image_path;
+        $path = ltrim((string) $path, '/');
 
-        return Storage::disk('b2')->url($path);
+        // Nieuw formaat: "books/123/file.jpg" (of "covers/..")
+        if (str_contains($path, '/')) {
+            return $b2 . '/' . $path;
+        }
+
+        // Oud formaat: enkel filename "file.jpg" -> ga uit van books/{id}/file.jpg
+        return $b2 . "/books/{$this->id}/{$path}";
     }
 }

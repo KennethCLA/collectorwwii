@@ -47,18 +47,16 @@ class User extends Authenticatable
         ];
     }
 
-
     public function role()
     {
         return $this->belongsTo(Role::class);
     }
 
-    public function isAdmin()
+    public function isAdmin(): bool
     {
-        return $this->role->name === 'admin'; // Dit gaat ervan uit dat je 'admin' als naam voor de rol gebruikt
+        // Kies 1 aanpak. Dit is de simpelste op jouw huidige DB:
+        return (int) $this->role_id === 1;
     }
-
-
 
     public function isUser()
     {

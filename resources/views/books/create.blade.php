@@ -5,6 +5,20 @@
                 class="w-full mx-auto max-w-7xl">
                 @csrf
                 <div class="space-y-4">
+                    @if (!empty($isbn) && ($isbnLookupFailed ?? false))
+                    <div class="mb-4 rounded-md bg-red-600/20 border border-red-600 text-white p-3">
+                        No book found for ISBN <strong>{{ $isbn }}</strong>. Please check the number or fill the form manually.
+                    </div>
+                    @endif
+                    @if ($errors->any())
+                    <div class="mb-4 rounded-md bg-red-600/20 border border-red-600 text-white p-3">
+                        <ul class="list-disc pl-5">
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
                     <!-- ISBN -->
                     <div class="flex items-center space-x-4">
                         <label for="isbn" class="w-32 text-sm font-medium text-gray-700">
@@ -12,7 +26,8 @@
                         </label>
                         <input type="text" id="isbn" name="isbn"
                             class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
-                            value="{{ old('isbn') }}" required />
+                            value="{{ old('isbn', $isbn ?? '') }}"
+                            required />
                         <button type="button" id="search-isbn"
                             class="w-32 bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-700">
                             Search ISBN
@@ -26,7 +41,8 @@
                         </label>
                         <input type="text" id="title" name="title"
                             class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
-                            value="{{ old('title') }}" required />
+                            value="{{ old('title', $bookData['title'] ?? '') }}"
+                            required />
                     </div>
 
                     <!-- Subtitle -->
@@ -36,7 +52,7 @@
                         </label>
                         <input type="text" id="subtitle" name="subtitle"
                             class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
-                            value="{{ old('subtitle') }}" required />
+                            value="{{ old('subtitle', $bookData['subtitle'] ?? '') }}" />
                     </div>
 
                     <!-- Authors -->
@@ -46,7 +62,8 @@
                         </label>
                         <input type="text" id="authors" name="authors"
                             class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
-                            value="{{ old('authors') }}" required />
+                            value="{{ old('authors', $bookData['authors'] ?? '') }}"
+                            required />
                     </div>
 
                     <!-- Topic -->
@@ -77,7 +94,7 @@
                         </label>
                         <input type="text" id="publisher_name" name="publisher_name"
                             class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
-                            value="{{ old('publisher_name') }}" />
+                            value="{{ old('publisher_name', $bookData['publisher_name'] ?? '') }}" />
                     </div>
 
                     <!-- Copyright Year -->
@@ -87,7 +104,7 @@
                         </label>
                         <input type="number" id="copyright_year" name="copyright_year"
                             class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
-                            value="{{ old('copyright_year', data_get($bookData, 'publishedDate', '')) }}">
+                            value="{{ old('copyright_year', $bookData['copyright_year'] ?? '') }}">
                     </div>
 
                     <!-- Translator -->
@@ -95,7 +112,7 @@
                         <label for="translator" class="w-32 text-sm font-medium text-gray-700">Translator</label>
                         <input type="text" id="translator" name="translator"
                             class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
-                            value="{{ old('translator', data_get($bookData, 'translator', '')) }}">
+                            value="{{ old('translator') }}">
                     </div>
 
                     <!-- Issue Number -->
@@ -103,7 +120,7 @@
                         <label for="issue_number" class="w-32 text-sm font-medium text-gray-700">Issue Number</label>
                         <input type="text" id="issue_number" name="issue_number"
                             class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
-                            value="{{ old('issue_number', data_get($bookData, 'items.0.volumeInfo.issueNumber', '')) }}">
+                            value="{{ old('issue_number') }}">
                     </div>
 
                     <!-- Issue Year -->
@@ -113,7 +130,7 @@
                         </label>
                         <input type="number" id="issue_year" name="issue_year"
                             class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
-                            value="{{ old('issue_year', data_get($bookData, 'items.0.volumeInfo.issueDate', '')) }}">
+                            value="{{ old('issue_year') }}">
                     </div>
 
                     <!-- Series -->
@@ -160,7 +177,7 @@
                         <label for="pages" class="w-32 text-sm font-medium text-gray-700">Pages</label>
                         <input type="number" id="pages" name="pages"
                             class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
-                            value="{{ old('pages', data_get($bookData, 'items.0.volumeInfo.pageCount', '')) }}">
+                            value="{{ old('pages', $bookData['pages'] ?? '') }}">
                     </div>
 
                     <!-- Title (First Edition) -->
@@ -169,7 +186,7 @@
                             (First Edition)</label>
                         <input type="text" id="title_first_edition" name="title_first_edition"
                             class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
-                            value="{{ old('title_first_edition', data_get($bookData, 'items.0.volumeInfo.title_first_edition', '')) }}">
+                            value="{{ old('title_first_edition') }}">
                     </div>
 
                     <!-- Subtitle (First Edition) -->
@@ -178,7 +195,7 @@
                             (First Edition)</label>
                         <input type="text" id="subtitle_first_edition" name="subtitle_first_edition"
                             class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
-                            value="{{ old('subtitle_first_edition', data_get($bookData, 'items.0.volumeInfo.subtitle_first_edition', '')) }}">
+                            value="{{ old('subtitle_first_edition') }}">
                     </div>
 
                     <!-- Publisher (First Issue) -->
@@ -187,7 +204,7 @@
                             (First Issue)</label>
                         <input type="text" id="publisher_first_issue" name="publisher_first_issue"
                             class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
-                            value="{{ old('publisher_first_issue', data_get($bookData, 'items.0.volumeInfo.publisher_first_issue', '')) }}">
+                            value="{{ old('publisher_first_issue') }}">
                     </div>
 
                     <!-- Copyright Year (First Edition) -->
@@ -196,7 +213,7 @@
                             class="w-32 text-sm font-medium text-gray-700">Copyright Year (First Edition)</label>
                         <input type="number" id="copyright_year_first_edition" name="copyright_year_first_edition"
                             class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
-                            value="{{ old('copyright_year_first_edition', data_get($bookData, 'items.0.volumeInfo.publishedDate_first_edition', '')) }}">
+                            value="{{ old('copyright_year_first_edition') }}">
                     </div>
 
                     <!-- Purchase Date -->
@@ -222,14 +239,16 @@
                         <label for="book-description"
                             class="w-32 text-sm font-medium text-gray-700">Description</label>
                         <textarea id="book-description" name="description" rows="4"
-                            class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]">{{ trim(old('description')) }}</textarea>
+                            class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]">{{ trim(old('description', $bookData['description'] ?? '')) }}
+                        </textarea>
                     </div>
 
                     <!-- Notes -->
                     <div class="flex items-center space-x-4">
                         <label for="notes" class="w-32 text-sm font-medium text-gray-700">Notes</label>
                         <textarea id="notes" name="notes" rows="4"
-                            class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]">{{ trim(old('notes')) }}</textarea>
+                            class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]">{{ trim(old('notes')) }}
+                        </textarea>
                     </div>
 
                     <div
@@ -351,49 +370,16 @@
 
         searchIsbnButton.addEventListener("click", searchIsbn);
 
-        async function searchIsbn() {
+        function searchIsbn() {
             const isbn = isbnInput.value.trim();
 
-            if (isbn) {
-                try {
-                    const response = await fetch(
-                        `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`);
-                    const data = await response.json();
-
-                    if (data.items?.length > 0) {
-                        const book = data.items[0].volumeInfo;
-                        fillBookForm(book);
-                    } else {
-                        alert("Book not found. Please check the ISBN.");
-                    }
-                } catch (error) {
-                    alert("There was an error fetching the book data: " + (error?.message || error));
-                }
-            } else {
+            if (!isbn) {
                 alert("Please enter a valid ISBN.");
+                return;
             }
-        }
 
-        function fillBookForm(book) {
-            if (!bookForm) return;
-
-            const fields = {
-                title: book.title || "",
-                subtitle: book.subtitle || "",
-                authors: book.authors ? book.authors.join(", ") : "",
-                publisher_name: book.publisher || "",
-                copyright_year: book.publishedDate ? book.publishedDate.split("-")[0] : "",
-                description: book.description || "",
-                pages: book.pageCount || "",
-                dimensions: book.dimensions || "",
-                weight: book.weight || "",
-            };
-
-            Object.entries(fields).forEach(([name, value]) => {
-                if (bookForm.elements[name]) {
-                    bookForm.elements[name].value = value;
-                }
-            });
+            // Redirect naar server-side lookup
+            window.location.href = `{{ route('books.create') }}?isbn=${encodeURIComponent(isbn)}`;
         }
 
         fileInput.addEventListener("change", (event) => {
@@ -491,9 +477,4 @@
             });
         });
     });
-</script> button.textContent = originalText;
-}
-});
-});
-});
 </script>

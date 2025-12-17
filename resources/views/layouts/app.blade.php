@@ -53,9 +53,16 @@
                 @guest
                 <a class="px-3 py-2 rounded-lg hover:bg-slate-100" href="{{ route('login') }}">Login</a>
                 @else
+                @if(auth()->user()->role_id === 1)
+                <a class="px-3 py-2 rounded-lg hover:bg-slate-100 font-semibold text-slate-700"
+                    href="{{ route('admin.dashboard') }}">
+                    Admin
+                </a>
+                @endif
+
                 <form method="POST" action="{{ route('logout') }}" class="inline">
                     @csrf
-                    <button type="submit" class="hover:underline">
+                    <button type="submit" class="px-3 py-2 rounded-lg hover:bg-slate-100">
                         Logout
                     </button>
                 </form>

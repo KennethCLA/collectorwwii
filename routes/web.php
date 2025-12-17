@@ -21,6 +21,7 @@ use App\Models\BookTopic;
 use App\Models\BookCover;
 use App\Models\BookSeries;
 use App\Models\Location;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 

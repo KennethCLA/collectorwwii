@@ -42,13 +42,13 @@
                     <h2 class="text-lg font-bold">Topics</h2>
                     <ul class="text-sm mt-2" x-data="{ showTopics: false }">
                         @foreach ($topics->take(5) as $topic)
-                            <li><a href="{{ route('books.index', ['topic' => $topic->id]) }}"
-                                    class="hover:underline">{{ $topic->name }}</a></li>
+                        <li><a href="{{ route('books.index', ['topic' => $topic->id]) }}"
+                                class="hover:underline">{{ $topic->name }}</a></li>
                         @endforeach
                         <div x-show="showTopics" x-collapse>
                             @foreach ($topics->skip(5) as $topic)
-                                <li><a href="{{ route('books.index', ['topic' => $topic->id]) }}"
-                                        class="hover:underline">{{ $topic->name }}</a></li>
+                            <li><a href="{{ route('books.index', ['topic' => $topic->id]) }}"
+                                    class="hover:underline">{{ $topic->name }}</a></li>
                             @endforeach
                         </div>
                         <li>
@@ -62,13 +62,13 @@
                     <h2 class="text-lg font-bold mt-4">Series</h2>
                     <ul class="text-sm mt-2" x-data="{ showSeries: false }">
                         @foreach ($series->take(5) as $serie)
-                            <li><a href="{{ route('books.index', ['series' => $serie->id]) }}"
-                                    class="hover:underline">{{ $serie->name }}</a></li>
+                        <li><a href="{{ route('books.index', ['series' => $serie->id]) }}"
+                                class="hover:underline">{{ $serie->name }}</a></li>
                         @endforeach
                         <div x-show="showSeries">
                             @foreach ($series->skip(5) as $serie)
-                                <li><a href="{{ route('books.index', ['series' => $serie->id]) }}"
-                                        class="hover:underline">{{ $serie->name }}</a></li>
+                            <li><a href="{{ route('books.index', ['series' => $serie->id]) }}"
+                                    class="hover:underline">{{ $serie->name }}</a></li>
                             @endforeach
                         </div>
                         <li>
@@ -82,13 +82,13 @@
                     <h2 class="text-lg font-bold mt-4">Covers</h2>
                     <ul class="text-sm mt-2" x-data="{ showCovers: false }">
                         @foreach ($covers->take(5) as $cover)
-                            <li><a href="{{ route('books.index', ['cover' => $cover->id]) }}"
-                                    class="hover:underline">{{ $cover->name }}</a></li>
+                        <li><a href="{{ route('books.index', ['cover' => $cover->id]) }}"
+                                class="hover:underline">{{ $cover->name }}</a></li>
                         @endforeach
                         <div x-show="showCovers">
                             @foreach ($covers->skip(5) as $cover)
-                                <li><a href="{{ route('books.index', ['cover' => $cover->id]) }}"
-                                        class="hover:underline">{{ $cover->name }}</a></li>
+                            <li><a href="{{ route('books.index', ['cover' => $cover->id]) }}"
+                                    class="hover:underline">{{ $cover->name }}</a></li>
                             @endforeach
                         </div>
                         <li>
@@ -104,33 +104,34 @@
                 <div class="w-full md:w-3/4 flex-grow">
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 h-full">
                         @foreach ($books as $book)
-                            <a href="{{ route('books.show', $book) }}" target="_blank"
-                                class="bg-[#697367] text-white p-4 rounded-md shadow-md flex flex-col h-full hover:bg-[#5a6452]">
-                                <!-- Title -->
-                                <div class="mb-1 flex-grow h-auto">
-                                    <h3 class="text-lg font-bold text-center">{{ $book->title }}</h3>
-                                    @if ($book->subtitle)
-                                        <h5 class="text-sm italic text-center text-gray-300">{{ $book->subtitle }}</h5>
-                                    @endif
-                                    @if ($book->issue_number)
-                                        <h5 class="text-xs italic text-center text-gray-300 pt-4">
-                                            {{ $book->issue_number }}</h5>
-                                    @endif
-                                </div>
-                                <p class="text-sm text-center text-gray-300 border-t border-gray-400 py-1 h-20">
-                                    @foreach ($book->authors as $author)
-                                        {{ $author->name }}@if (!$loop->last)
-                                            ,
-                                        @endif
-                                    @endforeach
-                                </p>
+                        <a href="{{ route('books.show', $book) }}" target="_blank"
+                            class="bg-[#697367] text-white p-4 rounded-md shadow-md flex flex-col h-full hover:bg-[#5a6452]">
+                            <!-- Title -->
+                            <div class="mb-1 flex-grow h-auto">
+                                <h3 class="text-lg font-bold text-center">{{ $book->title }}</h3>
+                                @if ($book->subtitle)
+                                <h5 class="text-sm italic text-center text-gray-300">{{ $book->subtitle }}</h5>
+                                @endif
+                                @if ($book->issue_number)
+                                <h5 class="text-xs italic text-center text-gray-300 pt-4">
+                                    {{ $book->issue_number }}
+                                </h5>
+                                @endif
+                            </div>
+                            <p class="text-sm text-center text-gray-300 border-t border-gray-400 py-1 h-20">
+                                @foreach ($book->authors as $author)
+                                {{ $author->name }}@if (!$loop->last)
+                                ,
+                                @endif
+                                @endforeach
+                            </p>
 
-                                <!-- Photo -->
-                                <div class="flex-1 flex justify-center items-center h-80">
-                                    <img src="{{ $book->image_url }}" alt="{{ $book->title }}"
-                                        class="w-full h-48 object-contain">
-                                </div>
-                            </a>
+                            <!-- Photo -->
+                            <div class="flex-1 flex justify-center items-center h-80">
+                                <img src="{{ $book->image_url }}" alt="{{ $book->title }}"
+                                    class="w-full h-48 object-contain">
+                            </div>
+                        </a>
                         @endforeach
                     </div>
                     <!-- Pagination -->

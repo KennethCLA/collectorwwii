@@ -17,17 +17,30 @@
                     </div>
                 </div>
 
-                {{-- Rechts icon (login/profiel) – voorbeeld met public/images --}}
+                {{-- Rechts icon (login/profiel/logout) --}}
                 <div class="hidden md:flex items-center space-x-4">
-                    @auth
-                    <a href="{{ route('profile.index') }}" class="flex items-center">
-                        <img class="size-4 rounded-sm" src="{{ asset('images/icon-user-regular.svg') }}" alt="Profile">
-                    </a>
-                    @else
+                    @guest
                     <a href="{{ route('login') }}" class="flex items-center">
                         <img class="size-4 rounded-sm" src="{{ asset('images/icon-user-regular.svg') }}" alt="Login">
                     </a>
-                    @endauth
+                    @else
+                    @can('viewAny', \App\Models\Book::class)
+                    <a href="{{ route('admin.dashboard') }}" class="text-white/90 hover:text-white text-sm">
+                        Admin
+                    </a>
+                    @endcan
+
+                    <a href="{{ route('profile.index') }}" class="flex items-center">
+                        <img class="size-4 rounded-sm" src="{{ asset('images/icon-user-regular.svg') }}" alt="Profile">
+                    </a>
+
+                    <form method="POST" action="{{ route('logout') }}" class="inline">
+                        @csrf
+                        <button type="submit" class="text-white/90 hover:text-white text-sm">
+                            Logout
+                        </button>
+                    </form>
+                    @endguest
                 </div>
 
                 {{-- mobile toggle button (zorg dat dit in je layout JS zichtbaar is) --}}
@@ -54,8 +67,8 @@
             <div class="flex-1 flex justify-center">
                 <div class="hidden md:block">
                     <div class="ml-10 flex items-baseline space-x-4">
-                        <x-nav-link href="/books" :active="request()->is('books')">Books</x-nav-link>
-                        <x-nav-link href="/items" :active="request()->is('items')">Items</x-nav-link>
+                        <x-nav-link href="{{ route('books.index') }}" :active="request()->routeIs('books.*')">Books</x-nav-link>
+                        <x-nav-link href="{{ route('items.index') }}" :active="request()->routeIs('items.*')">Items</x-nav-link>
                         <x-nav-link href="/newspapers" :active="request()->is('newspapers')">Newspapers</x-nav-link>
                         <x-nav-link href="/magazines" :active="request()->is('magazines')">Magazines</x-nav-link>
                         <x-nav-link href="/banknotes" :active="request()->is('banknotes')">Banknotes</x-nav-link>

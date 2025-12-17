@@ -45,21 +45,19 @@
                     </div>
                 </div>
 
-                @if (auth()->check() && auth()->user()->isAdmin())
-                    <hr class="my-6">
-                    <h2 class="text-2xl font-bold mb-4">Admin Details</h2>
-                    <div class="flex flex-wrap -mx-4">
-                        <div class="w-full md:w-1/2 px-4">
-                            <x-form.input label="Purchase Price (€)" name="purchase_price" type="number" step="0.01"
-                                :value="$book->purchase_price" />
-                            <x-form.input label="Storage Location" name="storage_location" :value="$book->storage_location" />
-                        </div>
-                        <div class="w-full md:w-1/2 px-4">
-                            <x-form.input label="Weight" name="weight" type="text" :value="$book->weight" />
-                            <x-form.input label="Dimensions" name="dimensions" type="text" :value="$book->dimensions" />
-                        </div>
+                <hr class="my-6">
+                <h2 class="text-2xl font-bold mb-4">Admin Details</h2>
+                <div class="flex flex-wrap -mx-4">
+                    <div class="w-full md:w-1/2 px-4">
+                        <x-form.input label="Purchase Price (€)" name="purchase_price" type="number" step="0.01"
+                            :value="$book->purchase_price" />
+                        <x-form.input label="Storage Location" name="storage_location" :value="$book->storage_location" />
                     </div>
-                @endif
+                    <div class="w-full md:w-1/2 px-4">
+                        <x-form.input label="Weight" name="weight" type="text" :value="$book->weight" />
+                        <x-form.input label="Dimensions" name="dimensions" type="text" :value="$book->dimensions" />
+                    </div>
+                </div>
 
                 <div class="mt-6 flex justify-end space-x-4">
                     <x-form.button type="submit" color="blue">Save Changes</x-form.button>
