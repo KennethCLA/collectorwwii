@@ -1,60 +1,59 @@
-<style>
-    body {
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        /* optioneel, mooi parallax-achtig effect */
-        background-image: url("{{ asset('storage/images/wwii-wallpaper-summer.jpg') }}");
-    }
-</style>
+<!-- resources/views/home.blade.php -->
 
-
-<x-layout>
-    <x-slot:content>
-        <div class="h-full max-w-4xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-            <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 flex justify-center">
-                <h1 class="text-5xl font-bold tracking-tight text-[#293134] text-shadow">COLLECTORWWII</h1>
-            </div>
-            <div class="mx-auto max-w-7xl px-4 py-2 sm:px-6 lg:px-8 flex justify-center">
-                <h2 class="text-lg font-medium tracking-tight text-[#293134]">Welcome to COLLECTORWWII!</h2>
-            </div>
-            <!-- Language Switcher -->
-            <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 flex justify-center">
-                <div>
-                    <a href="{{ route('changeLanguage', 'en') }}">
-                        <img src="{{ asset('images/flag-united-kingdom.png') }}" alt="Switch to English" class="px-1.5" width="64" height="64"></a>
-                </div>
-                <div>
-                    <a href="{{ route('changeLanguage', 'nl') }}"><img
-                            src="{{ asset('images/flag-netherlands.png') }}" alt="Switch to Dutch" class="px-1.5" width="64" height="64"></a>
-                </div>
-                <div>
-                    <a href="{{ route('changeLanguage', 'de') }}"><img
-                            src="{{ asset('images/flag-germany.png') }}" alt="Switch to German" class="px-1.5" width="64" height="64"></a>
-                </div>
-                <div>
-                    <a href="{{ route('changeLanguage', 'fr') }}"><img
-                            src="{{ asset('images/flag-france.png') }}" alt="Switch to French" class="px-1.5" width="64" height="64"></a>
-                </div>
-            </div>
-
-            <!-- Latest Blog -->
-            @if ($latestBlog)
-            <div class="mx-auto px-4 py-6 sm:px-6 lg:px-8 text-white text-center rounded-xl bg-[#2c333575]">
-                <p class="text-lg font-bold">
-                    {{ \Carbon\Carbon::parse($latestBlog['date'])->format('d-m-Y') }}
-                </p>
-
-                @foreach (explode("\n\n", $latestBlog['content']) as $paragraph)
-                <p class="mt-2">{{ $paragraph }}</p>
-                @endforeach
-
-                <p class="mt-2 text-2xl font-bold">COLLECTORWWII</p>
-            </div>
-            @else
-            <p class="text-white text-center">No blog posts available yet.</p>
-            @endif
+<x-layout :bodyClass="'home home-' . $season">
+    <div class="h-full max-w-4xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+        <div class="rounded-2xl bg-[#2c3335]/65 ring-1 ring-black/30 px-8 py-8 text-center">
+            <h1 class="text-5xl sm:text-6xl font-black tracking-tight text-[#6c2114]"
+                style="filter: drop-shadow(0 1px 1px rgba(255, 255, 255, 0.6));">
+                COLLECTORWWII
+            </h1>
+            <div class="mx-auto mt-4 h-px w-40 bg-[#c2b280]/30"></div>
+            <p class="mt-3 text-bold sm:text-xl text-white/70"
+                style="filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.6));">
+                Welcome to COLLECTORWWII!
+            </p>
         </div>
-    </x-slot:content>
+
+        <!-- Language Switcher -->
+        <div class="mt-6 flex justify-center">
+            <div class="inline-flex gap-2 rounded-2xl bg-[#2c3335]/65 ring-1 ring-black/30 px-3 py-2">
+                @foreach ([
+                ['en','flag-united-kingdom.png','English'],
+                ['nl','flag-netherlands.png','Nederlands'],
+                ['de','flag-germany.png','Deutsch'],
+                ['fr','flag-france.png','Français'],
+                ] as [$code,$img,$label])
+                <a href="{{ route('changeLanguage', $code) }}"
+                    class="rounded-xl p-1 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/30"
+                    aria-label="Switch to {{ $label }}">
+                    <img src="{{ asset('images/'.$img) }}"
+                        class="h-10 w-10 rounded-lg ring-1 ring-black/40 transition hover:-translate-y-0.5"
+                        alt="" />
+                </a>
+                @endforeach
+            </div>
+        </div>
+
+
+        <!-- Latest Blog -->
+        @if ($latestBlog)
+        <div class="mt-10 mx-auto max-w-3xl rounded-2xl bg-[#2c3335]/65 ring-1 ring-black/30 px-6 py-6 text-white">
+            <p class="text-xs tracking-[0.2em] text-white/70 text-center">
+                {{ \Carbon\Carbon::parse($latestBlog['date'])->format('d-m-Y') }}
+            </p>
+            <div class="mt-4 h-px w-32 mx-auto bg-[#c2b280]/35"></div>
+            <div class="mt-5 space-y-4 text-white/90 leading-relaxed">
+                @foreach (explode("\n\n", $latestBlog['content']) as $paragraph)
+                <p>{{ $paragraph }}</p>
+                @endforeach
+            </div>
+            <div class="mt-4 h-px w-32 mx-auto bg-[#c2b280]/35"></div>
+            <p class="mt-6 text-center text-lg font-semibold tracking-wide">
+                COLLECTORWWII
+            </p>
+        </div>
+        @else
+        <p class="mt-10 text-white/80 text-center">No blog posts available yet.</p>
+        @endif
+    </div>
 </x-layout>

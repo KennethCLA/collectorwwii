@@ -1,4 +1,5 @@
 <?php
+// routes/admin.php
 
 use Illuminate\Support\Facades\Route;
 
@@ -21,21 +22,20 @@ use App\Http\Controllers\Admin\Ajax\{
     BookCoverController
 };
 
-Route::middleware(['auth', 'is_admin'])->group(function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
+Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::resource('books', BookController::class);
-    Route::resource('items', ItemController::class);
-    Route::resource('newspapers', NewspaperController::class);
-    Route::resource('magazines', MagazineController::class);
-    Route::resource('banknotes', BanknoteController::class);
-    Route::resource('coins', CoinController::class);
-    Route::resource('postcards', PostcardController::class);
-    Route::resource('stamps', StampController::class);
+Route::resource('books', BookController::class);
+Route::resource('items', ItemController::class);
 
-    Route::resource('profile', UserController::class);
+Route::resource('newspapers', NewspaperController::class);
+Route::resource('magazines', MagazineController::class);
+Route::resource('banknotes', BanknoteController::class);
+Route::resource('coins', CoinController::class);
+Route::resource('postcards', PostcardController::class);
+Route::resource('stamps', StampController::class);
 
-    Route::post('topics/ajax/store', [BookTopicController::class, 'storeAjax'])->name('topics.ajax.store');
-    Route::post('series/ajax/store', [BookSeriesController::class, 'storeAjax'])->name('series.ajax.store');
-    Route::post('covers/ajax/store', [BookCoverController::class, 'storeAjax'])->name('covers.ajax.store');
-});
+Route::resource('profile', UserController::class);
+
+Route::post('topics/ajax/store', [BookTopicController::class, 'storeAjax'])->name('topics.ajax.store');
+Route::post('series/ajax/store', [BookSeriesController::class, 'storeAjax'])->name('series.ajax.store');
+Route::post('covers/ajax/store', [BookCoverController::class, 'storeAjax'])->name('covers.ajax.store');

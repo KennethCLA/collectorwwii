@@ -15,4 +15,15 @@ class ItemImage extends Model
     {
         return $this->belongsTo(Item::class);
     }
+
+    public function getB2UrlAttribute(): string
+    {
+        $path = ltrim((string) $this->image_path, '/');
+
+        if (!str_contains($path, '/')) {
+            $path = "items/{$this->item_id}/{$path}";
+        }
+
+        return Storage::disk('b2')->url($path);
+    }
 }

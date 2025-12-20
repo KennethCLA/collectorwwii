@@ -27,8 +27,9 @@ class BlogController extends Controller
 
         // Haal de laatste blogpost (meest recente)
         $latestBlog = $blogs[0] ?? null;
+        $season = $this->currentSeason();
 
-        return view('home', compact('blogs', 'latestBlog', 'language'));
+        return view('home', compact('blogs', 'latestBlog', 'language', 'season'));
     }
 
     public function showAllPosts()
@@ -40,5 +41,15 @@ class BlogController extends Controller
         $blogs = json_decode(File::get($jsonPath), true);
 
         return view('blog', compact('blogs', 'language'));
+    }
+
+    private function currentSeason(): string
+    {
+        $month = now()->month;
+
+        return match (true) {
+            $month >= 6 && $month <= 8 => 'summer',
+            default => 'winter',
+        };
     }
 }

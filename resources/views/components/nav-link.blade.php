@@ -1,4 +1,17 @@
+<!-- Navbar link component (nav-link.blade.php) -->
+
 @props(['active' => false])
 
-<a class="{{ $active ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-md px-3 py-2 text-sm font-medium"
-    aria-current="{{ $active ? 'page' : 'false' }}" {{ $attributes }}>{{ $slot }}</a>
+@php
+$base = 'rounded-md px-3 py-2 text-sm font-medium transition';
+$activeClasses = 'bg-black/30 text-white ring-1 ring-black/40';
+$inactiveClasses = 'text-gray-300 hover:bg-black/20 hover:text-white';
+@endphp
+
+<a
+    {{ $attributes->merge([
+        'class' => $base . ' ' . ($active ? $activeClasses : $inactiveClasses)
+    ]) }}
+    aria-current="{{ $active ? 'page' : 'false' }}">
+    {{ $slot }}
+</a>

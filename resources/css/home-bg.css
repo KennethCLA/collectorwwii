@@ -1,0 +1,31 @@
+/* Base homepage background */
+body.home {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* Winter (default) */
+body.home.home-winter {
+  background-image:
+    linear-gradient(to bottom, rgba(0,0,0,.35), rgba(0,0,0,.60)),
+    url("/images/wwii-wallpaper.jpg");
+}
+
+/* Summer */
+body.home.home-summer {
+  background-image:
+    linear-gradient(to bottom, rgba(0,0,0,.30), rgba(0,0,0,.55)),
+    url("/images/wwii-wallpaper-summer.jpg");
+}
+
+/* Mobile override (all seasons) */
+@media (max-width: 768px) {
+  body.home {
+    background-attachment: scroll; /* fixed is buggy on mobile */
+    background-image:
+      linear-gradient(to bottom, rgba(0,0,0,.35), rgba(0,0,0,.65)),
+      url("/images/wwii-wallpaper-mobile.png");
+  }
+}

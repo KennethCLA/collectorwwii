@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Models\Blog;
 
 class HomeController extends Controller
 {
@@ -13,7 +14,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        //
     }
 
     /**
@@ -23,6 +24,15 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $latestBlog = Blog::query()
+            ->latest('date')   // of latest('created_at')
+            ->first();
+
+        return view('home', [
+            'latestBlog' => $latestBlog ? [
+                'date' => $latestBlog->date ?? $latestBlog->created_at,
+                'content' => $latestBlog->content,
+            ] : null
+        ]);
     }
 }

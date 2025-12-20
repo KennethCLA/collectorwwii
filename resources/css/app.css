@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "./components.css";
+@import "./home-bg.css";
 
-/* Optional: small tweaks */
-@layer base {
-html { @apply bg-slate-100 text-slate-800; }
-}

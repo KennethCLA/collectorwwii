@@ -5,26 +5,30 @@ namespace App\Policies;
 use App\Models\User;
 use App\Models\Book;
 
-class BookPolicy extends AdminOnlyPolicy
+class BookPolicy
 {
     public function viewAny(?User $user): bool
     {
-        return $this->deny();
+        return true; // publiek
     }
+
     public function view(?User $user, Book $book): bool
     {
-        return $this->deny();
+        return true; // publiek
     }
-    public function create(?User $user): bool
+
+    public function create(User $user): bool
     {
-        return $this->deny();
+        return $user->role_id === 1;
     }
-    public function update(?User $user, Book $book): bool
+
+    public function update(User $user, Book $book): bool
     {
-        return $this->deny();
+        return $user->role_id === 1;
     }
-    public function delete(?User $user, Book $book): bool
+
+    public function delete(User $user, Book $book): bool
     {
-        return $this->deny();
+        return $user->role_id === 1;
     }
 }

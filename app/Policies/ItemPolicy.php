@@ -1,30 +1,32 @@
 <?php
-
-namespace App\Policies;
-
+// app/Policies/ItemPolicy.php
 use App\Models\User;
 use App\Models\Item;
 
-class ItemPolicy extends AdminOnlyPolicy
+class ItemPolicy
 {
     public function viewAny(?User $user): bool
     {
-        return $this->deny();
+        return true; // publiek
     }
+
     public function view(?User $user, Item $item): bool
     {
-        return $this->deny();
+        return true; // publiek
     }
-    public function create(?User $user): bool
+
+    public function create(User $user): bool
     {
-        return $this->deny();
+        return $user->role_id === 1;
     }
-    public function update(?User $user, Item $item): bool
+
+    public function update(User $user, Item $item): bool
     {
-        return $this->deny();
+        return $user->role_id === 1;
     }
-    public function delete(?User $user, Item $item): bool
+
+    public function delete(User $user, Item $item): bool
     {
-        return $this->deny();
+        return $user->role_id === 1;
     }
 }

@@ -1,18 +1,7 @@
 <x-layout>
     @php
     $b2 = rtrim(env('B2_BUCKET_URL'), '/');
-
-    // 1) Kies hoofdafbeelding: eerst is_main, anders eerste image, anders null
-    $main = $book->images->firstWhere('is_main', true) ?? $book->images->first();
-
-    // 2) Bouw URL (image_path kan oud (filename) of nieuw (books/{id}/file) zijn)
-    $mainUrl = null;
-    if ($main?->image_path) {
-    $p = ltrim($main->image_path, '/');
-    $mainUrl = str_contains($p, '/')
-    ? ($b2 . '/' . $p)
-    : ($b2 . "/books/{$book->id}/{$p}");
-    }
+    $main = $book->mainImage ?? $book->images->first();
     @endphp
     <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
         <!-- Breadcrumbs -->
@@ -30,9 +19,10 @@
                 <!-- Hoofdafbeelding (klikbaar en onderdeel van de gallery) -->
                 <div class="md:col-span-2 p-6 rounded-md">
                     <div class="p-2 rounded-lg">
-                        @if ($mainUrl)
-                        <a href="{{ $mainUrl }}" data-fancybox="gallery">
-                            <img src="{{ $mainUrl }}" class="w-full object-contain rounded-lg max-h-96">
+                        @if ($main)
+                        <a href="{{ $b2 . '/' . ltrim($main->image_path, '/') }}" data-fancybox="gallery">
+                            <img src="{{ $b2 . '/' . ltrim($main->image_path, '/') }}"
+                                class="w-full object-contain rounded-lg max-h-96">
                         </a>
                         @else
                         <img src="{{ asset('images/error-image-not-found.png') }}" alt="{{ $book->title }}"
@@ -44,36 +34,20 @@
                 <!-- Thumbnail Gallerij (inclusief hoofdafbeelding, zonder duplicaat in Fancybox) -->
                 <div class="flex justify-center space-x-2 mt-4 mx-auto">
                     @if ($main)
-                    @php
-                    // URL voor hoofdthumbnail (oud + nieuw formaat)
-                    $p = ltrim($main->image_path, '/');
-                    $mainThumbUrl = str_contains($p, '/')
-                    ? ($b2 . '/' . $p)
-                    : ($b2 . "/books/{$book->id}/{$p}");
-                    @endphp
-
-                    <!-- Hoofdafbeelding als eerste thumbnail (geen extra Fancybox entry) -->
-                    <div class="w-16 h-16 border rounded overflow-hidden flex items-center justify-center bg-[#343933]">
-                        <img
-                            src="{{ $mainThumbUrl }}"
+                    <!-- Hoofdafbeelding als eerste thumbnail, maar zonder extra Fancybox-entry -->
+                    <div
+                        class="w-16 h-16 border rounded overflow-hidden flex items-center justify-center bg-[#343933]">
+                        <img src="{{ $b2 . '/' . ltrim($main->image_path, '/') }}"
                             class="w-full h-full object-contain cursor-pointer hover:opacity-75"
                             onclick="document.querySelector('[data-fancybox=gallery]').click();">
                     </div>
 
-                    <!-- Overige afbeeldingen -->
+                    <!-- Overige afbeeldingen in de Fancybox -->
                     @foreach ($book->images as $image)
                     @if ($image->id !== $main->id)
-                    @php
-                    $p = ltrim($image->image_path, '/');
-                    $url = str_contains($p, '/')
-                    ? ($b2 . '/' . $p)
-                    : ($b2 . "/books/{$book->id}/{$p}");
-                    @endphp
-
-                    <a href="{{ $url }}" data-fancybox="gallery" class="bg-[#343933]">
+                    <a href="{{ $b2 . '/' . ltrim($image->image_path, '/') }}" data-fancybox="gallery" class="bg-[#343933]">
                         <div class="w-16 h-16 border rounded overflow-hidden flex items-center justify-center">
-                            <img
-                                src="{{ $url }}"
+                            <img src="{{ $b2 . '/' . ltrim($image->image_path, '/') }}"
                                 class="w-full h-full object-contain cursor-pointer hover:opacity-75">
                         </div>
                     </a>
@@ -142,38 +116,36 @@
                 </div>
 
                 <!-- Admin only fields -->
-                @can('update', $book)
+                @can('update', $item)
                 <hr class="my-6 border-gray-600">
                 <p class="text-2xl font-semibold text-gray-300 mb-4">Admin Details</p>
+
                 <div class="space-y-3 text-lg">
-                    <p><span class="font-semibold text-gray-300">Book ID:</span> {{ $book->id }}</p>
+                    <p><span class="font-semibold text-gray-300">Item ID:</span> {{ $item->id }}</p>
                     <p><span class="font-semibold text-gray-300">Purchase Date:</span>
-                        {{ $book->purchase_date ? \Carbon\Carbon::parse($book->purchase_date)->format('d-m-Y') : 'N/A' }}
+                        {{ $item->purchase_date ? \Carbon\Carbon::parse($item->purchase_date)->format('d-m-Y') : 'N/A' }}
                     </p>
                     <p><span class="font-semibold text-gray-300">Purchase Price:</span>
-                        €{{ number_format($book->purchase_price, 2) }}</p>
-                    <p><span class="font-semibold text-gray-300">Notes:</span> {{ $book->notes }}</p>
-                    <p><span class="font-semibold text-gray-300">Storage location:</span>
-                        {{ $book->storage_location }}
+                        €{{ number_format($item->purchase_price, 2) }}
                     </p>
-                    <p><span class="font-semibold text-gray-300">Weight:</span> {{ $book->weight }}
-                    </p>
-                    <p><span class="font-semibold text-gray-300">Dimensions:</span> {{ $book->dimensions }}</p>
+                    <p><span class="font-semibold text-gray-300">Notes:</span> {{ $item->notes }}</p>
+                    <p><span class="font-semibold text-gray-300">Storage location:</span> {{ $item->storage_location }}</p>
                 </div>
 
                 <hr class="my-6 border-gray-600">
+
                 <div class="flex justify-between space-x-4">
-                    <a href="{{ route('books.edit', $book->id) }}"
-                        class="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition duration-300 ease-in-out shadow-md">
-                        Edit Book
+                    <a href="{{ route('admin.items.edit', $item) }}"
+                        class="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700">
+                        Edit Item
                     </a>
 
-                    @can('delete', $book)
-                    <form action="{{ route('books.destroy', $book->id) }}" method="POST" class="inline-block">
+                    @can('delete', $item)
+                    <form action="{{ route('admin.items.destroy', $item) }}" method="POST">
                         @csrf
                         @method('DELETE')
                         <button type="submit"
-                            class="bg-red-600 text-white px-6 py-3 rounded-md hover:bg-red-700 transition duration-300 ease-in-out shadow-md">
+                            class="bg-red-600 text-white px-6 py-3 rounded-md hover:bg-red-700">
                             Delete
                         </button>
                     </form>

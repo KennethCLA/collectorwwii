@@ -77,7 +77,9 @@ class Book extends Model
 
     public function mainImage()
     {
-        return $this->hasOne(BookImage::class)->where('is_main', true);
+        return $this->hasOne(BookImage::class)
+            ->where('is_main', true)
+            ->withDefault(); // voorkomt null->image_path crashes
     }
 
     public function images()

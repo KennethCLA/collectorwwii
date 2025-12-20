@@ -1,4 +1,5 @@
 <?php
+// routes/web.php
 
 use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\BlogController;
@@ -16,6 +17,9 @@ use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\Ajax\BookTopicController;
 use App\Http\Controllers\Admin\Ajax\BookSeriesController;
 use App\Http\Controllers\Admin\Ajax\BookCoverController;
+
+use App\Http\Controllers\Public\BookController as PublicBookController;
+use App\Http\Controllers\Public\ItemController as PublicItemController;
 
 use App\Models\BookTopic;
 use App\Models\BookCover;
@@ -38,6 +42,15 @@ Route::get('/blog', [BlogController::class, 'showAllPosts'])->name('blog');
 Route::get('/contact', function () {
     return view('contact');
 })->name('contact');
+
+// PUBLIC: Books
+Route::get('/books', [PublicBookController::class, 'index'])->name('books.index');
+Route::get('/books/{book}', [PublicBookController::class, 'show'])->name('books.show');
+
+// PUBLIC: Items
+Route::get('/items', [PublicItemController::class, 'index'])->name('items.index');
+Route::get('/items/{item}', [PublicItemController::class, 'show'])->name('items.show');
+
 
 Auth::routes();
 

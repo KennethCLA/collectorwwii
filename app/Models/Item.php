@@ -72,20 +72,16 @@ class Item extends Model
         return $this->belongsTo(ItemOrganization::class, 'organization_id');
     }
 
-    public function getImageUrlAttribute()
+    public function getImageUrlAttribute(): string
     {
-        // Retrieve mainImage, with check for loaded relation
-        if (!property_exists($this, '_cachedMainImage')) {
-            $this->_cachedMainImage = $this->relationLoaded('mainImage') ? $this->mainImage : $this->mainImage()->first();
-        }
-        return asset('storage/images/error-image-not-found.png');
+        $mainImage = $this->relationLoaded('mainImage')
+            ? $this->mainImage
+            : $this->mainImage()->first();
 
         if (!$mainImage) {
             return asset('images/error-image-not-found.png');
         }
 
-        $path = 'items/' . $this->id . '/' . $mainImage->image_path;
-
-        return Storage::disk('b2')->url($path);
+        return Storage::disk('b2')->url(ltrim($mainImage->image_path, '/'));
     }
 }
