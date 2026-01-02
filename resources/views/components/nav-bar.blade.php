@@ -15,8 +15,8 @@
                {{-- CENTER: Main links --}}
                <nav class="hidden md:flex h-full items-center justify-center gap-3">
                    <x-nav-link href="/blog" :active="request()->is('blog')">Blog</x-nav-link>
-                   <x-nav-link href="/for-sale" :active="request()->is('for-sale')">For Sale</x-nav-link>
-                   <x-nav-link href="/map" :active="request()->is('map')">Map</x-nav-link>
+                   {{-- <x-nav-link href="/for-sale" :active="request()->is('for-sale')">For Sale</x-nav-link>
+                   <x-nav-link href="/map" :active="request()->is('map')">Map</x-nav-link> --}}
                    <x-nav-link href="/contact" :active="request()->is('contact')">Contact</x-nav-link>
                </nav>
 
@@ -61,73 +61,111 @@
        <div class="bg-[#636c65] hidden md:block">
            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                <div class="h-12 flex items-center justify-center gap-2">
-                   <x-nav-link href="{{ route('books.index') }}" :active="request()->routeIs('books.*')" class="tracking-wide">Books</x-nav-link>
-                   <x-nav-link href="{{ route('items.index') }}" :active="request()->routeIs('items.*')" class="tracking-wide">Items</x-nav-link>
-                   <x-nav-link href="/newspapers" :active="request()->is('newspapers')" class="tracking-wide">Newspapers</x-nav-link>
-                   <x-nav-link href="/magazines" :active="request()->is('magazines')" class="tracking-wide">Magazines</x-nav-link>
-                   <x-nav-link href="/banknotes" :active="request()->is('banknotes')" class="tracking-wide">Banknotes</x-nav-link>
-                   <x-nav-link href="/coins" :active="request()->is('coins')" class="tracking-wide">Coins</x-nav-link>
-                   <x-nav-link href="/postcards" :active="request()->is('postcards')" class="tracking-wide">Postcards</x-nav-link>
-                   <x-nav-link href="/stamps" :active="request()->is('stamps')" class="tracking-wide">Stamps</x-nav-link>
+
+                   @if(config('collector.enabled_sections.books'))
+                   <x-nav-link href="{{ route('books.index') }}"
+                       :active="request()->routeIs('books.*')"
+                       class="tracking-wide">
+                       Books
+                   </x-nav-link>
+                   @endif
+
+                   @if(config('collector.enabled_sections.items'))
+                   <x-nav-link href="{{ route('items.index') }}"
+                       :active="request()->routeIs('items.*')"
+                       class="tracking-wide">
+                       Items
+                   </x-nav-link>
+                   @endif
+
+                   @if(config('collector.enabled_sections.magazines'))
+                   <x-nav-link href="/magazines" :active="request()->is('magazines')" class="tracking-wide">
+                       Magazines
+                   </x-nav-link>
+                   @endif
+
+                   @if(config('collector.enabled_sections.banknotes'))
+                   <x-nav-link href="/banknotes" :active="request()->is('banknotes')" class="tracking-wide">
+                       Banknotes
+                   </x-nav-link>
+                   @endif
+
+                   @if(config('collector.enabled_sections.coins'))
+                   <x-nav-link href="/coins" :active="request()->is('coins')" class="tracking-wide">
+                       Coins
+                   </x-nav-link>
+                   @endif
+
+                   @if(config('collector.enabled_sections.postcards'))
+                   <x-nav-link href="/postcards" :active="request()->is('postcards')" class="tracking-wide">
+                       Postcards
+                   </x-nav-link>
+                   @endif
+
+                   @if(config('collector.enabled_sections.stamps'))
+                   <x-nav-link href="/stamps" :active="request()->is('stamps')" class="tracking-wide">
+                       Stamps
+                   </x-nav-link>
+                   @endif
+
+               </div>
+           </div>
+
+           {{-- Mobile menu (hidden by default) --}}
+           <div class="md:hidden hidden" id="mobile-menu">
+               <div class="bg-[#636c65] border-t border-black/30">
+                   <div class="px-4 py-4 space-y-4">
+
+                       <div class="rounded-xl bg-black/20 ring-1 ring-black/30 p-3">
+                           <div class="text-xs tracking-[0.2em] text-white/70 mb-2">MAIN</div>
+                           <div class="flex flex-col gap-2">
+                               <x-nav-link href="/blog" :active="request()->is('blog')">Blog</x-nav-link>
+                               <x-nav-link href="/for-sale" :active="request()->is('for-sale')">For Sale</x-nav-link>
+                               <x-nav-link href="/map" :active="request()->is('map')">Map</x-nav-link>
+                               <x-nav-link href="/contact" :active="request()->is('contact')">Contact</x-nav-link>
+                           </div>
+                       </div>
+
+                       <div class="rounded-xl bg-black/20 ring-1 ring-black/30 p-3">
+                           <div class="text-xs tracking-[0.2em] text-white/70 mb-2">COLLECTION</div>
+                           <div class="flex flex-col gap-2">
+                               <x-nav-link href="{{ route('books.index') }}" :active="request()->routeIs('books.*')">Books</x-nav-link>
+                               <x-nav-link href="{{ route('items.index') }}" :active="request()->routeIs('items.*')">Items</x-nav-link>
+                               <x-nav-link href="/newspapers" :active="request()->is('newspapers')">Newspapers</x-nav-link>
+                               <x-nav-link href="/magazines" :active="request()->is('magazines')">Magazines</x-nav-link>
+                               <x-nav-link href="/banknotes" :active="request()->is('banknotes')">Banknotes</x-nav-link>
+                               <x-nav-link href="/coins" :active="request()->is('coins')">Coins</x-nav-link>
+                               <x-nav-link href="/postcards" :active="request()->is('postcards')">Postcards</x-nav-link>
+                               <x-nav-link href="/stamps" :active="request()->is('stamps')">Stamps</x-nav-link>
+                           </div>
+                       </div>
+
+                       <div class="rounded-xl bg-black/20 ring-1 ring-black/30 p-3">
+                           <div class="text-xs tracking-[0.2em] text-white/70 mb-2">ACCOUNT</div>
+
+                           @guest
+                           <a href="{{ route('login') }}"
+                               class="block rounded-md px-3 py-2 text-sm font-medium text-gray-200 hover:bg-black/20 hover:text-white transition">
+                               Login
+                           </a>
+                           @else
+                           @can('viewAny', \App\Models\Book::class)
+                           <a href="{{ route('admin.dashboard') }}"
+                               class="block rounded-md px-3 py-2 text-sm font-medium text-gray-200 hover:bg-black/20 hover:text-white transition">
+                               Dashboard
+                           </a>
+                           @endcan
+
+                           <form method="POST" action="{{ route('logout') }}">
+                               @csrf
+                               <button type="submit"
+                                   class="w-full text-left rounded-md px-3 py-2 text-sm font-medium text-gray-200 hover:bg-black/20 hover:text-white transition">
+                                   Logout
+                               </button>
+                           </form>
+                           @endguest
+                       </div>
+                   </div>
                </div>
            </div>
        </div>
-
-       {{-- Mobile menu (hidden by default) --}}
-       <div class="md:hidden hidden" id="mobile-menu">
-           <div class="bg-[#636c65] border-t border-black/30">
-               <div class="px-4 py-4 space-y-4">
-
-                   <div class="rounded-xl bg-black/20 ring-1 ring-black/30 p-3">
-                       <div class="text-xs tracking-[0.2em] text-white/70 mb-2">MAIN</div>
-                       <div class="flex flex-col gap-2">
-                           <x-nav-link href="/blog" :active="request()->is('blog')">Blog</x-nav-link>
-                           <x-nav-link href="/for-sale" :active="request()->is('for-sale')">For Sale</x-nav-link>
-                           <x-nav-link href="/map" :active="request()->is('map')">Map</x-nav-link>
-                           <x-nav-link href="/contact" :active="request()->is('contact')">Contact</x-nav-link>
-                       </div>
-                   </div>
-
-                   <div class="rounded-xl bg-black/20 ring-1 ring-black/30 p-3">
-                       <div class="text-xs tracking-[0.2em] text-white/70 mb-2">COLLECTION</div>
-                       <div class="flex flex-col gap-2">
-                           <x-nav-link href="{{ route('books.index') }}" :active="request()->routeIs('books.*')">Books</x-nav-link>
-                           <x-nav-link href="{{ route('items.index') }}" :active="request()->routeIs('items.*')">Items</x-nav-link>
-                           <x-nav-link href="/newspapers" :active="request()->is('newspapers')">Newspapers</x-nav-link>
-                           <x-nav-link href="/magazines" :active="request()->is('magazines')">Magazines</x-nav-link>
-                           <x-nav-link href="/banknotes" :active="request()->is('banknotes')">Banknotes</x-nav-link>
-                           <x-nav-link href="/coins" :active="request()->is('coins')">Coins</x-nav-link>
-                           <x-nav-link href="/postcards" :active="request()->is('postcards')">Postcards</x-nav-link>
-                           <x-nav-link href="/stamps" :active="request()->is('stamps')">Stamps</x-nav-link>
-                       </div>
-                   </div>
-
-                   <div class="rounded-xl bg-black/20 ring-1 ring-black/30 p-3">
-                       <div class="text-xs tracking-[0.2em] text-white/70 mb-2">ACCOUNT</div>
-
-                       @guest
-                       <a href="{{ route('login') }}"
-                           class="block rounded-md px-3 py-2 text-sm font-medium text-gray-200 hover:bg-black/20 hover:text-white transition">
-                           Login
-                       </a>
-                       @else
-                       @can('viewAny', \App\Models\Book::class)
-                       <a href="{{ route('admin.dashboard') }}"
-                           class="block rounded-md px-3 py-2 text-sm font-medium text-gray-200 hover:bg-black/20 hover:text-white transition">
-                           Dashboard
-                       </a>
-                       @endcan
-
-                       <form method="POST" action="{{ route('logout') }}">
-                           @csrf
-                           <button type="submit"
-                               class="w-full text-left rounded-md px-3 py-2 text-sm font-medium text-gray-200 hover:bg-black/20 hover:text-white transition">
-                               Logout
-                           </button>
-                       </form>
-                       @endguest
-                   </div>
-               </div>
-           </div>
-       </div>
-   </div>

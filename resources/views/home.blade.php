@@ -1,6 +1,6 @@
 <!-- resources/views/home.blade.php -->
 
-<x-layout :bodyClass="'home home-' . $season">
+<x-layout :bodyClass="'min-h-screen home home-' . $season">
     <div class="h-full max-w-4xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
         <div class="rounded-2xl bg-[#2c3335]/65 ring-1 ring-black/30 px-8 py-8 text-center">
             <h1 class="text-5xl sm:text-6xl font-black tracking-tight text-[#6c2114]"

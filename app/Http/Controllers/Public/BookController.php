@@ -1,4 +1,5 @@
 <?php
+// app/Http/Controllers/Public/BookController.php
 
 namespace App\Http\Controllers\Public;
 
@@ -97,7 +98,7 @@ class BookController extends Controller
 
             case 'title_asc':
             default:
-                $booksQuery->orderBy('title', 'asc');
+                $booksQuery->orderBy('books.id', 'asc');
                 break;
         }
 
@@ -109,10 +110,18 @@ class BookController extends Controller
 
     public function show(Book $book)
     {
-        $book->load(['authors', 'images', 'topic', 'series', 'cover']);
+        $book->load([
+            'authors',
+            'topic',
+            'series',
+            'cover',
+            'files',
+            'images',
+            'mainImage',
+        ]);
 
-        $previousBook = Book::where('id', '<', $book->id)->orderBy('id', 'desc')->first();
-        $nextBook = Book::where('id', '>', $book->id)->orderBy('id', 'asc')->first();
+        $previousBook = Book::where('id', '<', $book->id)->orderByDesc('id')->first();
+        $nextBook     = Book::where('id', '>', $book->id)->orderBy('id')->first();
 
         return view('books.show', compact('book', 'previousBook', 'nextBook'));
     }

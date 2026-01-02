@@ -8,7 +8,7 @@ use App\Models\ItemCategory;
 use App\Models\ItemNationality;
 use App\Models\ItemOrganization;
 use App\Models\ItemOrigin;
-use App\Models\ItemImage;
+use App\Models\MediaFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -98,26 +98,11 @@ class ItemController extends Controller
             'origin_id' => 'nullable|exists:item_origins,id',
             'nationality_id' => 'nullable|exists:item_nationalities,id',
             'organization_id' => 'nullable|exists:item_organizations,id',
-            'images.*' => 'image|max:2048',
         ]);
 
         $item = Item::create($validated);
 
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $index => $image) {
-                $itemFolder = 'items/' . $item->id;
-                $filename = uniqid() . '.' . $image->extension();
-                $path = $image->storeAs($itemFolder, $filename, 'public');
-
-                ItemImage::create([
-                    'item_id' => $item->id,
-                    'image_path' => $path,
-                    'is_main' => $index === 0, // Eerste afbeelding wordt hoofdafbeelding
-                ]);
-            }
-        }
-
-        return redirect()->route('items.index');
+        return redirect()->route('items.edit', $item)->with('success', 'Item created. Upload images below.');
     }
 
     public function show(Item $item)
@@ -127,7 +112,15 @@ class ItemController extends Controller
 
     public function edit(Item $item)
     {
-        return view('items.edit', compact('item'));
+        $item->load(['images']); // en eventueel andere relaties later
+
+        return view('items.edit', [
+            'item' => $item,
+            'categories' => ItemCategory::orderBy('name')->get(),
+            'origins' => ItemOrigin::orderBy('name')->get(),
+            'nationalities' => ItemNationality::orderBy('name')->get(),
+            'organizations' => ItemOrganization::orderBy('name')->get(),
+        ]);
     }
 
     public function update(Request $request, Item $item)
@@ -138,40 +131,25 @@ class ItemController extends Controller
             'origin_id' => 'nullable|exists:item_origins,id',
             'nationality_id' => 'nullable|exists:item_nationalities,id',
             'organization_id' => 'nullable|exists:item_organizations,id',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $item->update($validated);
 
-        // Check of het item al een hoofdafbeelding heeft
-        $hasMainImage = $item->images()->where('is_main', true)->exists();
-
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $index => $image) {
-                $itemFolder = 'items/' . $item->id;
-                $filename = uniqid() . '.' . $image->extension();
-                $path = $image->storeAs($itemFolder, $filename, 'public');
-
-                ItemImage::create([
-                    'item_id' => $item->id,
-                    'image_path' => $path,
-                    'is_main' => !$hasMainImage && $index === 0, // Enkel 1x is_main
-                ]);
-
-                $hasMainImage = true;
-            }
-        }
-
-        return redirect()->route('items.index')->with('success', 'Item updated!');
+        return redirect()->route('items.edit', $item)->with('success', 'Item updated!');
     }
 
     public function destroy(Item $item)
     {
         $item->load('images');
-        // Verwijder alle afbeeldingen uit de storage
-        Storage::disk('public')->deleteDirectory('items/' . $item->id);
 
-        // Verwijder item en gerelateerde database records
+        foreach ($item->images as $img) {
+            if ($img->path) {
+                Storage::disk($img->disk)->delete($img->path);
+            }
+        }
+
+        Storage::disk('b2')->deleteDirectory('items/' . $item->id);
+
         $item->images()->delete();
         $item->delete();
 

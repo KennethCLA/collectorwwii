@@ -20,6 +20,7 @@
                     <select name="sort"
                         class="p-2 rounded-md border text-white border-gray-300 bg-[#565e55] min-w-[150px]"
                         onchange="this.form.submit()">
+                        <option value="" disabled selected>Sort by</option>
                         <option value="title_asc" {{ request('sort') == 'title_asc' ? 'selected' : '' }}>Title (A-Z)</option>
                         <option value="title_desc" {{ request('sort') == 'title_desc' ? 'selected' : '' }}>Title (Z-A)</option>
                         <option value="author_asc" {{ request('sort') == 'author_asc' ? 'selected' : '' }}>Author (A-Z)</option>
@@ -350,8 +351,11 @@
                         </p>
 
                         <div class="flex-1 flex justify-center items-center h-80">
-                            <img src="{{ $book->image_url }}" alt="{{ $book->title }}"
+                            <img
+                                src="{{ $book->image_url ?? asset('images/error-image-not-found.png') }}"
+                                alt="{{ $book->title }}"
                                 class="w-full h-48 object-contain">
+
                         </div>
                     </a>
                     @endforeach

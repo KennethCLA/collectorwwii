@@ -1,6 +1,6 @@
 <x-layout :bodyClass="'bg-[#565e55] min-h-screen pt-24'">
     <div class="min-h-[calc(100vh-12rem)] flex items-start justify-center px-4 pt-10">
-        <div class="w-full max-w-md rounded-2xl bg-[#2c3335]/75 ring-1 ring-black/40 p-6 text-white">
+        <div class="w-full max-w-md rounded-2xl bg-[#2c3335]/75 ring-1 ring-black/40 p-6 mt-12 text-white">
             <h1 class="text-2xl font-semibold tracking-wide">Admin login</h1>
             <p class="mt-1 text-sm text-white/70">Toegang voor beheer.</p>
 

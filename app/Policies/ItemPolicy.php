@@ -1,5 +1,8 @@
 <?php
 // app/Policies/ItemPolicy.php
+
+namespace App\Policies;
+
 use App\Models\User;
 use App\Models\Item;
 

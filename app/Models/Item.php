@@ -1,15 +1,19 @@
 <?php
+// app/Models/Item.php
 
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Facades\Storage;
 use App\Models\ItemCategory;
 use App\Models\ItemNationality;
 use App\Models\ItemOrganization;
 use App\Models\ItemOrigin;
-use Illuminate\Support\Facades\Storage;
+use App\Models\MediaFile;
 
 class Item extends Model
 {
@@ -39,16 +43,6 @@ class Item extends Model
         'purchase_price' => 'decimal:2',
     ];
 
-    public function images()
-    {
-        return $this->hasMany(ItemImage::class);
-    }
-
-    public function mainImage()
-    {
-        return $this->hasOne(ItemImage::class)->where('is_main', true);
-    }
-
     public function category()
     {
         return $this->belongsTo(ItemCategory::class, 'category_id');
@@ -72,16 +66,50 @@ class Item extends Model
         return $this->belongsTo(ItemOrganization::class, 'organization_id');
     }
 
-    public function getImageUrlAttribute(): string
+    public function media(): MorphMany
     {
-        $mainImage = $this->relationLoaded('mainImage')
-            ? $this->mainImage
-            : $this->mainImage()->first();
+        return $this->morphMany(MediaFile::class, 'attachable');
+    }
 
-        if (!$mainImage) {
-            return asset('images/error-image-not-found.png');
+    public function images(): MorphMany
+    {
+        return $this->media()
+            ->where('collection', 'images')
+            ->orderByDesc('is_main')
+            ->orderBy('sort_order')
+            ->orderBy('id');
+    }
+
+    public function files(): MorphMany
+    {
+        return $this->media()
+            ->where('collection', 'files')
+            ->orderBy('sort_order')
+            ->orderBy('id');
+    }
+
+    public function mainImage(): MorphOne
+    {
+        return $this->morphOne(MediaFile::class, 'attachable')
+            ->where('collection', 'images')
+            ->where('is_main', 1);
+    }
+
+    public function mainImageFile(): ?MediaFile
+    {
+        // Gebruik loaded relations als ze al geladen zijn (show pagina)
+        if ($this->relationLoaded('mainImage') || $this->relationLoaded('images')) {
+            return $this->getRelation('mainImage')
+                ?? ($this->getRelation('images')?->first());
         }
 
-        return Storage::disk('b2')->url(ltrim($mainImage->image_path, '/'));
+        // Fallback wanneer niet eager loaded (bvb. ergens anders)
+        return $this->mainImage()->first() ?? $this->images()->first();
+    }
+
+    public function getImageUrlAttribute(): string
+    {
+        return $this->mainImageFile()?->url()
+            ?? asset('images/error-image-not-found.png');
     }
 }

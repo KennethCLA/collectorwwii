@@ -21,3 +21,42 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+
+# --- Local / dumps / generated ---
+*.sql
+*.sql.gz
+*.dump
+backup_*.sql
+collectorwwii_local_*.sql
+collectorwwii_schema.sql
+schema_local.sql
+_ide_helper.php
+/.phpstorm.meta.php/
+.phpunit.result.cache
+
+# Weird accidental filenames
+-
+*,
+()->*
+
+# Local / generated
+/.env
+/.env.*
+/storage/*.sql
+/storage/*.sql.gz
+/storage/logs/
+/storage/framework/views/
+/public/storage
+
+# IDE / helper
+/_ide_helper.php
+
+# Dumps / backups
+*.sql
+*.sql.gz
+backup_*.sql
+
+# Weird accidental files
+-
+*,
+()->*

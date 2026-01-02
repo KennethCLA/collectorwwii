@@ -30,6 +30,8 @@ $useAdminHeader = $useAdminHeader ?? $autoAdmin;
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="shortcut icon" href="{{ asset('images/wwii-tank-icon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script>
 </head>
 
 <body id="app-body" class="min-h-screen bg-[#565e55] {{ $bodyClass }}">
@@ -92,6 +94,7 @@ $useAdminHeader = $useAdminHeader ?? $autoAdmin;
         setBodyOffset();
         onScroll();
     </script>
+    @stack('scripts')
 </body>
 
 </html>

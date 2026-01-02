@@ -68,6 +68,7 @@ return [
             'region' => env('B2_REGION', 'eu-central-003'),
             'bucket' => env('B2_BUCKET'),
             'endpoint' => env('B2_ENDPOINT'),
+            'root' => env('B2_ROOT', ''),
             'url' => env('AWS_URL'),           // <-- CDN/Cloudflare
             'use_path_style_endpoint' => true,
             'throw' => true,

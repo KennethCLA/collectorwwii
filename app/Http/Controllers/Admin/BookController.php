@@ -1,4 +1,5 @@
 <?php
+// app/Http/Controllers/Admin/BookController.php
 
 namespace App\Http\Controllers\Admin;
 
@@ -7,7 +8,7 @@ use App\Models\Book;
 use App\Models\BookCover;
 use App\Models\BookTopic;
 use App\Models\BookSeries;
-use App\Models\BookImage;
+use App\Models\BookFile;
 use App\Models\Location;
 use App\Models\Author;
 use Illuminate\Http\Request;
@@ -132,11 +133,13 @@ class BookController extends Controller
             }
         }
 
-        return view('books.create', [
-            'topics' => BookTopic::orderBy('name', 'asc')->get(),
-            'series' => BookSeries::orderBy('name', 'asc')->get(),
-            'covers' => BookCover::orderBy('name', 'asc')->get(),
-            'locations' => Location::orderBy('name', 'asc')->get(),
+        $bookData = []; // of uit ISBN lookup
+        return view('admin.books.create', [
+            'bookData' => $bookData,
+            'topics' => BookTopic::orderBy('name')->get(),
+            'series' => BookSeries::orderBy('name')->get(),
+            'covers' => BookCover::orderBy('name')->get(),
+            'locations' => Location::orderBy('name')->get(),
             'isbn' => $isbn,
             'bookData' => $bookData,
             'isbnLookupFailed' => $isbnLookupFailed,
@@ -167,23 +170,50 @@ class BookController extends Controller
             'purchase_date' => 'nullable|date',
             'pages' => 'nullable|integer|min:1',
             'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4096',
-            'attachments.*' => 'image|mimes:jpeg,png,jpg,gif|max:8192',
+            'attachments'   => ['nullable', 'array'],
+            'attachments.*' => ['file', 'mimes:jpeg,png,jpg,gif,pdf', 'max:51200'], // 50MB, pas aan indien gewenst
             'authors' => 'required|string',
         ]);
 
-        $book = Book::create($validated);
+        $data = $validated;
+        unset($data['attachments']); // attachments niet in books tabel steken
+        $book = Book::create($data);
         $this->syncAuthors($book, $request->input('authors'));
 
-        // extra afbeeldingen
+        // attachments (images + pdfs) -> BookFile
         if ($request->hasFile('attachments')) {
-            foreach ($request->file('attachments') as $index => $file) {
-                $path = $file->store("books/{$book->id}", 'b2');
+            $disk = Storage::disk('b2');
 
-                BookImage::create([
-                    'book_id' => $book->id,
-                    'image_path' => $path,
-                    'is_main' => $index === 0, // eerste = main
+            foreach ($request->file('attachments') as $i => $uploaded) {
+                $mime = $uploaded->getMimeType() ?? '';
+                $ext  = strtolower($uploaded->getClientOriginalExtension() ?? '');
+
+                $isPdf = str_contains($mime, 'pdf') || $ext === 'pdf';
+                $type  = $isPdf ? 'pdf' : 'image';
+
+                $prefix = trim(env('B2_PREFIX', ''), '/');
+                $base   = $prefix ? "{$prefix}/books/{$book->id}" : "books/{$book->id}";
+
+                $path = $disk->putFile($base, $uploaded);
+
+                // sort_order achteraan
+                $maxSort = (int) $book->files()->max('sort_order');
+                $sort    = $maxSort + 1;
+
+                $bookFile = BookFile::create([
+                    'book_id'    => $book->id,
+                    'type'       => $type,
+                    'title'      => pathinfo($uploaded->getClientOriginalName(), PATHINFO_FILENAME),
+                    'path'       => $path,
+                    'is_main'    => false,
+                    'sort_order' => $sort,
                 ]);
+
+                // eerste IMAGE main zetten (niet eerste attachment als dat een PDF is)
+                if ($type === 'image' && $book->images()->count() === 1) {
+                    $book->images()->update(['is_main' => false]);
+                    $bookFile->update(['is_main' => true]);
+                }
             }
         }
 
@@ -213,11 +243,19 @@ class BookController extends Controller
 
     public function edit(Book $book)
     {
-        return view('books.edit', [
+        $book->load([
+            'authors',
+            'images',
+            'files',
+        ]);
+
+        return view('admin.books.edit', [
             'book' => $book,
-            'topics' => BookTopic::orderBy('name', 'asc')->get(),
-            'series' => BookSeries::orderBy('name', 'asc')->get(),
-            'covers' => BookCover::orderBy('name', 'asc')->get(),
+            'topics' => BookTopic::orderBy('name')->get(),
+            'series' => BookSeries::orderBy('name')->get(),
+            'covers' => BookCover::orderBy('name')->get(),
+            'locations' => Location::orderBy('name')->get(),
+            'bookData' => [], // optioneel, maar handig voor create/edit compat
         ]);
     }
 
@@ -255,16 +293,28 @@ class BookController extends Controller
 
     public function destroy(Book $book)
     {
-        // verwijder alle images uit B2
-        foreach ($book->images as $image) {
-            Storage::disk('b2')->delete($image->image_path);
-            $image->delete();
+        $book->load('files');
+        $disk = Storage::disk('b2');
+
+        foreach ($book->files as $file) {
+            $p = $file->storagePath();
+            if ($p) {
+                $disk->delete($p);
+            }
+            $file->delete();
+
+
+            $book->delete();
         }
 
-        // verwijder cover uit B2
-        if ($book->cover) {
-            Storage::disk('b2')->delete($book->cover);
-        }
+        // Optioneel: cover-file delete als je nog een apart veld gebruikt dat een bestandspad bevat
+        // if ($book->cover) {
+        //     $coverPath = ltrim($book->cover, '/');
+        //     if ($prefix && !str_starts_with($coverPath, $prefix . '/')) {
+        //         $coverPath = "{$prefix}/{$coverPath}";
+        //     }
+        //     $disk->delete($coverPath);
+        // }
 
         $book->delete();
 

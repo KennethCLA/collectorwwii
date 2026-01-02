@@ -1,15 +1,18 @@
 <?php
+// app/Models/Book.php
 
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Facades\Storage;
 use App\Models\BookSeries;
 use App\Models\BookCover;
 use App\Models\BookTopic;
-use Illuminate\Support\Facades\Storage;
-
+use App\Models\MediaFile;
 
 class Book extends Model
 {
@@ -75,39 +78,46 @@ class Book extends Model
         return $this->belongsToMany(Author::class, 'book_authors');
     }
 
-    public function mainImage()
+    public function media(): MorphMany
     {
-        return $this->hasOne(BookImage::class)
-            ->where('is_main', true)
-            ->withDefault(); // voorkomt null->image_path crashes
+        return $this->morphMany(MediaFile::class, 'attachable');
     }
 
-    public function images()
+    public function images(): MorphMany
     {
-        return $this->hasMany(BookImage::class);
+        return $this->media()
+            ->where('collection', 'images')
+            ->orderByDesc('is_main')
+            ->orderBy('sort_order')
+            ->orderBy('id');
+    }
+
+    public function files(): MorphMany
+    {
+        return $this->media()
+            ->where('collection', 'files')
+            ->orderBy('sort_order')
+            ->orderBy('id');
+    }
+
+    public function mainImage(): MorphOne
+    {
+        return $this->morphOne(MediaFile::class, 'attachable')
+            ->where('collection', 'images')
+            ->where('is_main', 1);
+    }
+
+    /**
+     * Fallback: als er geen is_main is, pak dan eerste image volgens sortering.
+     */
+    public function mainImageFile(): ?MediaFile
+    {
+        return $this->mainImage()->first() ?? $this->images()->first();
     }
 
     public function getImageUrlAttribute(): string
     {
-        $b2 = rtrim((string) env('B2_BUCKET_URL'), '/');
-
-        $image = $this->relationLoaded('images')
-            ? ($this->images->firstWhere('is_main', true) ?? $this->images->first())
-            : $this->images()->orderByDesc('is_main')->orderBy('id')->first();
-
-        $path = $image?->image_path;
-        if (!$path) {
-            return asset('images/error-image-not-found.png');
-        }
-
-        $path = ltrim((string) $path, '/');
-
-        // Nieuw formaat: "books/123/file.jpg" (of "covers/..")
-        if (str_contains($path, '/')) {
-            return $b2 . '/' . $path;
-        }
-
-        // Oud formaat: enkel filename "file.jpg" -> ga uit van books/{id}/file.jpg
-        return $b2 . "/books/{$this->id}/{$path}";
+        return $this->mainImageFile()?->url()
+            ?? asset('images/error-image-not-found.png');
     }
 }
