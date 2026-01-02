@@ -34,7 +34,7 @@ $useAdminHeader = $useAdminHeader ?? $autoAdmin;
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script>
 </head>
 
-<body id="app-body" class="min-h-screen bg-[#565e55] {{ $bodyClass }}">
+<body id="app-body" class="min-h-screen flex flex-col bg-[#565e55] {{ $bodyClass }}">
     {{-- Fixed header wrapper (1 plek die de hoogte bepaalt) --}}
     <header id="site-header" class="fixed top-0 left-0 w-full z-50 transition-shadow">
         @if($useAdminHeader)
@@ -48,7 +48,7 @@ $useAdminHeader = $useAdminHeader ?? $autoAdmin;
         @endif
     </header>
 
-    <main class="{{ $mainClass }}">
+    <main class="flex-1 {{ $mainClass }}">
         @yield('content')
     </main>
 

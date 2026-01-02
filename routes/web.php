@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\PostcardController;
 use App\Http\Controllers\Admin\StampController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ItemController;
+use App\Http\Controllers\Public\SectionController;
 
 use App\Http\Controllers\Admin\Ajax\BookTopicController;
 use App\Http\Controllers\Admin\Ajax\BookSeriesController;
@@ -67,3 +68,7 @@ Route::post('/add-location', function (Request $request) {
     $location = Location::create(['name' => $request->name]);
     return response()->json(['success' => true, 'id' => $location->id, 'name' => $location->name]);
 });
+
+Route::get('/{section}', [SectionController::class, 'index'])
+    ->whereIn('section', array_keys(config('collector.enabled_sections')))
+    ->name('sections.index');
