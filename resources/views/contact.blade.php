@@ -1,4 +1,4 @@
-<x-layout>
+<x-layout :mainClass="'flex items-center justify-center'" :bodyClass="'bg-[#565e55]'">
     <x-form-layout>
         <form action="{{ route('contact') }}" method="POST">
             @csrf

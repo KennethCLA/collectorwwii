@@ -48,7 +48,7 @@ $useAdminHeader = $useAdminHeader ?? $autoAdmin;
         @endif
     </header>
 
-    <main class="flex-1 {{ $mainClass }}">
+    <main class="flex-1 min-h-0 {{ $mainClass }}">
         @yield('content')
     </main>
 
