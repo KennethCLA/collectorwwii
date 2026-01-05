@@ -1,5 +1,5 @@
    {{-- resources/views/components/nav-bar.blade.php --}}
-   <div id="main-navbar" class="sticky top-0 z-50 transition-shadow">
+   <div class="transition-shadow">
        {{-- BAR 1 --}}
        <div class="bg-[#4f5750]">
            <div class="relative h-16">
@@ -15,8 +15,8 @@
                {{-- CENTER: Main links --}}
                <nav class="hidden md:flex h-full items-center justify-center gap-3">
                    <x-nav-link href="/blog" :active="request()->is('blog')">Blog</x-nav-link>
-                   {{-- <x-nav-link href="/for-sale" :active="request()->is('for-sale')">For Sale</x-nav-link>
-                   <x-nav-link href="/map" :active="request()->is('map')">Map</x-nav-link> --}}
+                   <x-nav-link href="/for-sale" :active="request()->is('for-sale')">For Sale</x-nav-link>
+                   {{-- <x-nav-link href="/map" :active="request()->is('map')">Map</x-nav-link> --}}
                    <x-nav-link href="/contact" :active="request()->is('contact')">Contact</x-nav-link>
                </nav>
 

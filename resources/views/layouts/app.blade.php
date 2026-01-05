@@ -30,24 +30,17 @@ $useAdminHeader = $useAdminHeader ?? $autoAdmin;
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="shortcut icon" href="{{ asset('images/wwii-tank-icon.ico') }}" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" />
-    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script>
 </head>
 
 <body id="app-body" class="min-h-screen flex flex-col bg-[#565e55] {{ $bodyClass }}">
     {{-- Fixed header wrapper (1 plek die de hoogte bepaalt) --}}
-    <header id="site-header" class="fixed top-0 left-0 w-full z-50 transition-shadow">
+    <header id="main-navbar" class="fixed top-0 left-0 w-full z-50 transition-shadow">
         @if($useAdminHeader)
-        <div id="main-navbar" class="fixed top-0 left-0 w-full z-50 transition-shadow">
-            <x-admin-header />
-        </div>
+        <x-admin-header />
         @else
-        <div id="main-navbar" class="fixed top-0 left-0 w-full z-50 transition-shadow">
-            <x-nav-bar />
-        </div>
+        <x-nav-bar />
         @endif
     </header>
-
     <main class="flex-1 min-h-0 {{ $mainClass }}">
         @yield('content')
     </main>
@@ -62,7 +55,14 @@ $useAdminHeader = $useAdminHeader ?? $autoAdmin;
 
         function setBodyOffset() {
             if (!nav || !body) return;
-            body.style.paddingTop = nav.getBoundingClientRect().height + 'px';
+
+            const h = nav.getBoundingClientRect().height;
+
+            // jouw bestaande gedrag
+            body.style.paddingTop = h + 'px';
+
+            // nieuw: CSS variable voor sticky elements
+            document.documentElement.style.setProperty('--header-h', h + 'px');
         }
 
         // Mobile menu toggle
@@ -77,7 +77,6 @@ $useAdminHeader = $useAdminHeader ?? $autoAdmin;
             });
         }
 
-        // Shadow on scroll
         const onScroll = () => {
             if (!nav) return;
             if (window.scrollY > 10) nav.classList.add('shadow-lg', 'shadow-black/30');

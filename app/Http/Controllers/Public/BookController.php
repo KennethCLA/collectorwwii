@@ -103,7 +103,7 @@ class BookController extends Controller
         }
 
         // paginate lager (UX + performance)
-        $books = $booksQuery->paginate(504)->withQueryString();
+        $books = $booksQuery->paginate(204)->withQueryString();
 
         return view('books.index', compact('books', 'topics', 'series', 'covers'));
     }

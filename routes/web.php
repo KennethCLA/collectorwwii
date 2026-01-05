@@ -3,7 +3,7 @@
 
 use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\BlogController;
-
+use App\Http\Controllers\Public\ForSaleController;
 use App\Http\Controllers\Admin\BookController;
 use App\Http\Controllers\Admin\BanknoteController;
 use App\Http\Controllers\Admin\CoinController;
@@ -43,6 +43,8 @@ Route::get('/blog', [BlogController::class, 'showAllPosts'])->name('blog');
 Route::get('/contact', function () {
     return view('contact');
 })->name('contact');
+
+Route::get('/for-sale', [ForSaleController::class, 'index'])->name('for-sale.index');
 
 // PUBLIC: Books
 Route::get('/books', [PublicBookController::class, 'index'])->name('books.index');

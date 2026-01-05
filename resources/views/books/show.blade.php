@@ -47,38 +47,6 @@
             <span class="text-white font-medium">{{ $book->title }}</span>
         </nav>
 
-        @if($previousBook || $nextBook)
-        <div class="mb-10 flex items-center justify-between gap-3">
-            {{-- Previous --}}
-            <div class="w-1/2">
-                @if($previousBook)
-                <a href="{{ route('books.show', $previousBook) }}"
-                    class="group inline-flex w-full items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white hover:bg-white/10 transition">
-                    <span class="text-white/70 group-hover:text-white">←</span>
-                    <span class="min-w-0">
-                        <span class="block text-xs text-white/60">Previous</span>
-                        <span class="block truncate font-semibold">{{ $previousBook->title }}</span>
-                    </span>
-                </a>
-                @endif
-            </div>
-
-            {{-- Next --}}
-            <div class="w-1/2 text-right">
-                @if($nextBook)
-                <a href="{{ route('books.show', $nextBook) }}"
-                    class="group inline-flex w-full justify-end items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white hover:bg-white/10 transition">
-                    <span class="min-w-0 text-right">
-                        <span class="block text-xs text-white/60">Next</span>
-                        <span class="block truncate font-semibold">{{ $nextBook->title }}</span>
-                    </span>
-                    <span class="text-white/70 group-hover:text-white">→</span>
-                </a>
-                @endif
-            </div>
-        </div>
-        @endif
-
         {{-- CONTENT --}}
         <div class="book-layout">
             {{-- LEFT: MEDIA --}}
@@ -204,50 +172,50 @@
 
                     <dl class="space-y-6">
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Author(s)</dt>
-                            <dd class="text-white text-lg">
+                            <dt class="text-sm text-white/70 font-semibold">Author(s)</dt>
+                            <dd class="text-white">
                                 {{ $book->authors->pluck('name')->implode(', ') ?: '—' }}
                             </dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">ISBN</dt>
-                            <dd class="text-white text-lg">{{ $book->isbn ?: '—' }}</dd>
+                            <dt class="text-sm text-white/70 font-semibold">ISBN</dt>
+                            <dd class="text-white">{{ $book->isbn ?: '—' }}</dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Topic</dt>
-                            <dd class="text-white text-lg">{{ $book->topic?->name ?: '—' }}</dd>
+                            <dt class="text-sm text-white/70 font-semibold">Topic</dt>
+                            <dd class="text-white">{{ $book->topic?->name ?: '—' }}</dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Publisher</dt>
-                            <dd class="text-white text-lg">{{ $book->publisher_name ?: '—' }}</dd>
+                            <dt class="text-sm text-white/70 font-semibold">Publisher</dt>
+                            <dd class="text-white">{{ $book->publisher_name ?: '—' }}</dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Year</dt>
-                            <dd class="text-white text-lg">{{ $book->copyright_year ?: '—' }}</dd>
+                            <dt class="text-sm text-white/70 font-semibold">Year</dt>
+                            <dd class="text-white">{{ $book->copyright_year ?: '—' }}</dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Translator</dt>
-                            <dd class="text-white text-lg">{{ $book->translator ?: '—' }}</dd>
+                            <dt class="text-sm text-white/70 font-semibold">Translator</dt>
+                            <dd class="text-white">{{ $book->translator ?: '—' }}</dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Issue Number</dt>
-                            <dd class="text-white text-lg">{{ $book->issue_number ?: '—' }}</dd>
+                            <dt class="text-sm text-white/70 font-semibold">Issue Number</dt>
+                            <dd class="text-white">{{ $book->issue_number ?: '—' }}</dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Issue Year</dt>
-                            <dd class="text-white text-lg">{{ $book->issue_year ?: '—' }}</dd>
+                            <dt class="text-sm text-white/70 font-semibold">Issue Year</dt>
+                            <dd class="text-white">{{ $book->issue_year ?: '—' }}</dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Series</dt>
-                            <dd class="text-white text-lg">
+                            <dt class="text-sm text-white/70 font-semibold">Series</dt>
+                            <dd class="text-white">
                                 {{ $book->series?->name ?: '—' }}
                                 @if($book->series_number)
                                 <span class="text-white/70">#{{ $book->series_number }}</span>
@@ -256,43 +224,43 @@
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Cover</dt>
-                            <dd class="text-white text-lg">{{ $book->cover?->name ?: '—' }}</dd>
+                            <dt class="text-sm text-white/70 font-semibold">Cover</dt>
+                            <dd class="text-white">{{ $book->cover?->name ?: '—' }}</dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Pages</dt>
-                            <dd class="text-white text-lg">{{ $book->pages ?: '—' }}</dd>
+                            <dt class="text-sm text-white/70 font-semibold">Pages</dt>
+                            <dd class="text-white">{{ $book->pages ?: '—' }}</dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Title (First Edition)</dt>
-                            <dd class="text-white text-lg">{{ $book->title_first_edition ?: '—' }}</dd>
+                            <dt class="text-sm text-white/70 font-semibold">Title (First Edition)</dt>
+                            <dd class="text-white">{{ $book->title_first_edition ?: '—' }}</dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Subtitle (First Edition)</dt>
-                            <dd class="text-white text-lg">{{ $book->subtitle_first_edition ?: '—' }}</dd>
+                            <dt class="text-sm text-white/70 font-semibold">Subtitle (First Edition)</dt>
+                            <dd class="text-white">{{ $book->subtitle_first_edition ?: '—' }}</dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Publisher (First Edition)</dt>
-                            <dd class="text-white text-lg">{{ $book->publisher_first_issue ?: '—' }}</dd>
+                            <dt class="text-sm text-white/70 font-semibold">Publisher (First Edition)</dt>
+                            <dd class="text-white">{{ $book->publisher_first_issue ?: '—' }}</dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Copyright Year (First Edition)</dt>
-                            <dd class="text-white text-lg">{{ $book->copyright_year_first_edition ?: '—' }}</dd>
+                            <dt class="text-sm text-white/70 font-semibold">Copyright Year (First Edition)</dt>
+                            <dd class="text-white">{{ $book->copyright_year_first_edition ?: '—' }}</dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">For sale</dt>
-                            <dd class="text-white text-lg">{{ $book->for_sale ? 'Yes' : 'No' }}</dd>
+                            <dt class="text-sm text-white/70 font-semibold">For sale</dt>
+                            <dd class="text-white">{{ $book->for_sale ? 'Yes' : 'No' }}</dd>
                         </div>
 
                         @if(!empty($book->description))
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Description</dt>
+                            <dt class="text-sm text-white/70 font-semibold">Description</dt>
                             <dd class="text-white/90 whitespace-pre-line">{{ $book->description }}</dd>
                         </div>
                         @endif
@@ -308,43 +276,43 @@
 
                     <dl class="space-y-6">
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Purchase date</dt>
-                            <dd class="text-white text-lg">
+                            <dt class="text-sm text-white/70 font-semibold">Purchase date</dt>
+                            <dd class="text-white">
                                 {{ $book->purchase_date ? $book->purchase_date->format('d/m/Y') : '—' }}
                             </dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Purchase price</dt>
-                            <dd class="text-white text-lg">
+                            <dt class="text-sm text-white/70 font-semibold">Purchase price</dt>
+                            <dd class="text-white">
                                 {{ $book->purchase_price !== null ? number_format($book->purchase_price, 2, ',', '.') : '—' }}
                             </dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Location</dt>
-                            <dd class="text-white text-lg">
+                            <dt class="text-sm text-white/70 font-semibold">Location</dt>
+                            <dd class="text-white">
                                 {{ $book->purchase_location ?: '—' }}
                             </dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Weight</dt>
-                            <dd class="text-white text-lg">
+                            <dt class="text-sm text-white/70 font-semibold">Weight</dt>
+                            <dd class="text-white">
                                 {{ $book->weight ?: '—' }}
                             </dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Dimensions (W x H x T)</dt>
-                            <dd class="text-white text-lg">
+                            <dt class="text-sm text-white/70 font-semibold">Dimensions (W x H x T)</dt>
+                            <dd class="text-white">
                                 {{ $book->dimensions ?: '—' }}
                             </dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Location</dt>
-                            <dd class="text-white text-lg">
+                            <dt class="text-sm text-white/70 font-semibold">Location</dt>
+                            <dd class="text-white">
                                 {{ $book->location_id?->name ?: '—' }}
                                 @if($book->location_detail)
                                 <span class="text-white/70">#{{ $book->location_detail }}</span>
@@ -353,7 +321,7 @@
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Notes</dt>
+                            <dt class="text-sm text-white/70 font-semibold">Notes</dt>
                             <dd class="text-white/90 whitespace-pre-line">
                                 {{ $book->notes ?: '—' }}
                             </dd>
@@ -385,5 +353,38 @@
                 @endcanany
             </div>
         </div>
+
+
+        @if($previousBook || $nextBook)
+        <div class="mb-10 flex items-center justify-between gap-3">
+            {{-- Previous --}}
+            <div class="w-1/2">
+                @if($previousBook)
+                <a href="{{ route('books.show', $previousBook) }}"
+                    class="group inline-flex w-full items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white hover:bg-white/10 transition">
+                    <span class="text-white/70 group-hover:text-white">←</span>
+                    <span class="min-w-0">
+                        <span class="block text-xs text-white/60">Previous</span>
+                        <span class="block truncate font-semibold">{{ $previousBook->title }}</span>
+                    </span>
+                </a>
+                @endif
+            </div>
+
+            {{-- Next --}}
+            <div class="w-1/2 text-right">
+                @if($nextBook)
+                <a href="{{ route('books.show', $nextBook) }}"
+                    class="group inline-flex w-full justify-end items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white hover:bg-white/10 transition">
+                    <span class="min-w-0 text-right">
+                        <span class="block text-xs text-white/60">Next</span>
+                        <span class="block truncate font-semibold">{{ $nextBook->title }}</span>
+                    </span>
+                    <span class="text-white/70 group-hover:text-white">→</span>
+                </a>
+                @endif
+            </div>
+        </div>
+        @endif
     </div>
 </x-layout>

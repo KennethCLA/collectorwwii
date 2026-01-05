@@ -1,111 +1,81 @@
 <!-- resources/views/books/index.blade.php -->
-<x-layout :mainClass="'w-full px-2 sm:px-4 py-6'">
-    <div class="w-full px-4 pt-6">
-        <div class="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-4 items-center">
-            {{-- Left column: breadcrumb --}}
-            <nav class="breadcrumbs flex items-center pl-1 space-x-2 text-sm text-white">
-                <a href="{{ route('home') }}" class="pr-2">Home</a> >
-                <span class="text-gray-800">Books</span>
-            </nav>
+<x-layout :mainClass="'w-full px-0 py-0'">
+    <div class="w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-4 items-start">
 
-            {{-- Right column: sort + search --}}
-            <div class="flex flex-col sm:flex-row gap-3 sm:justify-end">
-                {{-- sort --}}
-                <form method="GET" action="{{ route('books.index') }}" class="flex">
-                    @if(request()->filled('search')) <input type="hidden" name="search" value="{{ request('search') }}"> @endif
-                    @if(request()->filled('topic')) <input type="hidden" name="topic" value="{{ request('topic') }}"> @endif
-                    @if(request()->filled('series')) <input type="hidden" name="series" value="{{ request('series') }}"> @endif
-                    @if(request()->filled('cover')) <input type="hidden" name="cover" value="{{ request('cover') }}"> @endif
-
-                    <select name="sort"
-                        class="p-2 rounded-md border text-white border-gray-300 bg-[#565e55] min-w-[150px]"
-                        onchange="this.form.submit()">
-                        <option value="" disabled selected>Sort by</option>
-                        <option value="title_asc" {{ request('sort') == 'title_asc' ? 'selected' : '' }}>Title (A-Z)</option>
-                        <option value="title_desc" {{ request('sort') == 'title_desc' ? 'selected' : '' }}>Title (Z-A)</option>
-                        <option value="author_asc" {{ request('sort') == 'author_asc' ? 'selected' : '' }}>Author (A-Z)</option>
-                        <option value="author_desc" {{ request('sort') == 'author_desc' ? 'selected' : '' }}>Author (Z-A)</option>
-                        <option value="created_at_asc" {{ request('sort') == 'created_at_asc' ? 'selected' : '' }}>Newest First</option>
-                        <option value="created_at_desc" {{ request('sort') == 'created_at_desc' ? 'selected' : '' }}>Oldest First</option>
-                    </select>
-                </form>
-
-                {{-- search --}}
-                <form method="GET" action="{{ route('books.index') }}" class="flex items-center gap-2 w-full sm:w-auto">
-                    @if(request()->filled('sort')) <input type="hidden" name="sort" value="{{ request('sort') }}"> @endif
-                    @if(request()->filled('topic')) <input type="hidden" name="topic" value="{{ request('topic') }}"> @endif
-                    @if(request()->filled('series')) <input type="hidden" name="series" value="{{ request('series') }}"> @endif
-                    @if(request()->filled('cover')) <input type="hidden" name="cover" value="{{ request('cover') }}"> @endif
-
-                    <div class="relative w-full sm:w-[320px]">
-                        <input type="text"
-                            name="search"
-                            placeholder="Search books..."
-                            value="{{ request('search') }}"
-                            class="p-2 pr-10 rounded-md border bg-[#565e55] text-white border-gray-300 w-full"
-                            id="searchInput"
-                            autocomplete="off" />
-
-                        <button type="button"
-                            id="clearSearchBtn"
-                            class="absolute right-2 top-1/2 -translate-y-1/2 text-white/70 hover:text-white
-                                   {{ request()->filled('search') ? '' : 'hidden' }}"
-                            aria-label="Clear search"
-                            title="Clear search">×</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div class="w-full px-4 py-6">
-        <div class="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-4 items-start">
-
-            {{-- Sidebar --}}
-            <aside class="lg:sticky lg:top-4 lg:h-[calc(100vh-2rem)]">
-                <div class="bg-[#697367] text-white p-4 rounded-md h-full overflow-y-auto">
-
+            {{-- TODO: refactor sidebar filter sections into reusable component once layout is final --}}
+            <aside class="hidden lg:block sticky self-start
+             top-[var(--header-h,113px)]
+             h-[calc(100vh_-_var(--header-h,113px))]
+             bg-[#697367] border-r border-black/20 text-white">
+                <div class="h-full overflow-y-auto px-4 pb-4">
                     {{-- TOPICS --}}
                     @php
                     $topicsLimit = 5;
                     $hasMoreTopics = $topics->count() > $topicsLimit;
-                    $topicsOpenByDefault = request()->filled('topic'); // open als er een topic gekozen is
+                    $topicsOpenByDefault = request()->filled('topic');
                     $activeTopicId = (int) request('topic');
+                    $topicsMoreCount = max(0, $topics->count() - $topicsLimit);
                     @endphp
 
-                    <h2 class="text-lg font-bold">Topics</h2>
+                    <div x-data="{ topicsOpen: {{ $topicsOpenByDefault ? 'true' : 'false' }} }" class="mt-0">
+                        {{-- Sticky section header (blijft zichtbaar tijdens scrollen) --}}
+                        <div class="sticky top-0 z-10 -mx-4 px-4 py-2 bg-[#697367] border-b border-black/20 shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <h2 class="text-lg font-bold">Topics</h2>
 
-                    <div x-data="{ topicsOpen: {{ $topicsOpenByDefault ? 'true' : 'false' }} }" class="mt-2">
-                        <ul class="text-sm space-y-1">
+                                @if($hasMoreTopics)
+                                <button type="button"
+                                    @click="topicsOpen = !topicsOpen"
+                                    class="text-blue-300 text-sm hover:underline">
+                                    <span x-text="topicsOpen ? 'Show Less' : 'Show More'"></span>
+                                </button>
+                                @endif
+                            </div>
+
+                            {{-- Hint in ingeklapte staat: “+ X more” --}}
+                            @if($hasMoreTopics)
+                            <div x-show="!topicsOpen" class="mt-1 text-[11px] text-white/60">
+                                + {{ $topicsMoreCount }} more
+                            </div>
+                            @endif
+                        </div>
+
+                        {{-- Visible list --}}
+                        <ul class="mt-2 text-sm space-y-1">
                             @foreach ($topics->take($topicsLimit) as $topic)
-                            <li>
+                            <li class="relative after:block after:mx-3 after:border-b after:border-white/10">
                                 <a href="{{ route('books.index', array_merge(request()->query(), ['topic' => $topic->id, 'page' => 1])) }}"
                                     class="block rounded px-2 py-1 hover:bg-white/10 hover:underline
-                          {{ $activeTopicId === (int)$topic->id ? 'bg-white/15 font-semibold ring-1 ring-white/30' : '' }}">
+              {{ $activeTopicId === (int)$topic->id ? 'bg-white/15 font-semibold ring-1 ring-white/30' : '' }}">
                                     {{ $topic->name }}
                                 </a>
                             </li>
                             @endforeach
+
+                            {{-- Visuele "..." hint in de lijst zelf (ingeklapt) --}}
+                            @if($hasMoreTopics)
+                            <li x-show="!topicsOpen"
+                                class="px-2 py-1 text-white/50 select-none cursor-pointer hover:text-white/70"
+                                @click="topicsOpen = true">
+                                …
+                            </li>
+                            @endif
                         </ul>
 
+                        {{-- Collapsed extra list --}}
                         @if($hasMoreTopics)
                         <ul x-show="topicsOpen" x-collapse class="text-sm space-y-1 mt-1">
                             @foreach ($topics->skip($topicsLimit) as $topic)
-                            <li>
+                            <li class="relative after:block after:mx-3 after:border-b after:border-white/10">
                                 <a href="{{ route('books.index', array_merge(request()->query(), ['topic' => $topic->id, 'page' => 1])) }}"
                                     class="block rounded px-2 py-1 hover:bg-white/10 hover:underline
-                              {{ $activeTopicId === (int)$topic->id ? 'bg-white/15 font-semibold ring-1 ring-white/30' : '' }}">
+                       {{ $activeTopicId === (int)$topic->id ? 'bg-white/15 font-semibold ring-1 ring-white/30' : '' }}">
                                     {{ $topic->name }}
                                 </a>
                             </li>
                             @endforeach
                         </ul>
-
-                        <button type="button"
-                            @click="topicsOpen = !topicsOpen"
-                            class="mt-2 hover:underline text-blue-300 text-sm">
-                            <span x-text="topicsOpen ? 'Show Less' : 'Show More'"></span>
-                        </button>
                         @endif
                     </div>
 
@@ -113,43 +83,61 @@
                     @php
                     $seriesLimit = 5;
                     $hasMoreSeries = $series->count() > $seriesLimit;
-                    $seriesOpenByDefault = request()->filled('series'); // open als er een serie gekozen is
+                    $seriesOpenByDefault = request()->filled('series');
                     $activeSeriesId = (int) request('series');
+                    $seriesMoreCount = max(0, $series->count() - $seriesLimit);
                     @endphp
 
-                    <h2 class="text-lg font-bold mt-6">Series</h2>
+                    <div x-data="{ seriesOpen: {{ $seriesOpenByDefault ? 'true' : 'false' }} }" class="mt-6">
+                        <div class="sticky top-0 z-10 -mx-4 px-4 py-2 bg-[#697367] border-b border-black/20 shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <h2 class="text-lg font-bold">Series</h2>
 
-                    <div x-data="{ seriesOpen: {{ $seriesOpenByDefault ? 'true' : 'false' }} }" class="mt-2">
-                        <ul class="text-sm space-y-1">
+                                @if($hasMoreSeries)
+                                <button type="button"
+                                    @click="seriesOpen = !seriesOpen"
+                                    class="text-blue-300 text-sm hover:underline">
+                                    <span x-text="seriesOpen ? 'Show Less' : 'Show More'"></span>
+                                </button>
+                                @endif
+                            </div>
+
+                            @if($hasMoreSeries)
+                            <div x-show="!seriesOpen" class="mt-1 text-[11px] text-white/60">
+                                + {{ $seriesMoreCount }} more
+                            </div>
+                            @endif
+                        </div>
+
+                        <ul class="mt-2 text-sm space-y-1">
                             @foreach ($series->take($seriesLimit) as $serie)
-                            <li>
+                            <li class="relative after:block after:mx-3 after:border-b after:border-white/10">
                                 <a href="{{ route('books.index', array_merge(request()->query(), ['series' => $serie->id, 'page' => 1])) }}"
                                     class="block rounded px-2 py-1 hover:bg-white/10 hover:underline
-                          {{ $activeSeriesId === (int)$serie->id ? 'bg-white/15 font-semibold ring-1 ring-white/30' : '' }}">
+                   {{ $activeSeriesId === (int)$serie->id ? 'bg-white/15 font-semibold ring-1 ring-white/30' : '' }}">
                                     {{ $serie->name }}
                                 </a>
                             </li>
                             @endforeach
+
+                            @if($hasMoreSeries)
+                            <li x-show="!seriesOpen" class="px-2 py-1 text-white/50 select-none cursor-pointer hover:text-white/70"
+                                @click="seriesOpen = true">…</li>
+                            @endif
                         </ul>
 
                         @if($hasMoreSeries)
                         <ul x-show="seriesOpen" x-collapse class="text-sm space-y-1 mt-1">
                             @foreach ($series->skip($seriesLimit) as $serie)
-                            <li>
+                            <li class="relative after:block after:mx-3 after:border-b after:border-white/10">
                                 <a href="{{ route('books.index', array_merge(request()->query(), ['series' => $serie->id, 'page' => 1])) }}"
                                     class="block rounded px-2 py-1 hover:bg-white/10 hover:underline
-                              {{ $activeSeriesId === (int)$serie->id ? 'bg-white/15 font-semibold ring-1 ring-white/30' : '' }}">
+                       {{ $activeSeriesId === (int)$serie->id ? 'bg-white/15 font-semibold ring-1 ring-white/30' : '' }}">
                                     {{ $serie->name }}
                                 </a>
                             </li>
                             @endforeach
                         </ul>
-
-                        <button type="button"
-                            @click="seriesOpen = !seriesOpen"
-                            class="mt-2 hover:underline text-blue-300 text-sm">
-                            <span x-text="seriesOpen ? 'Show Less' : 'Show More'"></span>
-                        </button>
                         @endif
                     </div>
 
@@ -157,50 +145,126 @@
                     @php
                     $coversLimit = 5;
                     $hasMoreCovers = $covers->count() > $coversLimit;
-                    $coversOpenByDefault = request()->filled('cover'); // open als er een cover gekozen is
+                    $coversOpenByDefault = request()->filled('cover');
                     $activeCoverId = (int) request('cover');
+                    $coversMoreCount = max(0, $covers->count() - $coversLimit);
                     @endphp
 
-                    <h2 class="text-lg font-bold mt-6">Covers</h2>
+                    <div x-data="{ coversOpen: {{ $coversOpenByDefault ? 'true' : 'false' }} }" class="mt-6">
+                        <div class="sticky top-0 z-10 -mx-4 px-4 py-2 bg-[#697367] border-b border-black/20 shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <h2 class="text-lg font-bold">Covers</h2>
 
-                    <div x-data="{ coversOpen: {{ $coversOpenByDefault ? 'true' : 'false' }} }" class="mt-2">
-                        <ul class="text-sm space-y-1">
+                                @if($hasMoreCovers)
+                                <button type="button"
+                                    @click="coversOpen = !coversOpen"
+                                    class="text-blue-300 text-sm hover:underline">
+                                    <span x-text="coversOpen ? 'Show Less' : 'Show More'"></span>
+                                </button>
+                                @endif
+                            </div>
+
+                            @if($hasMoreCovers)
+                            <div x-show="!coversOpen" class="mt-1 text-[11px] text-white/60">
+                                + {{ $coversMoreCount }} more
+                            </div>
+                            @endif
+                        </div>
+
+                        <ul class="mt-2 text-sm space-y-1">
                             @foreach ($covers->take($coversLimit) as $cover)
-                            <li>
+                            <li class="relative after:block after:mx-3 after:border-b after:border-white/10">
                                 <a href="{{ route('books.index', array_merge(request()->query(), ['cover' => $cover->id, 'page' => 1])) }}"
                                     class="block rounded px-2 py-1 hover:bg-white/10 hover:underline
-                          {{ $activeCoverId === (int)$cover->id ? 'bg-white/15 font-semibold ring-1 ring-white/30' : '' }}">
+                   {{ $activeCoverId === (int)$cover->id ? 'bg-white/15 font-semibold ring-1 ring-white/30' : '' }}">
                                     {{ $cover->name }}
                                 </a>
                             </li>
                             @endforeach
+
+                            @if($hasMoreCovers)
+                            <li x-show="!coversOpen" class="px-2 py-1 text-white/50 select-none cursor-pointer hover:text-white/70"
+                                @click="coversOpen = true">…</li>
+                            @endif
                         </ul>
 
                         @if($hasMoreCovers)
                         <ul x-show="coversOpen" x-collapse class="text-sm space-y-1 mt-1">
                             @foreach ($covers->skip($coversLimit) as $cover)
-                            <li>
+                            <li class="relative after:block after:mx-3 after:border-b after:border-white/10">
                                 <a href="{{ route('books.index', array_merge(request()->query(), ['cover' => $cover->id, 'page' => 1])) }}"
                                     class="block rounded px-2 py-1 hover:bg-white/10 hover:underline
-                              {{ $activeCoverId === (int)$cover->id ? 'bg-white/15 font-semibold ring-1 ring-white/30' : '' }}">
+                       {{ $activeCoverId === (int)$cover->id ? 'bg-white/15 font-semibold ring-1 ring-white/30' : '' }}">
                                     {{ $cover->name }}
                                 </a>
                             </li>
                             @endforeach
                         </ul>
-
-                        <button type="button"
-                            @click="coversOpen = !coversOpen"
-                            class="mt-2 hover:underline text-blue-300 text-sm">
-                            <span x-text="coversOpen ? 'Show Less' : 'Show More'"></span>
-                        </button>
                         @endif
                     </div>
                 </div>
             </aside>
 
             <!-- Books Grid -->
-            <div class="min-w-0">
+            <div class="min-w-0 pr-4 pl-0">
+                {{-- Header row (breadcrumb + sort/search) --}}
+                <div class="pt-2">
+                    <div class="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-4 items-center">
+                        {{-- Left column: breadcrumb --}}
+                        <nav class="breadcrumbs flex items-center pl-1 space-x-2 text-sm text-white">
+                            <a href="{{ route('home') }}" class="pr-2">Home</a> >
+                            <span class="text-gray-800">Books</span>
+                        </nav>
+
+                        {{-- Right column: sort + search --}}
+                        <div class="flex flex-col sm:flex-row gap-3 sm:justify-end">
+                            {{-- sort --}}
+                            <form method="GET" action="{{ route('books.index') }}" class="flex">
+                                @if(request()->filled('search')) <input type="hidden" name="search" value="{{ request('search') }}"> @endif
+                                @if(request()->filled('topic')) <input type="hidden" name="topic" value="{{ request('topic') }}"> @endif
+                                @if(request()->filled('series')) <input type="hidden" name="series" value="{{ request('series') }}"> @endif
+                                @if(request()->filled('cover')) <input type="hidden" name="cover" value="{{ request('cover') }}"> @endif
+
+                                <select name="sort"
+                                    class="p-2 rounded-md border text-white border-gray-300 bg-[#565e55] min-w-[150px]"
+                                    onchange="this.form.submit()">
+                                    <option value="" disabled selected>Sort by</option>
+                                    <option value="title_asc" {{ request('sort') == 'title_asc' ? 'selected' : '' }}>Title (A-Z)</option>
+                                    <option value="title_desc" {{ request('sort') == 'title_desc' ? 'selected' : '' }}>Title (Z-A)</option>
+                                    <option value="author_asc" {{ request('sort') == 'author_asc' ? 'selected' : '' }}>Author (A-Z)</option>
+                                    <option value="author_desc" {{ request('sort') == 'author_desc' ? 'selected' : '' }}>Author (Z-A)</option>
+                                    <option value="created_at_asc" {{ request('sort') == 'created_at_asc' ? 'selected' : '' }}>Newest First</option>
+                                    <option value="created_at_desc" {{ request('sort') == 'created_at_desc' ? 'selected' : '' }}>Oldest First</option>
+                                </select>
+                            </form>
+
+                            {{-- search --}}
+                            <form method="GET" action="{{ route('books.index') }}" class="flex items-center gap-2 w-full sm:w-auto">
+                                @if(request()->filled('sort')) <input type="hidden" name="sort" value="{{ request('sort') }}"> @endif
+                                @if(request()->filled('topic')) <input type="hidden" name="topic" value="{{ request('topic') }}"> @endif
+                                @if(request()->filled('series')) <input type="hidden" name="series" value="{{ request('series') }}"> @endif
+                                @if(request()->filled('cover')) <input type="hidden" name="cover" value="{{ request('cover') }}"> @endif
+
+                                <div class="relative w-full sm:w-[320px]">
+                                    <input type="text"
+                                        name="search"
+                                        placeholder="Search books..."
+                                        value="{{ request('search') }}"
+                                        class="p-2 pr-10 rounded-md border bg-[#565e55] text-white border-gray-300 w-full"
+                                        id="searchInput"
+                                        autocomplete="off" />
+
+                                    <button type="button"
+                                        id="clearSearchBtn"
+                                        class="absolute right-2 top-1/2 -translate-y-1/2 text-white/70 hover:text-white
+                                   {{ request()->filled('search') ? '' : 'hidden' }}"
+                                        aria-label="Clear search"
+                                        title="Clear search">×</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
                 {{-- Active filters bar --}}
                 @php
                 $q = request()->query();
@@ -304,13 +368,6 @@
                         <span class="font-semibold text-white">0</span> books found
                         @endif
                     </p>
-
-                    @if($hasAnyFilter)
-                    <a href="{{ route('books.index') }}"
-                        class="text-sm underline text-white/90 hover:text-white">
-                        Clear all filters
-                    </a>
-                    @endif
                 </div>
 
                 @if($books->count() === 0)
@@ -371,55 +428,70 @@
     </div>
 
     <script>
-        const searchInput = document.getElementById('searchInput');
-        const clearBtn = document.getElementById('clearSearchBtn');
+        (() => {
+            const searchInput = document.getElementById('searchInput');
+            const clearBtn = document.getElementById('clearSearchBtn');
 
-        let debounceTimer = null;
-        let lastValue = searchInput.value;
+            // Als dit geen books index pagina is: stop hier netjes
+            if (!searchInput || !clearBtn) return;
 
-        function toggleClearButton() {
-            if (!clearBtn) return;
-            if (searchInput.value.trim().length > 0) clearBtn.classList.remove('hidden');
-            else clearBtn.classList.add('hidden');
-        }
+            let debounceTimer = null;
+            let lastValue = searchInput.value;
 
-        function submitSearchForm() {
-            // voorkom dubbele submits bij dezelfde waarde
-            const current = searchInput.value;
-            if (current === lastValue) return;
-            lastValue = current;
-            searchInput.form.submit();
-        }
-
-        // Type-to-search (debounce)
-        searchInput.addEventListener('input', function() {
-            toggleClearButton();
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(submitSearchForm, 300);
-        });
-
-        // Enter: meteen submit
-        searchInput.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                clearTimeout(debounceTimer);
-                submitSearchForm();
+            function toggleClearButton() {
+                if (searchInput.value.trim().length > 0) clearBtn.classList.remove('hidden');
+                else clearBtn.classList.add('hidden');
             }
-        });
 
-        // Clear button
-        if (clearBtn) {
+            function submitSearchForm() {
+                const current = searchInput.value;
+                if (current === lastValue) return;
+                lastValue = current;
+                searchInput.form.submit();
+            }
+
+            searchInput.addEventListener('input', function() {
+                toggleClearButton();
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(submitSearchForm, 300);
+            });
+
+            searchInput.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    clearTimeout(debounceTimer);
+                    submitSearchForm();
+                }
+            });
+
             clearBtn.addEventListener('click', function() {
                 searchInput.value = '';
                 toggleClearButton();
                 clearTimeout(debounceTimer);
-                // lastValue updaten zodat submit zeker gebeurt
                 lastValue = '__cleared__';
                 searchInput.form.submit();
             });
-        }
 
-        // init
-        toggleClearButton();
+            toggleClearButton();
+        })();
+    </script>
+    <script>
+        (() => {
+            const nav = document.getElementById('main-navbar');
+            if (!nav) return;
+
+            const setHeaderH = () => {
+                const h = nav.getBoundingClientRect().height || 0;
+                document.documentElement.style.setProperty('--header-h', `${h}px`);
+            };
+
+            // init + updates
+            setHeaderH();
+            window.addEventListener('resize', setHeaderH);
+
+            // als je mobile menu de headerhoogte wijzigt
+            const btn = document.querySelector('[aria-controls="mobile-menu"]');
+            if (btn) btn.addEventListener('click', () => setTimeout(setHeaderH, 50));
+        })();
     </script>
 </x-layout>
