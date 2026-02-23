@@ -41,7 +41,9 @@ $useAdminHeader = $useAdminHeader ?? $autoAdmin;
         <x-nav-bar />
         @endif
     </header>
-    <main class="flex-1 min-h-0 {{ $mainClass }}">
+    <main id="app-main"
+        class="flex-1 min-h-0 {{ $mainClass }}"
+        style="padding-top: var(--header-h, 0px);">
         @yield('content')
     </main>
 
@@ -50,42 +52,33 @@ $useAdminHeader = $useAdminHeader ?? $autoAdmin;
     </footer>
 
     <script>
-        const nav = document.getElementById('main-navbar');
-        const body = document.getElementById('app-body');
+        // pak het echte element met hoogte
+        const navWrap = document.getElementById('main-navbar');
+
+        function getNavEl() {
+            if (!navWrap) return null;
+            return navWrap.firstElementChild || navWrap; // child heeft meestal de echte hoogte
+        }
 
         function setBodyOffset() {
-            if (!nav || !body) return;
+            const navEl = getNavEl();
+            if (!navEl) return;
 
-            const h = nav.getBoundingClientRect().height;
-
-            // jouw bestaande gedrag
-            body.style.paddingTop = h + 'px';
-
-            // nieuw: CSS variable voor sticky elements
+            const h = navEl.getBoundingClientRect().height;
             document.documentElement.style.setProperty('--header-h', h + 'px');
         }
 
-        // Mobile menu toggle
-        const btn = document.querySelector('[aria-controls="mobile-menu"]');
-        if (btn) {
-            btn.addEventListener('click', () => {
-                const mobileMenu = document.getElementById('mobile-menu');
-                if (!mobileMenu) return;
-                mobileMenu.classList.toggle('hidden');
-                btn.setAttribute('aria-expanded', String(!mobileMenu.classList.contains('hidden')));
-                requestAnimationFrame(setBodyOffset);
-            });
-        }
-
         const onScroll = () => {
-            if (!nav) return;
-            if (window.scrollY > 10) nav.classList.add('shadow-lg', 'shadow-black/30');
-            else nav.classList.remove('shadow-lg', 'shadow-black/30');
+            const navEl = getNavEl();
+            if (!navEl) return;
+            if (window.scrollY > 10) navEl.classList.add('shadow-lg', 'shadow-black/30');
+            else navEl.classList.remove('shadow-lg', 'shadow-black/30');
         };
 
         window.addEventListener('scroll', onScroll);
         window.addEventListener('load', () => {
             setBodyOffset();
+            requestAnimationFrame(setBodyOffset);
             onScroll();
         });
         window.addEventListener('resize', setBodyOffset);

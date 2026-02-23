@@ -20,6 +20,7 @@
     "dependencies": {
         "@alpinejs/collapse": "^3.15.3",
         "@fancyapps/ui": "^6.1.7",
-        "alpinejs": "^3.15.3"
+        "alpinejs": "^3.15.3",
+        "choices.js": "^11.1.0"
     }
 }

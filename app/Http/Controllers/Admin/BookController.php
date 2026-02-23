@@ -8,7 +8,7 @@ use App\Models\Book;
 use App\Models\BookCover;
 use App\Models\BookTopic;
 use App\Models\BookSeries;
-use App\Models\BookFile;
+use App\Models\MediaFile;
 use App\Models\Location;
 use App\Models\Author;
 use Illuminate\Http\Request;
@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class BookController extends Controller
 {
@@ -96,7 +98,7 @@ class BookController extends Controller
     {
         $isbn = trim((string) $request->input('isbn', ''));
         $isbnLookupFailed = false;
-        $bookData = null;
+        $bookData = [];
 
         if ($isbn !== '') {
             $response = Http::timeout(5)->get('https://www.googleapis.com/books/v1/volumes', [
@@ -110,32 +112,35 @@ class BookController extends Controller
 
             if ($response->successful()) {
                 $data = $response->json();
-                $info = $data['items'][0]['volumeInfo'] ?? null;
 
-                if (is_array($info)) {
-                    $publishedDate = $info['publishedDate'] ?? null;
-
-                    $bookData = [
-                        'isbn' => $isbn,
-                        'title' => $info['title'] ?? null,
-                        'subtitle' => $info['subtitle'] ?? null,
-                        'authors' => !empty($info['authors']) ? implode(', ', $info['authors']) : null,
-                        'publisher_name' => $info['publisher'] ?? null,
-                        'copyright_year' => $publishedDate ? (int) substr((string) $publishedDate, 0, 4) : null,
-                        'pages' => $info['pageCount'] ?? null,
-                        'description' => $info['description'] ?? null,
-                    ];
-                } else {
+                if ((int) data_get($data, 'totalItems', 0) < 1) {
                     $isbnLookupFailed = true;
+                } else {
+                    $info = data_get($data, 'items.0.volumeInfo');
+
+                    if (is_array($info)) {
+                        $publishedDate = data_get($info, 'publishedDate');
+
+                        $bookData = [
+                            'isbn' => $isbn,
+                            'title' => data_get($info, 'title'),
+                            'subtitle' => data_get($info, 'subtitle'),
+                            'authors' => ($a = data_get($info, 'authors')) ? implode(', ', (array)$a) : null,
+                            'publisher_name' => data_get($info, 'publisher'),
+                            'copyright_year' => $publishedDate ? (int) substr((string) $publishedDate, 0, 4) : null,
+                            'pages' => data_get($info, 'pageCount'),
+                            'description' => data_get($info, 'description'),
+                        ];
+                    } else {
+                        $isbnLookupFailed = true;
+                    }
                 }
             } else {
                 $isbnLookupFailed = true;
             }
         }
 
-        $bookData = []; // of uit ISBN lookup
         return view('admin.books.create', [
-            'bookData' => $bookData,
             'topics' => BookTopic::orderBy('name')->get(),
             'series' => BookSeries::orderBy('name')->get(),
             'covers' => BookCover::orderBy('name')->get(),
@@ -151,79 +156,190 @@ class BookController extends Controller
         $userId = (int) auth()->id();
         $key = "books:create:{$userId}";
 
+        // 1) Validate eerst (zodat invalid submits geen rate limiter verbranden)
+        $validated = $request->validate([
+            'isbn' => 'nullable|string|max:255',
+            'title' => 'required|string|max:255',
+            'subtitle' => 'nullable|string|max:255',
+
+            'title_first_edition' => 'nullable|string|max:255',
+            'subtitle_first_edition' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+            'translator' => 'nullable|string|max:255',
+            'pages' => 'nullable|integer|min:1',
+
+            'copyright_year' => 'nullable|integer|min:1000|max:' . date('Y'),
+            'issue_number' => 'nullable|string|max:255',
+            'issue_year' => 'nullable|integer|min:1000|max:' . date('Y'),
+
+            'topic_id' => 'nullable|exists:book_topics,id',
+            'series_id' => 'nullable|exists:book_series,id',
+            'series_number' => 'nullable|string|max:255',
+            'cover_id' => 'nullable|exists:book_covers,id',
+
+            'copyright_year_first_issue' => 'nullable|integer|min:1000|max:' . date('Y'),
+            'publisher_name' => 'nullable|string|max:255',
+            'publisher_first_issue' => 'nullable|string|max:255',
+
+            'purchase_price' => 'nullable|numeric|min:0',
+            'purchase_date' => 'nullable|date',
+            'notes' => 'nullable|string',
+            'storage_location' => 'nullable|string|max:255',
+
+            'for_sale' => 'nullable|boolean',
+            'selling_price' => 'nullable|numeric|min:0',
+
+            'weight' => 'nullable|integer|min:0',
+            'width' => 'nullable|integer|min:0',
+            'height' => 'nullable|integer|min:0',
+            'thickness' => 'nullable|integer|min:0',
+
+            'authors' => 'required|string',
+
+            // Uploads (optioneel)
+            'images'   => ['nullable', 'array'],
+            'images.*' => ['file', 'mimes:jpeg,png,jpg,gif,webp', 'max:51200'],
+            'pdfs'     => ['nullable', 'array'],
+            'pdfs.*'   => ['file', 'mimetypes:application/pdf', 'max:51200'],
+
+            'main_image_index' => ['nullable', 'integer', 'min:0'],
+            'after_save' => ['nullable', 'in:show,create,index'],
+        ]);
+
+        $validated['isbn'] = trim((string)($validated['isbn'] ?? ''));
+        $validated['isbn'] = $validated['isbn'] === '' ? null : $validated['isbn'];
+
+        // 2) Rate limit check pas na validatie
         if (RateLimiter::tooManyAttempts($key, 10)) {
             abort(429, 'Too many uploads. Please try again later.');
         }
-
         RateLimiter::hit($key, 60);
 
-        $validated = $request->validate([
-            'isbn' => 'required|string|max:255',
-            'title' => 'required|string|max:255',
-            'subtitle' => 'nullable|string|max:255',
-            'topic_id' => 'nullable|exists:book_topics,id',
-            'series_id' => 'nullable|exists:book_series,id',
-            'cover_id' => 'nullable|exists:book_covers,id',
-            'publisher_name' => 'nullable|string|max:255',
-            'copyright_year' => 'nullable|integer|min:1000|max:' . date('Y'),
-            'translator' => 'nullable|string|max:255',
-            'purchase_date' => 'nullable|date',
-            'pages' => 'nullable|integer|min:1',
-            'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4096',
-            'attachments'   => ['nullable', 'array'],
-            'attachments.*' => ['file', 'mimes:jpeg,png,jpg,gif,pdf', 'max:51200'], // 50MB, pas aan indien gewenst
-            'authors' => 'required|string',
-        ]);
+        // 3) Normaliseer checkbox
+        $validated['for_sale'] = (bool) $request->boolean('for_sale');
+        if (!$validated['for_sale']) {
+            $validated['selling_price'] = null;
+        }
 
-        $data = $validated;
-        unset($data['attachments']); // attachments niet in books tabel steken
-        $book = Book::create($data);
-        $this->syncAuthors($book, $request->input('authors'));
+        // 4) Authors cleanup (voorkom lege authors)
+        $authorNames = $this->parseAuthorNames((string) $validated['authors']);
+        if (count($authorNames) < 1) {
+            throw ValidationException::withMessages([
+                'authors' => 'Please provide at least one author name.',
+            ]);
+        }
 
-        // attachments (images + pdfs) -> BookFile
-        if ($request->hasFile('attachments')) {
-            $disk = Storage::disk('b2');
+        // 5) Book + media + pivot in transaction (DB-consistent)
+        $disk = 'b2';
+        $uploadedForCleanup = []; // [ [disk, path], ... ]
 
-            foreach ($request->file('attachments') as $i => $uploaded) {
-                $mime = $uploaded->getMimeType() ?? '';
-                $ext  = strtolower($uploaded->getClientOriginalExtension() ?? '');
+        try {
+            $book = DB::transaction(function () use ($validated, $request, $authorNames, $disk, &$uploadedForCleanup) {
+                $data = $validated;
+                unset($data['images'], $data['pdfs'], $data['authors'], $data['main_image_index'], $data['after_save']);
 
-                $isPdf = str_contains($mime, 'pdf') || $ext === 'pdf';
-                $type  = $isPdf ? 'pdf' : 'image';
+                /** @var \App\Models\Book $book */
+                $book = Book::create($data);
 
-                $prefix = trim(env('B2_PREFIX', ''), '/');
-                $base   = $prefix ? "{$prefix}/books/{$book->id}" : "books/{$book->id}";
+                $this->syncAuthorsByNames($book, $authorNames);
 
-                $path = $disk->putFile($base, $uploaded);
+                $folderBase = "books/{$book->id}";
 
-                // sort_order achteraan
-                $maxSort = (int) $book->files()->max('sort_order');
-                $sort    = $maxSort + 1;
+                // Images
+                $imageUploads = $request->file('images', []);
+                $mainIndex = (int) $request->input('main_image_index', 0);
 
-                $bookFile = BookFile::create([
-                    'book_id'    => $book->id,
-                    'type'       => $type,
-                    'title'      => pathinfo($uploaded->getClientOriginalName(), PATHINFO_FILENAME),
-                    'path'       => $path,
-                    'is_main'    => false,
-                    'sort_order' => $sort,
-                ]);
+                if (count($imageUploads) > 0) {
+                    $mainIndex = max(0, min($mainIndex, count($imageUploads) - 1));
+                    $nextSort = 0;
 
-                // eerste IMAGE main zetten (niet eerste attachment als dat een PDF is)
-                if ($type === 'image' && $book->images()->count() === 1) {
-                    $book->images()->update(['is_main' => false]);
-                    $bookFile->update(['is_main' => true]);
+                    foreach ($imageUploads as $i => $uploaded) {
+                        $filename = (string) \Illuminate\Support\Str::uuid() . '.' . $uploaded->extension();
+                        $path = $uploaded->storeAs($folderBase, $filename, $disk);
+                        $uploadedForCleanup[] = [$disk, $path];
+
+                        $book->media()->create([
+                            'disk'          => $disk,
+                            'path'          => $path,
+                            'mime_type'     => $uploaded->getMimeType(),
+                            'size'          => $uploaded->getSize(),
+                            'original_name' => $uploaded->getClientOriginalName(),
+                            'collection'    => 'images',
+                            'is_main'       => ($i === $mainIndex),
+                            'sort_order'    => $nextSort++,
+                        ]);
+                    }
+
+                    // Safety: force EXACTLY 1 main image (also fixes "0 main" case)
+                    $imagesQuery = MediaFile::where('attachable_type', Book::class)
+                        ->where('attachable_id', $book->id)
+                        ->where('collection', 'images');
+
+                    $mainCount = (int) (clone $imagesQuery)->where('is_main', 1)->count();
+
+                    if ($mainCount === 0) {
+                        // No main set -> pick first by sort_order/id
+                        $first = (clone $imagesQuery)->orderBy('sort_order')->orderBy('id')->first();
+
+                        (clone $imagesQuery)->update(['is_main' => 0]);
+
+                        if ($first) {
+                            $first->update(['is_main' => 1]);
+                        }
+                    } elseif ($mainCount > 1) {
+                        // Too many mains -> keep newest main only
+                        (clone $imagesQuery)->where('is_main', 1)
+                            ->orderBy('id', 'desc')
+                            ->skip(1)
+                            ->update(['is_main' => 0]);
+                    }
+                }
+
+                // PDFs
+                $pdfUploads = $request->file('pdfs', []);
+                foreach ($pdfUploads as $uploaded) {
+                    $filename = (string) \Illuminate\Support\Str::uuid() . '.' . $uploaded->extension();
+                    $path = $uploaded->storeAs($folderBase, $filename, $disk);
+                    $uploadedForCleanup[] = [$disk, $path];
+
+                    $book->media()->create([
+                        'disk'          => $disk,
+                        'path'          => $path,
+                        'mime_type'     => $uploaded->getMimeType(),
+                        'size'          => $uploaded->getSize(),
+                        'original_name' => $uploaded->getClientOriginalName(),
+                        'collection'    => 'files',
+                        'is_main'       => false,
+                        'sort_order'    => null,
+                    ]);
+                }
+
+                return $book;
+            });
+        } catch (\Throwable $e) {
+            // best-effort cleanup van reeds geuploade bestanden
+            foreach ($uploadedForCleanup as [$d, $p]) {
+                try {
+                    Storage::disk($d)->delete($p);
+                } catch (\Throwable $ignore) {
                 }
             }
+            throw $e;
         }
 
-        // cover
-        if ($request->hasFile('cover')) {
-            $coverPath = $request->file('cover')->store('covers', 'b2');
-            $book->update(['cover' => $coverPath]); // cover bevat enkel pad
-        }
+        $after = $request->input('after_save', 'show');
 
-        return redirect()->route('books.index')->with('success', 'Book successfully added.');
+        return match ($after) {
+            'create' => redirect()
+                ->route('admin.books.create')
+                ->with('success', 'Book saved. You can add another one.'),
+            'index' => redirect()
+                ->route('admin.books.index')
+                ->with('success', 'Book successfully added.'),
+            default => redirect()
+                ->route('admin.books.show', $book)
+                ->with('success', 'Book successfully added.'),
+        };
     }
 
     public function show(Book $book)
@@ -262,7 +378,7 @@ class BookController extends Controller
     public function update(Request $request, Book $book)
     {
         $validated = $request->validate([
-            'isbn' => 'required|string|max:255',
+            'isbn' => 'nullable|string|max:255',
             'title' => 'required|string|max:255',
             'subtitle' => 'nullable|string|max:255',
             'topic_id' => 'nullable|exists:book_topics,id',
@@ -277,8 +393,16 @@ class BookController extends Controller
             'authors' => 'required|string',
         ]);
 
+        $validated['isbn'] = trim((string)($validated['isbn'] ?? ''));
+        $validated['isbn'] = $validated['isbn'] === '' ? null : $validated['isbn'];
+
+        $authorsRaw = (string) $validated['authors'];
+        unset($validated['authors'], $validated['cover']);
+
         $book->update($validated);
-        $this->syncAuthors($book, $request->input('authors'));
+
+        $names = $this->parseAuthorNames($authorsRaw);
+        $this->syncAuthorsByNames($book, $names);
 
         if ($request->hasFile('cover')) {
             if ($book->cover) {
@@ -288,44 +412,46 @@ class BookController extends Controller
             $book->update(['cover' => $coverPath]);
         }
 
-        return redirect()->route('books.index')->with('success', 'Book successfully updated.');
+        return redirect()->route('admin.books.show', $book)->with('success', 'Book successfully updated.');
     }
 
     public function destroy(Book $book)
     {
-        $book->load('files');
+        $book->load('media');
         $disk = Storage::disk('b2');
 
-        foreach ($book->files as $file) {
-            $p = $file->storagePath();
-            if ($p) {
-                $disk->delete($p);
+        foreach ($book->media as $file) {
+            if ($file->path) {
+                $disk->delete($file->path);
             }
             $file->delete();
-
-
-            $book->delete();
         }
 
-        // Optioneel: cover-file delete als je nog een apart veld gebruikt dat een bestandspad bevat
-        // if ($book->cover) {
-        //     $coverPath = ltrim($book->cover, '/');
-        //     if ($prefix && !str_starts_with($coverPath, $prefix . '/')) {
-        //         $coverPath = "{$prefix}/{$coverPath}";
-        //     }
-        //     $disk->delete($coverPath);
-        // }
+        // cover path delete (als je cover echt als bestandspad gebruikt)
+        if ($book->cover) {
+            $disk->delete($book->cover);
+        }
 
         $book->delete();
 
         return redirect()->route('books.index')->with('success', 'Book deleted.');
     }
 
-    private function syncAuthors(Book $book, string $authors)
+    private function parseAuthorNames(string $authors): array
     {
-        $authorIds = collect(explode(',', $authors))
-            ->map(fn($name) => Author::firstOrCreate(['name' => trim($name)])->id)
-            ->toArray();
+        return collect(explode(',', $authors))
+            ->map(fn($n) => trim($n))
+            ->filter(fn($n) => $n !== '')
+            ->unique()
+            ->values()
+            ->all();
+    }
+
+    private function syncAuthorsByNames(Book $book, array $authorNames): void
+    {
+        $authorIds = collect($authorNames)
+            ->map(fn($name) => Author::firstOrCreate(['name' => $name])->id)
+            ->all();
 
         $book->authors()->sync($authorIds);
     }

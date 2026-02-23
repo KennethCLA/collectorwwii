@@ -15,3 +15,32 @@
 .breadcrumbs a:hover {
   color: #4a5568;
 }
+
+/* Choices: make it match your dark UI */
+.choices {
+  width: 100%;
+}
+
+.choices__inner {
+  background: rgba(255,255,255,0.10) !important;
+  border: 1px solid rgba(0,0,0,0.30) !important;
+  color: rgba(255,255,255,0.95) !important;
+  border-radius: 0.375rem !important; /* rounded-md */
+  min-height: 42px;
+}
+
+.choices__list--dropdown,
+.choices__list[aria-expanded="true"] {
+  background: #343933 !important;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+  border-radius: 0.5rem !important;
+  z-index: 9999 !important; /* avoid header overlap */
+}
+
+.choices__list--dropdown .choices__item {
+  color: rgba(255,255,255,0.90) !important;
+}
+
+.choices__list--dropdown .choices__item--selectable.is-highlighted {
+  background: rgba(255,255,255,0.10) !important;
+}

@@ -256,11 +256,15 @@
 
                                     <button type="button"
                                         id="clearSearchBtn"
-                                        class="absolute right-2 top-1/2 -translate-y-1/2 text-white/70 hover:text-white
-                                   {{ request()->filled('search') ? '' : 'hidden' }}"
+                                        class="absolute right-2 top-1/2 -translate-y-1/2 text-white/70 hover:text-white {{ request()->filled('search') ? '' : 'hidden' }}"
                                         aria-label="Clear search"
                                         title="Clear search">×</button>
                                 </div>
+
+                                <button type="submit"
+                                    class="p-2 rounded-md border border-gray-300 bg-[#565e55] text-white">
+                                    Search
+                                </button>
                             </form>
                         </div>
                     </div>
@@ -431,45 +435,29 @@
         (() => {
             const searchInput = document.getElementById('searchInput');
             const clearBtn = document.getElementById('clearSearchBtn');
-
-            // Als dit geen books index pagina is: stop hier netjes
             if (!searchInput || !clearBtn) return;
-
-            let debounceTimer = null;
-            let lastValue = searchInput.value;
 
             function toggleClearButton() {
                 if (searchInput.value.trim().length > 0) clearBtn.classList.remove('hidden');
                 else clearBtn.classList.add('hidden');
             }
 
-            function submitSearchForm() {
-                const current = searchInput.value;
-                if (current === lastValue) return;
-                lastValue = current;
-                searchInput.form.submit();
-            }
+            // GEEN autosubmit tijdens typen
+            searchInput.addEventListener('input', toggleClearButton);
 
-            searchInput.addEventListener('input', function() {
-                toggleClearButton();
-                clearTimeout(debounceTimer);
-                debounceTimer = setTimeout(submitSearchForm, 300);
-            });
-
+            // Enter = submit
             searchInput.addEventListener('keydown', function(event) {
                 if (event.key === 'Enter') {
-                    event.preventDefault();
-                    clearTimeout(debounceTimer);
-                    submitSearchForm();
+                    // laat default submit toe, of doe expliciet:
+                    // event.preventDefault();
+                    // searchInput.form.submit();
                 }
             });
 
             clearBtn.addEventListener('click', function() {
                 searchInput.value = '';
                 toggleClearButton();
-                clearTimeout(debounceTimer);
-                lastValue = '__cleared__';
-                searchInput.form.submit();
+                searchInput.form.submit(); // terug naar lijst zonder search
             });
 
             toggleClearButton();

@@ -1,3 +1,5 @@
+{{-- resources/views/admin/books/edit.blade.php --}}
+
 <x-layout>
     <x-form-layout>
         <form action="{{ route('admin.books.update', $book) }}" method="POST" class="w-full mx-auto max-w-7xl">

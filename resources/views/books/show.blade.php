@@ -250,7 +250,7 @@
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
                             <dt class="text-sm text-white/70 font-semibold">Copyright Year (First Edition)</dt>
-                            <dd class="text-white">{{ $book->copyright_year_first_edition ?: '—' }}</dd>
+                            <dd class="text-white">{{ $book->copyright_year_first_issue ?: '—' }}</dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
@@ -356,7 +356,7 @@
 
 
         @if($previousBook || $nextBook)
-        <div class="mb-10 flex items-center justify-between gap-3">
+        <div class="mb-10 mt-10 flex items-center justify-between gap-3">
             {{-- Previous --}}
             <div class="w-1/2">
                 @if($previousBook)
