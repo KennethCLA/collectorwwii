@@ -64,8 +64,7 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
         id="isbn"
         name="isbn"
         class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
-        value="{{ $val('isbn') }}"
-        {{ $isEdit ? 'readonly' : '' }} />
+        value="{{ $val('isbn') }}" />
 
     @unless($isEdit)
     <button type="button" id="search-isbn"
@@ -428,4 +427,3 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
         Add Location
     </button>
 </div>
-
