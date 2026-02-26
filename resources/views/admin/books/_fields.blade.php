@@ -285,15 +285,15 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
 
 {{-- Copyright Year (First Edition) --}}
 <div class="flex items-center space-x-4">
-    <label for="copyright_year_first_edition" class="w-32 text-sm font-medium text-gray-700">
+    <label for="copyright_year_first_issue" class="w-32 text-sm font-medium text-gray-700">
         Copyright Year (First Edition)
     </label>
     <input
         type="number"
-        id="copyright_year_first_edition"
-        name="copyright_year_first_edition"
+        id="copyright_year_first_issue"
+        name="copyright_year_first_issue"
         class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
-        value="{{ $val('copyright_year_first_edition') }}" />
+        value="{{ $val('copyright_year_first_issue') }}" />
 </div>
 
 {{-- Purchase Date --}}
@@ -317,6 +317,21 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
         name="purchase_price"
         class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
         value="{{ $val('purchase_price') }}" />
+</div>
+
+{{-- Purchase Origin --}}
+<div class="flex items-center space-x-4">
+    <label for="origin_id" class="w-32 text-sm font-medium text-gray-700">Purchase Origin</label>
+    <select id="origin_id" name="origin_id"
+        class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]">
+        <option value="">—</option>
+        @foreach ($origins as $origin)
+        <option value="{{ $origin->id }}"
+            {{ (string)$val('origin_id') === (string)$origin->id ? 'selected' : '' }}>
+            {{ $origin->name }}
+        </option>
+        @endforeach
+    </select>
 </div>
 
 {{-- Description --}}
@@ -379,13 +394,18 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
 
 {{-- Dimensions --}}
 <div class="flex items-center space-x-4">
-    <label for="dimensions" class="w-32 text-sm font-medium text-gray-700">Dimensions (W x H x T)</label>
-    <input
-        type="text"
-        id="dimensions"
-        name="dimensions"
-        class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
-        value="{{ $val('dimensions') }}" />
+    <label class="w-32 text-sm font-medium text-gray-700">Dimensions (W x H x T mm)</label>
+    <div class="flex-1 flex gap-2">
+        <input type="number" name="width" placeholder="W"
+            class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
+            value="{{ $val('width') }}" />
+        <input type="number" name="height" placeholder="H"
+            class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
+            value="{{ $val('height') }}" />
+        <input type="number" name="thickness" placeholder="T"
+            class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
+            value="{{ $val('thickness') }}" />
+    </div>
 </div>
 
 {{-- Location --}}
@@ -409,12 +429,3 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
     </button>
 </div>
 
-{{-- Location Details --}}
-<div class="flex items-center space-x-4">
-    <label for="location_detail" class="w-32 text-sm font-medium text-gray-700">Location Details</label>
-    <textarea
-        id="location_detail"
-        name="location_detail"
-        rows="4"
-        class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]">{{ trim($val('location_detail')) }}</textarea>
-</div>
