@@ -15,7 +15,7 @@ $useAdminHeader = $useAdminHeader ?? $autoAdmin;
 @endphp
 
 <!doctype html>
-<html lang="en" class="h-full">
+<html lang="en-GB" class="h-full">
 
 <head>
     <meta charset="utf-8">
