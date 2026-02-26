@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\ItemCategory;
 use App\Models\ItemNationality;
 use App\Models\ItemOrganization;
-use App\Models\ItemOrigin;
+use App\Models\Origin;
 use App\Models\MediaFile;
 
 class Item extends Model
@@ -50,7 +50,7 @@ class Item extends Model
 
     public function origin()
     {
-        return $this->belongsTo(ItemOrigin::class, 'origin_id');
+        return $this->belongsTo(Origin::class, 'origin_id');
     }
 
     public function nationality()

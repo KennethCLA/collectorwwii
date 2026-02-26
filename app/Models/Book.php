@@ -13,10 +13,13 @@ use App\Models\BookSeries;
 use App\Models\BookCover;
 use App\Models\BookTopic;
 use App\Models\MediaFile;
+use App\Models\Origin;
 
 class Book extends Model
 {
     use HasFactory, SoftDeletes;
+
+
 
     protected $fillable = [
         'isbn',
@@ -39,14 +42,15 @@ class Book extends Model
         'publisher_first_issue',
         'purchase_price',
         'purchase_date',
+        'origin_id',
         'notes',
-        'storage_location',
+        'location_id',
         'for_sale',
         'selling_price',
         'weight',
         'width',
         'height',
-        'thickness'
+        'thickness',
     ];
 
     protected $casts = [
@@ -54,9 +58,20 @@ class Book extends Model
         'purchase_date' => 'date',
         'copyright_year' => 'integer',
         'issue_year' => 'integer',
+        'location_id' => 'integer',
         'selling_price' => 'decimal:2',
         'purchase_price' => 'decimal:2',
     ];
+
+    public function location()
+    {
+        return $this->belongsTo(\App\Models\Location::class);
+    }
+
+    public function origin()
+    {
+        return $this->belongsTo(Origin::class, 'origin_id');
+    }
 
     public function series()
     {

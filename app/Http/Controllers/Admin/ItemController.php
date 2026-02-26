@@ -7,7 +7,7 @@ use App\Models\Item;
 use App\Models\ItemCategory;
 use App\Models\ItemNationality;
 use App\Models\ItemOrganization;
-use App\Models\ItemOrigin;
+use App\Models\Origin;
 use App\Models\MediaFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -79,7 +79,7 @@ class ItemController extends Controller
         return view('items.index', [
             'items' => $items,
             'categories' => ItemCategory::all(),
-            'origins' => ItemOrigin::all(),
+            'origins' => Origin::orderBy('name')->get(),
             'nationalities' => ItemNationality::all(),
             'organizations' => ItemOrganization::all(),
         ]);
@@ -95,7 +95,7 @@ class ItemController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'category_id' => 'nullable|exists:item_categories,id',
-            'origin_id' => 'nullable|exists:item_origins,id',
+            'origin_id' => 'nullable|exists:origins,id',
             'nationality_id' => 'nullable|exists:item_nationalities,id',
             'organization_id' => 'nullable|exists:item_organizations,id',
         ]);
@@ -117,7 +117,7 @@ class ItemController extends Controller
         return view('items.edit', [
             'item' => $item,
             'categories' => ItemCategory::orderBy('name')->get(),
-            'origins' => ItemOrigin::orderBy('name')->get(),
+            'origins' => Origin::orderBy('name')->get(),
             'nationalities' => ItemNationality::orderBy('name')->get(),
             'organizations' => ItemOrganization::orderBy('name')->get(),
         ]);
@@ -128,7 +128,7 @@ class ItemController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'category_id' => 'nullable|exists:item_categories,id',
-            'origin_id' => 'nullable|exists:item_origins,id',
+            'origin_id' => 'nullable|exists:origins,id',
             'nationality_id' => 'nullable|exists:item_nationalities,id',
             'organization_id' => 'nullable|exists:item_organizations,id',
         ]);

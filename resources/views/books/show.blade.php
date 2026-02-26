@@ -290,14 +290,14 @@
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-sm text-white/70 font-semibold">Location</dt>
+                            <dt class="text-sm text-white/70 font-semibold">Purchase origin</dt>
                             <dd class="text-white">
-                                {{ $book->purchase_location ?: '—' }}
+                                {{ $book->origin?->name ?: '—' }}
                             </dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-sm text-white/70 font-semibold">Weight</dt>
+                            <dt class="text-sm text-white/70 font-semibold">Weight (grams)</dt>
                             <dd class="text-white">
                                 {{ $book->weight ?: '—' }}
                             </dd>
@@ -306,17 +306,14 @@
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
                             <dt class="text-sm text-white/70 font-semibold">Dimensions (W x H x T)</dt>
                             <dd class="text-white">
-                                {{ $book->dimensions ?: '—' }}
+                                {{ $book->width ?: '—' }} x {{ $book->height ?: '—' }} x {{ $book->thickness ?: '—' }}
                             </dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
                             <dt class="text-sm text-white/70 font-semibold">Location</dt>
                             <dd class="text-white">
-                                {{ $book->location_id?->name ?: '—' }}
-                                @if($book->location_detail)
-                                <span class="text-white/70">#{{ $book->location_detail }}</span>
-                                @endif
+                                {{ $book->location?->name ?: '—' }}
                             </dd>
                         </div>
 

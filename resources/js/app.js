@@ -28,17 +28,19 @@ Fancybox.bind("[data-fancybox='gallery']", {
 });
 
 // Init Choices only where we ask for it
+window.__choicesInstances = window.__choicesInstances || [];
+
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll("select.js-select").forEach((el) => {
         if (el.dataset.enhanced) return;
         el.dataset.enhanced = "1";
-
-        new Choices(el, {
+        const instance = new Choices(el, {
             searchEnabled: true,
             shouldSort: false,
             itemSelectText: "",
             allowHTML: false,
             position: "bottom",
         });
+        window.__choicesInstances.push(instance);
     });
 });

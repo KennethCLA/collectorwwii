@@ -79,7 +79,6 @@
                                     class="flex-1 rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40
                                            focus:outline-none focus:ring-2 focus:ring-white/20" />
 
-                                {{-- type=button: voorkomt dat browser alle velden als GET querystring meestuurt --}}
                                 <button
                                     type="button"
                                     id="isbn-lookup-btn"
@@ -166,29 +165,45 @@
                         {{-- Topic --}}
                         <div class="space-y-2">
                             <label class="text-sm font-medium text-white/80">Topic</label>
-                            <select name="topic_id" class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
-                                <option value="">—</option>
-                                @foreach($topics as $t)
-                                <option value="{{ $t->id }}" @selected((string)$val('topic_id')===(string)$t->id)>
-                                    {{ $t->name }}
-                                </option>
-                                @endforeach
-                            </select>
+
+                            <div class="flex items-center gap-2">
+                                <select id="topic_id" name="topic_id"
+                                    class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                    <option value="">—</option>
+                                    @foreach($topics as $t)
+                                    <option value="{{ $t->id }}" @selected((string)$val('topic_id')===(string)$t->id)>{{ $t->name }}</option>
+                                    @endforeach
+                                </select>
+
+                                <button type="button"
+                                    class="h-10 w-10 mb-6 shrink-0 rounded-md border border-white/10 bg-white/10 text-white hover:bg-white/15"
+                                    data-lookup-add
+                                    data-type="topic"
+                                    data-select="#topic_id"
+                                    title="Add topic">+</button>
+                            </div>
                         </div>
 
                         {{-- Series --}}
                         <div class="space-y-2">
                             <label class="text-sm font-medium text-white/80">Series</label>
-                            <select name="series_id"
-                                class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white
-           focus:outline-none focus:ring-2 focus:ring-white/20">
-                                <option value="">—</option>
-                                @foreach($series as $s)
-                                <option value="{{ $s->id }}" @selected((string)$val('series_id')===(string)$s->id)>
-                                    {{ $s->name }}
-                                </option>
-                                @endforeach
-                            </select>
+
+                            <div class="flex items-center gap-2">
+                                <select id="series_id" name="series_id"
+                                    class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                    <option value="">—</option>
+                                    @foreach($series as $s)
+                                    <option value="{{ $s->id }}" @selected((string)$val('series_id')===(string)$s->id)>{{ $s->name }}</option>
+                                    @endforeach
+                                </select>
+
+                                <button type="button"
+                                    class="h-10 w-10 mb-6 shrink-0 rounded-md border border-white/10 bg-white/10 text-white hover:bg-white/15"
+                                    data-lookup-add
+                                    data-type="series"
+                                    data-select="#series_id"
+                                    title="Add series">+</button>
+                            </div>
                         </div>
 
                         {{-- Series number --}}
@@ -204,16 +219,23 @@
                         {{-- Cover type --}}
                         <div class="space-y-2">
                             <label class="text-sm font-medium text-white/80">Cover</label>
-                            <select name="cover_id"
-                                class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white
-           focus:outline-none focus:ring-2 focus:ring-white/20">
-                                <option value="">—</option>
-                                @foreach($covers as $c)
-                                <option value="{{ $c->id }}" @selected((string)$val('cover_id')===(string)$c->id)>
-                                    {{ $c->name }}
-                                </option>
-                                @endforeach
-                            </select>
+
+                            <div class="flex items-center gap-2">
+                                <select id="cover_id" name="cover_id"
+                                    class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                    <option value="">—</option>
+                                    @foreach($covers as $c)
+                                    <option value="{{ $c->id }}" @selected((string)$val('cover_id')===(string)$c->id)>{{ $c->name }}</option>
+                                    @endforeach
+                                </select>
+
+                                <button type="button"
+                                    class="h-10 w-10 mb-6 shrink-0 rounded-md border border-white/10 bg-white/10 text-white hover:bg-white/15"
+                                    data-lookup-add
+                                    data-type="cover"
+                                    data-select="#cover_id"
+                                    title="Add cover">+</button>
+                            </div>
                         </div>
 
                         {{-- Translator --}}
@@ -319,7 +341,7 @@
                             <label class="text-sm font-medium text-white/80">Purchase date</label>
                             <input type="date"
                                 name="purchase_date"
-                                value="{{ $val('purchase_date') }}"
+                                value="{{ old('purchase_date', data_get($bookData,'purchase_date') ? \Illuminate\Support\Carbon::parse(data_get($bookData,'purchase_date'))->format('Y-m-d') : '') }}"
                                 class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white
                                           focus:outline-none focus:ring-2 focus:ring-white/20">
                         </div>
@@ -335,14 +357,48 @@
                                           focus:outline-none focus:ring-2 focus:ring-white/20">
                         </div>
 
+                        {{-- Purchase origin --}}
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Purchase origin</label>
+
+                            <div class="flex items-center gap-2">
+                                <select id="origin_id" name="origin_id"
+                                    class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                    <option value="">—</option>
+                                    @foreach($origins as $o)
+                                    <option value="{{ $o->id }}" @selected((string)$val('origin_id')===(string)$o->id)>{{ $o->name }}</option>
+                                    @endforeach
+                                </select>
+
+                                <button type="button"
+                                    class="h-10 w-10 mb-6 shrink-0 rounded-md border border-white/10 bg-white/10 text-white hover:bg-white/15"
+                                    data-lookup-add
+                                    data-type="origin"
+                                    data-select="#origin_id"
+                                    title="Add origin">+</button>
+                            </div>
+                        </div>
+
                         {{-- Storage location --}}
                         <div class="space-y-2">
-                            <label class="text-sm font-medium text-white/80">Storage</label>
-                            <input type="text"
-                                name="storage_location"
-                                value="{{ $val('storage_location') }}"
-                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40
-                                          focus:outline-none focus:ring-2 focus:ring-white/20">
+                            <label class="text-sm font-medium text-white/80">Storage location</label>
+
+                            <div class="flex items-center gap-2">
+                                <select id="location_id" name="location_id"
+                                    class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                    <option value="">—</option>
+                                    @foreach($locations as $loc)
+                                    <option value="{{ $loc->id }}" @selected((string)$val('location_id')===(string)$loc->id)>{{ $loc->name }}</option>
+                                    @endforeach
+                                </select>
+
+                                <button type="button"
+                                    class="h-10 w-10 mb-6 shrink-0 rounded-md border border-white/10 bg-white/10 text-white hover:bg-white/15"
+                                    data-lookup-add
+                                    data-type="location"
+                                    data-select="#location_id"
+                                    title="Add location">+</button>
+                            </div>
                         </div>
 
                         {{-- For sale --}}
@@ -385,36 +441,24 @@
                         <div class="text-sm font-medium text-white/80 mb-2">Physical (optional)</div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                             <div class="space-y-2">
-                                <label class="text-sm text-white/70">Weight</label>
-                                <input type="number"
-                                    name="weight"
-                                    value="{{ $val('weight') }}"
-                                    class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white
-                                              focus:outline-none focus:ring-2 focus:ring-white/20">
+                                <label class="text-sm text-white/70">Weight (grams)</label>
+                                <input type="number" name="weight" value="{{ $val('weight') }}"
+                                    class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
                             </div>
                             <div class="space-y-2">
                                 <label class="text-sm text-white/70">Width</label>
-                                <input type="number"
-                                    name="width"
-                                    value="{{ $val('width') }}"
-                                    class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white
-                                              focus:outline-none focus:ring-2 focus:ring-white/20">
+                                <input type="number" name="width" value="{{ $val('width') }}"
+                                    class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
                             </div>
                             <div class="space-y-2">
                                 <label class="text-sm text-white/70">Height</label>
-                                <input type="number"
-                                    name="height"
-                                    value="{{ $val('height') }}"
-                                    class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white
-                                              focus:outline-none focus:ring-2 focus:ring-white/20">
+                                <input type="number" name="height" value="{{ $val('height') }}"
+                                    class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
                             </div>
                             <div class="space-y-2">
                                 <label class="text-sm text-white/70">Thickness</label>
-                                <input type="number"
-                                    name="thickness"
-                                    value="{{ $val('thickness') }}"
-                                    class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white
-                                              focus:outline-none focus:ring-2 focus:ring-white/20">
+                                <input type="number" name="thickness" value="{{ $val('thickness') }}"
+                                    class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
                             </div>
                         </div>
                     </div>
@@ -424,69 +468,41 @@
                 <section class="rounded-xl border border-black/20 bg-black/10 p-6 space-y-6">
                     <div class="flex items-center justify-between gap-4">
                         <h2 class="text-base font-semibold text-white">Media</h2>
-                        <span class="text-xs text-white/50">Upload now — set “Main” before saving</span>
+                        <span class="text-xs text-white/50">Upload now — set "Main" before saving</span>
                     </div>
 
-                    {{-- IMPORTANT: this will be used by controller to pick main image --}}
                     <input type="hidden" name="main_image_index" id="main_image_index" value="0">
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {{-- Upload images --}}
                         <div class="rounded-md bg-[#343933] p-4 border border-white/10">
                             <div class="text-white font-semibold mb-2">Images</div>
-
-                            <input
-                                type="file"
-                                id="images_input"
-                                name="images[]"
-                                multiple
-                                accept="image/*"
+                            <input type="file" id="images_input" name="images[]" multiple accept="image/*"
                                 class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white file:mr-3 file:rounded-md file:border-0 file:bg-white/10 file:px-3 file:py-2 file:text-white hover:file:bg-white/15">
-
-                            <p class="mt-2 text-xs text-white/60">
-                                First image becomes <span class="text-white/80 font-semibold">Main</span> by default (unless you choose another).
-                            </p>
+                            <p class="mt-2 text-xs text-white/60">First image becomes <span class="text-white/80 font-semibold">Main</span> by default.</p>
                         </div>
-
-                        {{-- Upload PDFs --}}
                         <div class="rounded-md bg-[#343933] p-4 border border-white/10">
                             <div class="text-white font-semibold mb-2">PDFs</div>
-
-                            <input
-                                type="file"
-                                id="pdfs_input"
-                                name="pdfs[]"
-                                multiple
-                                accept="application/pdf"
+                            <input type="file" id="pdfs_input" name="pdfs[]" multiple accept="application/pdf"
                                 class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white file:mr-3 file:rounded-md file:border-0 file:bg-white/10 file:px-3 file:py-2 file:text-white hover:file:bg-white/15">
-
-                            <p class="mt-2 text-xs text-white/60">
-                                Max 50MB per file.
-                            </p>
+                            <p class="mt-2 text-xs text-white/60">Max 50MB per file.</p>
                         </div>
                     </div>
 
-                    {{-- Previews --}}
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {{-- Images preview --}}
                         <div class="bg-[#697367] rounded-md p-4 border border-black/20">
                             <div class="flex items-center justify-between mb-3">
                                 <h3 class="text-lg font-semibold text-white">Selected images</h3>
                                 <span id="images_count" class="text-xs text-white/60">0</span>
                             </div>
-
                             <div id="images_preview" class="flex flex-wrap gap-2 items-start">
                                 <p class="text-white/80 text-sm" id="images_empty">No images selected.</p>
                             </div>
                         </div>
-
-                        {{-- PDFs preview --}}
                         <div class="bg-[#697367] rounded-md p-4 border border-black/20">
                             <div class="flex items-center justify-between mb-3">
                                 <h3 class="text-lg font-semibold text-white">Selected PDFs</h3>
                                 <span id="pdfs_count" class="text-xs text-white/60">0</span>
                             </div>
-
                             <div id="pdfs_preview" class="space-y-3">
                                 <p class="text-white/80 text-sm" id="pdfs_empty">No PDFs selected.</p>
                             </div>
@@ -500,19 +516,11 @@
                         class="rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/15">
                         Cancel
                     </a>
-
-                    {{-- Save & add another --}}
-                    <button type="submit"
-                        name="after_save"
-                        value="create"
+                    <button type="submit" name="after_save" value="create"
                         class="rounded-md bg-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/15">
                         Save & add another
                     </button>
-
-                    {{-- Save & view --}}
-                    <button type="submit"
-                        name="after_save"
-                        value="show"
+                    <button type="submit" name="after_save" value="show"
                         class="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500">
                         Save book
                     </button>
@@ -521,20 +529,18 @@
         </form>
     </x-form-layout>
 
-    {{-- ISBN lookup: only send ?isbn=... --}}
+    {{-- ISBN lookup --}}
     <script>
         (function() {
             const btn = document.getElementById('isbn-lookup-btn');
             const input = document.getElementById('isbn');
             if (!btn || !input) return;
-
             btn.addEventListener('click', () => {
                 const isbn = (input.value || '').trim();
                 if (!isbn) {
                     input.focus();
                     return;
                 }
-
                 const url = new URL("{{ route('admin.books.create') }}", window.location.origin);
                 url.searchParams.set('isbn', isbn);
                 window.location.href = url.toString();
@@ -542,23 +548,19 @@
         })();
     </script>
 
+    {{-- Media preview --}}
     <script>
         (function() {
             const imagesInput = document.getElementById('images_input');
             const pdfsInput = document.getElementById('pdfs_input');
-
             const imagesPreview = document.getElementById('images_preview');
             const pdfsPreview = document.getElementById('pdfs_preview');
-
             const imagesEmpty = document.getElementById('images_empty');
             const pdfsEmpty = document.getElementById('pdfs_empty');
-
             const imagesCount = document.getElementById('images_count');
             const pdfsCount = document.getElementById('pdfs_count');
-
             const mainIndexHidden = document.getElementById('main_image_index');
 
-            // We keep our own "working sets" so we can remove items.
             let imageFiles = [];
             let pdfFiles = [];
 
@@ -575,7 +577,6 @@
             }
 
             function syncFileList(inputEl, filesArr) {
-                // Rebuild FileList using DataTransfer
                 const dt = new DataTransfer();
                 filesArr.forEach(f => dt.items.add(f));
                 inputEl.files = dt.files;
@@ -583,7 +584,6 @@
 
             function renderImages() {
                 imagesPreview.innerHTML = '';
-
                 imagesCount.textContent = `${imageFiles.length}`;
                 if (imageFiles.length === 0) {
                     imagesEmpty.style.display = '';
@@ -593,7 +593,6 @@
                 }
                 imagesEmpty.style.display = 'none';
 
-                // Clamp selected main index
                 let mainIndex = parseInt(mainIndexHidden.value || '0', 10);
                 if (Number.isNaN(mainIndex) || mainIndex < 0) mainIndex = 0;
                 if (mainIndex > imageFiles.length - 1) mainIndex = 0;
@@ -602,7 +601,6 @@
                 imageFiles.forEach((file, idx) => {
                     const card = document.createElement('div');
                     card.className = 'group w-32 shrink-0 rounded-md bg-[#343933] border border-white/10 overflow-hidden';
-
                     const url = URL.createObjectURL(file);
 
                     const preview = document.createElement('div');
@@ -612,6 +610,8 @@
                     img.alt = file.name;
                     img.loading = 'lazy';
                     img.className = 'w-full h-full object-contain block';
+                    img.addEventListener('load', () => URL.revokeObjectURL(url));
+                    img.addEventListener('error', () => URL.revokeObjectURL(url));
                     preview.appendChild(img);
 
                     const footer = document.createElement('div');
@@ -628,61 +628,46 @@
                     const actions = document.createElement('div');
                     actions.className = 'grid grid-cols-2 gap-2 items-center';
 
-                    // Main toggle
+                    const isMain = idx === parseInt(mainIndexHidden.value || '0', 10);
                     const mainBtn = document.createElement('button');
                     mainBtn.type = 'button';
-
-                    const isMain = idx === parseInt(mainIndexHidden.value || '0', 10);
                     mainBtn.className = isMain ?
                         'h-7 rounded bg-white/15 text-white text-[10px] font-semibold' :
                         'h-7 rounded bg-white/10 text-white text-[10px] hover:bg-white/20 transition';
-
                     mainBtn.textContent = isMain ? 'Main' : 'Set main';
                     mainBtn.addEventListener('click', () => {
                         mainIndexHidden.value = String(idx);
                         renderImages();
                     });
 
-                    // Remove
                     const delBtn = document.createElement('button');
                     delBtn.type = 'button';
                     delBtn.className = 'h-7 rounded bg-red-600 text-white text-[10px] hover:bg-red-700 transition';
                     delBtn.textContent = 'Remove';
                     delBtn.addEventListener('click', () => {
                         imageFiles.splice(idx, 1);
-
-                        // If removed file was before main, shift main left
                         let mi = parseInt(mainIndexHidden.value || '0', 10);
-                        if (idx < mi) mi -= 1;
+                        if (idx < mi) mi--;
                         if (mi < 0) mi = 0;
                         if (mi > imageFiles.length - 1) mi = 0;
                         mainIndexHidden.value = String(mi);
-
                         syncFileList(imagesInput, imageFiles);
                         renderImages();
                     });
 
                     actions.appendChild(mainBtn);
                     actions.appendChild(delBtn);
-
                     footer.appendChild(name);
                     footer.appendChild(meta);
                     footer.appendChild(actions);
-
                     card.appendChild(preview);
                     card.appendChild(footer);
-
                     imagesPreview.appendChild(card);
-
-                    // Prevent memory leaks
-                    img.addEventListener('load', () => URL.revokeObjectURL(url));
-                    img.addEventListener('error', () => URL.revokeObjectURL(url));
                 });
             }
 
             function renderPdfs() {
                 pdfsPreview.innerHTML = '';
-
                 pdfsCount.textContent = `${pdfFiles.length}`;
                 if (pdfFiles.length === 0) {
                     pdfsEmpty.style.display = '';
@@ -697,15 +682,12 @@
 
                     const left = document.createElement('div');
                     left.className = 'min-w-0';
-
                     const name = document.createElement('div');
                     name.className = 'text-white font-semibold text-sm truncate';
                     name.textContent = file.name;
-
                     const meta = document.createElement('div');
                     meta.className = 'text-[11px] text-white/50 mt-1';
                     meta.textContent = humanSize(file.size);
-
                     left.appendChild(name);
                     left.appendChild(meta);
 
@@ -716,11 +698,7 @@
                     openBtn.type = 'button';
                     openBtn.className = 'h-7 rounded bg-white/10 px-3 text-[10px] text-white hover:bg-white/20 transition';
                     openBtn.textContent = 'Open';
-                    openBtn.addEventListener('click', () => {
-                        const url = URL.createObjectURL(file);
-                        window.open(url, '_blank', 'noopener');
-                        // (optioneel) revoke later; bij open in nieuw tab is dit niet altijd netjes te timen
-                    });
+                    openBtn.addEventListener('click', () => window.open(URL.createObjectURL(file), '_blank', 'noopener'));
 
                     const delBtn = document.createElement('button');
                     delBtn.type = 'button';
@@ -734,10 +712,8 @@
 
                     right.appendChild(openBtn);
                     right.appendChild(delBtn);
-
                     row.appendChild(left);
                     row.appendChild(right);
-
                     pdfsPreview.appendChild(row);
                 });
             }
@@ -745,12 +721,10 @@
             if (imagesInput) {
                 imagesInput.addEventListener('change', () => {
                     imageFiles = Array.from(imagesInput.files || []);
-                    // default main = first image
                     mainIndexHidden.value = '0';
                     renderImages();
                 });
             }
-
             if (pdfsInput) {
                 pdfsInput.addEventListener('change', () => {
                     pdfFiles = Array.from(pdfsInput.files || []);
@@ -758,9 +732,168 @@
                 });
             }
 
-            // Initial state
             renderImages();
             renderPdfs();
+        })();
+    </script>
+
+    <dialog id="lookupModal" class="rounded-xl p-0 backdrop:bg-black/60">
+        <form method="dialog" class="w-[min(520px,92vw)] bg-[#2b322a] text-white">
+            <div class="p-4 border-b border-white/10 flex items-center justify-between">
+                <h3 id="lookupModalTitle" class="text-lg font-semibold">Add</h3>
+                <button class="px-3 py-1 rounded-md bg-white/10">✕</button>
+            </div>
+            <div class="p-4 space-y-2">
+                <label class="text-sm text-white/80">Name</label>
+                <input id="lookupName" type="text"
+                    class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white"
+                    placeholder="Name..." />
+                <p id="lookupError" class="text-sm text-red-300 hidden"></p>
+            </div>
+            <div class="p-4 border-t border-white/10 flex justify-end gap-2">
+                <button value="cancel" class="px-4 py-2 rounded-md bg-white/10">Cancel</button>
+                <button id="lookupSaveBtn" type="button" class="px-4 py-2 rounded-md bg-emerald-600 hover:bg-emerald-700">Add</button>
+            </div>
+        </form>
+    </dialog>
+
+    {{-- Lookup modal logic --}}
+    <script>
+        (() => {
+            const modal = document.getElementById('lookupModal');
+            const titleEl = document.getElementById('lookupModalTitle');
+            const nameEl = document.getElementById('lookupName');
+            const errEl = document.getElementById('lookupError');
+            const saveBtn = document.getElementById('lookupSaveBtn');
+
+            let current = {
+                type: null,
+                select: null
+            };
+
+            function openModal(type, selectSelector) {
+                current.type = type;
+                current.select = document.querySelector(selectSelector);
+                titleEl.textContent = `Add ${type}`;
+                errEl.classList.add('hidden');
+                errEl.textContent = '';
+                nameEl.value = '';
+                modal.showModal();
+                setTimeout(() => nameEl.focus(), 50);
+            }
+
+            function upsertNativeOption(selectEl, value, label) {
+                let opt = selectEl.querySelector(`option[value="${CSS.escape(value)}"]`);
+                if (!opt) {
+                    opt = new Option(label, value, true, true);
+                    selectEl.add(opt);
+                } else {
+                    opt.text = label;
+                    opt.selected = true;
+                }
+                selectEl.dispatchEvent(new Event('input', {
+                    bubbles: true
+                }));
+                selectEl.dispatchEvent(new Event('change', {
+                    bubbles: true
+                }));
+            }
+
+            function syncChoices(selectEl, value, label) {
+                if (!window.__choicesInstances) return false;
+                const instance = window.__choicesInstances.find(c => {
+                    try {
+                        return c.passedElement.element === selectEl;
+                    } catch {
+                        return false;
+                    }
+                });
+                if (!instance) return false;
+                instance.setChoices(
+                    [{
+                        value: String(value),
+                        label: label,
+                        selected: true
+                    }],
+                    'value', 'label', false
+                );
+                instance.setChoiceByValue(String(value));
+                return true;
+            }
+
+            async function saveLookup() {
+                const name = (nameEl.value || '').trim();
+                if (!name) {
+                    errEl.textContent = 'Name is required.';
+                    errEl.classList.remove('hidden');
+                    return;
+                }
+                if (!current.select) {
+                    errEl.textContent = 'Select not found on page.';
+                    errEl.classList.remove('hidden');
+                    return;
+                }
+
+                saveBtn.disabled = true;
+
+                try {
+                    const url = `{{ route('admin.lookups.ajax.store', ['type' => '___']) }}`.replace('___', current.type);
+                    const res = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        },
+                        body: JSON.stringify({
+                            name
+                        }),
+                    });
+
+                    const data = await res.json().catch(() => ({}));
+
+                    if (!res.ok) {
+                        errEl.textContent = data?.message || data?.errors?.name?.[0] || 'Failed to add.';
+                        errEl.classList.remove('hidden');
+                        return;
+                    }
+
+                    const value = String(data.id);
+                    const label = data.name;
+
+                    // Kijk eerst of Choices.js de select beheert
+                    const handledByChoices = syncChoices(current.select, value, label);
+
+                    // Fallback: native select bijwerken
+                    if (!handledByChoices) {
+                        upsertNativeOption(current.select, value, label);
+                    }
+
+                    modal.close();
+                    current.select.focus();
+
+                } catch (e) {
+                    errEl.textContent = 'Network error.';
+                    errEl.classList.remove('hidden');
+                } finally {
+                    saveBtn.disabled = false;
+                }
+            }
+
+            document.addEventListener('click', (e) => {
+                const btn = e.target.closest('[data-lookup-add]');
+                if (!btn) return;
+                openModal(btn.dataset.type, btn.dataset.select);
+            });
+
+            saveBtn.addEventListener('click', saveLookup);
+
+            nameEl.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    saveLookup();
+                }
+            });
         })();
     </script>
 </x-layout>
