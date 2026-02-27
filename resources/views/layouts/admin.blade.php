@@ -1,21 +1,24 @@
 {{-- resources/views/layouts/admin.blade.php --}}
 @extends('layouts.app', [
 'useAdminHeader' => true,
-'bodyClass' => 'bg-[#565e55]',
+'bodyClass' => 'bg-gradient-to-b from-[#4a564f] via-[#515d56] to-[#59655d]',
 'mainClass' => 'w-full' // <- belangrijk: geen centering classes
     ])
 
     @section('content')
-    <div class="mx-auto w-full max-w-none px-4 py-6">
-    <div class="flex flex-col lg:flex-row gap-4 lg:gap-6">
-        <aside class="w-full lg:w-56 lg:shrink-0 order-2 lg:order-1">
-            <div class="rounded-xl bg-black/15 ring-1 ring-black/30 p-3 text-white">
+    <div class="mx-auto w-full max-w-[1600px] px-4 py-6 lg:px-6">
+    <div class="flex flex-col gap-4 lg:flex-row lg:gap-6">
+        <aside class="order-2 w-full lg:order-1 lg:w-64 lg:shrink-0">
+            <div class="rounded-2xl bg-[#283129]/65 p-3.5 text-white ring-1 ring-black/35 backdrop-blur-sm lg:sticky lg:top-4">
+                <div class="mb-3 px-2">
+                    <p class="text-[11px] uppercase tracking-[0.18em] text-white/55">Admin navigation</p>
+                </div>
                 @include('admin.partials.sidebar')
             </div>
         </aside>
 
-        <main class="flex-1 min-w-0 order-1 lg:order-2">
-            <div class="rounded-xl bg-black/15 ring-1 ring-black/30 p-4 text-white">
+        <main class="order-1 min-w-0 flex-1 lg:order-2">
+            <div class="rounded-2xl bg-black/20 p-5 text-white ring-1 ring-black/30 backdrop-blur-sm lg:p-6">
                 @yield('admin-content')
             </div>
         </main>

@@ -10,6 +10,7 @@ request()->routeIs('login') ||
 request()->is('password/*') ||
 request()->is('admin*') ||
 request()->routeIs('admin.*');
+$isHome = request()->routeIs('home');
 
 $useAdminHeader = $useAdminHeader ?? $autoAdmin;
 @endphp
@@ -33,6 +34,10 @@ $useAdminHeader = $useAdminHeader ?? $autoAdmin;
 </head>
 
 <body id="app-body" class="min-h-screen flex flex-col bg-[#565e55] {{ $bodyClass }}">
+    <a href="#app-main"
+        class="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[70] rounded-md bg-black px-3 py-2 text-sm text-white">
+        Skip to content
+    </a>
     {{-- Fixed header wrapper (1 plek die de hoogte bepaalt) --}}
     <header id="main-navbar" class="fixed top-0 left-0 w-full z-50 transition-shadow">
         @if($useAdminHeader)
@@ -47,9 +52,18 @@ $useAdminHeader = $useAdminHeader ?? $autoAdmin;
         @yield('content')
     </main>
 
-    <footer class="border-t border-black/20 py-6 text-center text-sm text-white/70">
-        &copy; {{ now()->year }} CollectorWWII
+    @unless($isHome)
+    <footer class="mt-8 border-t border-black/20 bg-black/15 py-5">
+        <div class="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-2 px-4 text-sm text-white/70 sm:flex-row sm:px-6 lg:px-8">
+            <p>&copy; {{ now()->year }} CollectorWWII</p>
+            <div class="flex items-center gap-4">
+                <a href="{{ route('blog') }}" class="hover:text-white transition">Blog</a>
+                <a href="{{ route('for-sale.index') }}" class="hover:text-white transition">For sale</a>
+                <a href="{{ route('contact') }}" class="hover:text-white transition">Contact</a>
+            </div>
+        </div>
     </footer>
+    @endunless
 
     <script>
         // pak het echte element met hoogte

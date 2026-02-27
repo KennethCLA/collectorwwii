@@ -1,46 +1,148 @@
-<nav class="space-y-2">
-    <a class="block px-3 py-2 rounded hover:bg-gray-100" href="{{ route('admin.dashboard') }}">Dashboard</a>
+@php
+    $groups = [
+        [
+            'title' => 'Core',
+            'items' => [
+                ['label' => 'Dashboard', 'route' => 'admin.dashboard', 'active' => 'admin.dashboard'],
+            ],
+        ],
+        [
+            'title' => 'Collection',
+            'items' => [
+                ['label' => 'All books', 'route' => 'admin.books.index', 'active' => 'admin.books.*'],
+                ['label' => 'All items', 'route' => 'admin.items.index', 'active' => 'admin.items.*'],
+                ['label' => 'Map locations', 'route' => 'admin.map-locations.index', 'active' => 'admin.map-locations.*'],
+                ['label' => 'Banknotes', 'route' => 'admin.banknotes.index', 'active' => 'admin.banknotes.*'],
+                ['label' => 'Coins', 'route' => 'admin.coins.index', 'active' => 'admin.coins.*'],
+                ['label' => 'Stamps', 'route' => 'admin.stamps.index', 'active' => 'admin.stamps.*'],
+                ['label' => 'Postcards', 'route' => 'admin.postcards.index', 'active' => 'admin.postcards.*'],
+                ['label' => 'Magazines', 'route' => 'admin.magazines.index', 'active' => 'admin.magazines.*'],
+                ['label' => 'Newspapers', 'route' => 'admin.newspapers.index', 'active' => 'admin.newspapers.*'],
+            ],
+        ],
+        [
+            'title' => 'Lookup: Books/Items',
+            'items' => [
+                ['label' => 'Book Topics', 'route' => 'admin.lookups.index', 'params' => ['type' => 'book-topics'], 'active' => 'admin.lookups.*', 'active_types' => ['book-topics']],
+                ['label' => 'Book Covers', 'route' => 'admin.lookups.index', 'params' => ['type' => 'book-covers'], 'active' => 'admin.lookups.*', 'active_types' => ['book-covers']],
+                ['label' => 'Book Series', 'route' => 'admin.lookups.index', 'params' => ['type' => 'book-series'], 'active' => 'admin.lookups.*', 'active_types' => ['book-series']],
+                ['label' => 'Item Categories', 'route' => 'admin.lookups.index', 'params' => ['type' => 'item-categories'], 'active' => 'admin.lookups.*', 'active_types' => ['item-categories']],
+                ['label' => 'Item Nationalities', 'route' => 'admin.lookups.index', 'params' => ['type' => 'item-nationalities'], 'active' => 'admin.lookups.*', 'active_types' => ['item-nationalities']],
+                ['label' => 'Item Organizations', 'route' => 'admin.lookups.index', 'params' => ['type' => 'item-organizations'], 'active' => 'admin.lookups.*', 'active_types' => ['item-organizations']],
+            ],
+        ],
+        [
+            'title' => 'Lookup: Shared',
+            'items' => [
+                ['label' => 'Countries', 'route' => 'admin.lookups.index', 'params' => ['type' => 'countries'], 'active' => 'admin.lookups.*', 'active_types' => ['countries']],
+                ['label' => 'Currencies', 'route' => 'admin.lookups.index', 'params' => ['type' => 'currencies'], 'active' => 'admin.lookups.*', 'active_types' => ['currencies']],
+                ['label' => 'Nominal Values', 'route' => 'admin.lookups.index', 'params' => ['type' => 'nominal-values'], 'active' => 'admin.lookups.*', 'active_types' => ['nominal-values']],
+                ['label' => 'Origins', 'route' => 'admin.lookups.index', 'params' => ['type' => 'origins'], 'active' => 'admin.lookups.*', 'active_types' => ['origins']],
+                ['label' => 'Locations', 'route' => 'admin.lookups.index', 'params' => ['type' => 'locations'], 'active' => 'admin.lookups.*', 'active_types' => ['locations']],
+                ['label' => 'Heads of State', 'route' => 'admin.lookups.index', 'params' => ['type' => 'heads-of-state'], 'active' => 'admin.lookups.*', 'active_types' => ['heads-of-state']],
+                ['label' => 'Colours', 'route' => 'admin.lookups.index', 'params' => ['type' => 'colours'], 'active' => 'admin.lookups.*', 'active_types' => ['colours']],
+                ['label' => 'Print Types', 'route' => 'admin.lookups.index', 'params' => ['type' => 'print-types'], 'active' => 'admin.lookups.*', 'active_types' => ['print-types']],
+            ],
+        ],
+        [
+            'title' => 'Lookup: Banknotes',
+            'items' => [
+                ['label' => 'Banknote Series', 'route' => 'admin.lookups.index', 'params' => ['type' => 'banknote-series'], 'active' => 'admin.lookups.*', 'active_types' => ['banknote-series']],
+                ['label' => 'Banknote Time Periods', 'route' => 'admin.lookups.index', 'params' => ['type' => 'banknote-time-periods'], 'active' => 'admin.lookups.*', 'active_types' => ['banknote-time-periods']],
+                ['label' => 'Banknote Designers', 'route' => 'admin.lookups.index', 'params' => ['type' => 'banknote-designers'], 'active' => 'admin.lookups.*', 'active_types' => ['banknote-designers']],
+                ['label' => 'Banknote Watermarks', 'route' => 'admin.lookups.index', 'params' => ['type' => 'banknote-watermarks'], 'active' => 'admin.lookups.*', 'active_types' => ['banknote-watermarks']],
+            ],
+        ],
+        [
+            'title' => 'Lookup: Coins',
+            'items' => [
+                ['label' => 'Coin Shapes', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-shapes'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-shapes']],
+                ['label' => 'Coin Materials', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-materials'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-materials']],
+                ['label' => 'Coin Occasions', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-occasions'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-occasions']],
+                ['label' => 'Coin Designers', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-designers'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-designers']],
+                ['label' => 'Coin Strike Marks', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-strike-marks'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-strike-marks']],
+                ['label' => 'Coin Front Images', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-front-images'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-front-images']],
+                ['label' => 'Coin Front Texts', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-front-texts'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-front-texts']],
+                ['label' => 'Coin Reverse Images', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-reverse-images'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-reverse-images']],
+                ['label' => 'Coin Reverse Texts', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-reverse-texts'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-reverse-texts']],
+                ['label' => 'Coin Rims', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-rims'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-rims']],
+                ['label' => 'Coin Rim Texts', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-rim-texts'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-rim-texts']],
+            ],
+        ],
+        [
+            'title' => 'Lookup: Postcards/Stamps',
+            'items' => [
+                ['label' => 'Postcard Types', 'route' => 'admin.lookups.index', 'params' => ['type' => 'postcard-types'], 'active' => 'admin.lookups.*', 'active_types' => ['postcard-types']],
+                ['label' => 'Postcard Valuation Images', 'route' => 'admin.lookups.index', 'params' => ['type' => 'postcard-valuation-images'], 'active' => 'admin.lookups.*', 'active_types' => ['postcard-valuation-images']],
+                ['label' => 'Stamp Types', 'route' => 'admin.lookups.index', 'params' => ['type' => 'stamp-types'], 'active' => 'admin.lookups.*', 'active_types' => ['stamp-types']],
+                ['label' => 'Stamp Designers', 'route' => 'admin.lookups.index', 'params' => ['type' => 'stamp-designers'], 'active' => 'admin.lookups.*', 'active_types' => ['stamp-designers']],
+                ['label' => 'Stamp Watermarks', 'route' => 'admin.lookups.index', 'params' => ['type' => 'stamp-watermarks'], 'active' => 'admin.lookups.*', 'active_types' => ['stamp-watermarks']],
+                ['label' => 'Stamp Gums', 'route' => 'admin.lookups.index', 'params' => ['type' => 'stamp-gums'], 'active' => 'admin.lookups.*', 'active_types' => ['stamp-gums']],
+                ['label' => 'Stamp Perforations', 'route' => 'admin.lookups.index', 'params' => ['type' => 'stamp-perforations'], 'active' => 'admin.lookups.*', 'active_types' => ['stamp-perforations']],
+                ['label' => 'Stamp Printing Houses', 'route' => 'admin.lookups.index', 'params' => ['type' => 'stamp-printing-houses'], 'active' => 'admin.lookups.*', 'active_types' => ['stamp-printing-houses']],
+            ],
+        ],
+        [
+            'title' => 'Content',
+            'items' => [
+                ['label' => 'Blog posts', 'route' => 'admin.blog.index', 'active' => 'admin.blog.*'],
+            ],
+        ],
+        [
+            'title' => 'Account',
+            'items' => [
+                ['label' => 'Profile', 'route' => 'admin.profile.index', 'active' => 'admin.profile.*'],
+            ],
+        ],
+    ];
+@endphp
 
-    <div class="pt-2 text-xs font-semibold text-gray-500 uppercase">Books</div>
-    <a class="block px-3 py-2 rounded hover:bg-gray-100" href="{{ route('admin.books.index') }}">All books</a>
-    <a class="block px-3 py-2 rounded hover:bg-gray-100" href="{{ route('admin.books.create') }}">New book</a>
-    <div class="h-px bg-white/15"></div>
+<div x-data="{ q: '', open: {} }"
+    class="space-y-3">
+    <div class="rounded-lg border border-white/10 bg-black/25 p-2">
+        <label class="sr-only" for="admin-nav-search">Search menu</label>
+        <input
+            id="admin-nav-search"
+            x-model="q"
+            type="text"
+            placeholder="Search menu..."
+            class="w-full rounded-md border border-black/20 bg-white/10 px-3 py-2 text-sm text-white placeholder:text-white/45 focus:outline-none focus:ring-2 focus:ring-white/25">
+    </div>
 
-    <div class="pt-2 text-xs font-semibold text-gray-500 uppercase">Items</div>
-    <a class="block px-3 py-2 rounded hover:bg-gray-100" href="{{ route('admin.items.index') }}">All items</a>
-    <a class="block px-3 py-2 rounded hover:bg-gray-100" href="{{ route('admin.items.create') }}">New item</a>
-    <div class="h-px bg-white/15"></div>
+    <nav class="max-h-[calc(100vh-220px)] space-y-4 overflow-y-auto pr-1">
+        @foreach($groups as $group)
+            @php
+                $groupKey = \Illuminate\Support\Str::slug(str_replace(['Lookup: ', '/'], ['', ' '], $group['title']));
+            @endphp
+            <section class="space-y-1.5">
+                <button type="button"
+                    @click="open['{{ $groupKey }}'] = !(open['{{ $groupKey }}'] ?? true)"
+                    class="flex w-full items-center justify-between px-2 text-left text-[11px] font-semibold uppercase tracking-[0.15em] text-white/45 hover:text-white/80">
+                    <span>{{ $group['title'] }}</span>
+                    <span class="text-xs" x-text="(open['{{ $groupKey }}'] ?? true) ? '−' : '+'"></span>
+                </button>
 
-    <div class="pt-2 text-xs font-semibold text-gray-500 uppercase">Banknotes</div>
-    <a class="block px-3 py-2 rounded hover:bg-gray-100" href="{{ route('admin.banknotes.index') }}">All banknotes</a>
-    <a class="block px-3 py-2 rounded hover:bg-gray-100" href="{{ route('admin.banknotes.create') }}">New banknote</a>
-    <div class="h-px bg-white/15"></div>
+                <div x-show="open['{{ $groupKey }}'] ?? true" x-collapse class="space-y-1">
+                    @foreach($group['items'] as $item)
+                        @php
+                            $isRouteMatch = request()->routeIs($item['active']);
+                            $isTypeMatch = in_array(request()->route('type'), $item['active_types'] ?? [], true);
+                            $isActive = $isRouteMatch && ($isTypeMatch || !isset($item['active_types']));
+                            $labelLower = mb_strtolower($item['label']);
+                        @endphp
 
-    <div class="pt-2 text-xs font-semibold text-gray-500 uppercase">Coins</div>
-    <a class="block px-3 py-2 rounded hover:bg-gray-100" href="{{ route('admin.coins.index') }}">All coins</a>
-    <a class="block px-3 py-2 rounded hover:bg-gray-100" href="{{ route('admin.coins.create') }}">New coin</a>
-    <div class="h-px bg-white/15"></div>
-
-    <div class="pt-2 text-xs font-semibold text-gray-500 uppercase">Stamps</div>
-    <a class="block px-3 py-2 rounded hover:bg-gray-100" href="{{ route('admin.stamps.index') }}">All stamps</a>
-    <a class="block px-3 py-2 rounded hover:bg-gray-100" href="{{ route('admin.stamps.create') }}">New stamp</a>
-    <div class="h-px bg-white/15"></div>
-
-    <div class="pt-2 text-xs font-semibold text-gray-500 uppercase">Postcards</div>
-    <a class="block px-3 py-2 rounded hover:bg-gray-100" href="{{ route('admin.postcards.index') }}">All postcards</a>
-    <a class="block px-3 py-2 rounded hover:bg-gray-100" href="{{ route('admin.postcards.create') }}">New postcard</a>
-    <div class="h-px bg-white/15"></div>
-
-    <div class="pt-2 text-xs font-semibold text-gray-500 uppercase">Magazines</div>
-    <a class="block px-3 py-2 rounded hover:bg-gray-100" href="{{ route('admin.magazines.index') }}">All magazines</a>
-    <a class="block px-3 py-2 rounded hover:bg-gray-100" href="{{ route('admin.magazines.create') }}">New magazine</a>
-    <div class="h-px bg-white/15"></div>
-
-    <div class="pt-2 text-xs font-semibold text-gray-500 uppercase">Newspapers</div>
-    <a class="block px-3 py-2 rounded hover:bg-gray-100" href="{{ route('admin.newspapers.index') }}">All newspapers</a>
-    <a class="block px-3 py-2 rounded hover:bg-gray-100" href="{{ route('admin.newspapers.create') }}">New newspaper</a>
-    <div class="h-px bg-white/15"></div>
-
-    <div class="pt-2 text-xs font-semibold text-gray-500 uppercase">Account</div>
-    <a class="block px-3 py-2 rounded hover:bg-gray-100" href="{{ url('/admin/profile') }}">Profiel</a>
-</nav>
+                        <a x-show="!q || @js($labelLower).includes(q.toLowerCase())"
+                            href="{{ route($item['route'], $item['params'] ?? []) }}"
+                            class="group flex items-center justify-between rounded-lg px-3 py-2 text-sm transition
+                                {{ $isActive ? 'bg-white text-[#1f2723] shadow-sm' : 'text-white/85 hover:bg-white/10 hover:text-white' }}">
+                            <span>{{ $item['label'] }}</span>
+                            @if($isActive)
+                                <span class="h-1.5 w-1.5 rounded-full bg-[#3f5d4f]"></span>
+                            @endif
+                        </a>
+                    @endforeach
+                </div>
+            </section>
+        @endforeach
+    </nav>
+</div>

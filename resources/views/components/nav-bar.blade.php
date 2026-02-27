@@ -1,7 +1,7 @@
    {{-- resources/views/components/nav-bar.blade.php --}}
    <div class="transition-shadow" x-data="{ open: false }">
        {{-- BAR 1 --}}
-       <div class="bg-[#4f5750]">
+       <div class="bg-[#4f5750]/95 backdrop-blur-sm">
            <div class="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
 
                {{-- LEFT: Logo --}}
@@ -13,8 +13,8 @@
                {{-- CENTER: Main links (desktop only) --}}
                <nav class="hidden md:flex items-center gap-3">
                    <x-nav-link href="/blog" :active="request()->is('blog')">Blog</x-nav-link>
+                   <x-nav-link href="{{ route('map.index') }}" :active="request()->routeIs('map.*')">Map</x-nav-link>
                    <x-nav-link href="/for-sale" :active="request()->is('for-sale')">For Sale</x-nav-link>
-                   {{-- <x-nav-link href="/map" :active="request()->is('map')">Map</x-nav-link> --}}
                    <x-nav-link href="/contact" :active="request()->is('contact')">Contact</x-nav-link>
                </nav>
 
@@ -58,7 +58,7 @@
        <div class="h-px bg-black"></div>
 
        {{-- BAR 2 (desktop only) --}}
-       <div class="bg-[#636c65] hidden md:block">
+       <div class="bg-[#636c65]/95 hidden md:block backdrop-blur-sm">
            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                <div class="h-12 flex items-center justify-center gap-2">
 
@@ -79,31 +79,37 @@
                    @endif
 
                    @if(config('collector.enabled_sections.magazines'))
-                   <x-nav-link href="/magazines" :active="request()->is('magazines')" class="tracking-wide">
+                   <x-nav-link href="{{ route('magazines.index') }}" :active="request()->routeIs('magazines.*')" class="tracking-wide">
                        Magazines
                    </x-nav-link>
                    @endif
 
+                   @if(config('collector.enabled_sections.newspapers'))
+                   <x-nav-link href="{{ route('newspapers.index') }}" :active="request()->routeIs('newspapers.*')" class="tracking-wide">
+                       Newspapers
+                   </x-nav-link>
+                   @endif
+
                    @if(config('collector.enabled_sections.banknotes'))
-                   <x-nav-link href="/banknotes" :active="request()->is('banknotes')" class="tracking-wide">
+                   <x-nav-link href="{{ route('banknotes.index') }}" :active="request()->routeIs('banknotes.*')" class="tracking-wide">
                        Banknotes
                    </x-nav-link>
                    @endif
 
                    @if(config('collector.enabled_sections.coins'))
-                   <x-nav-link href="/coins" :active="request()->is('coins')" class="tracking-wide">
+                   <x-nav-link href="{{ route('coins.index') }}" :active="request()->routeIs('coins.*')" class="tracking-wide">
                        Coins
                    </x-nav-link>
                    @endif
 
                    @if(config('collector.enabled_sections.postcards'))
-                   <x-nav-link href="/postcards" :active="request()->is('postcards')" class="tracking-wide">
+                   <x-nav-link href="{{ route('postcards.index') }}" :active="request()->routeIs('postcards.*')" class="tracking-wide">
                        Postcards
                    </x-nav-link>
                    @endif
 
                    @if(config('collector.enabled_sections.stamps'))
-                   <x-nav-link href="/stamps" :active="request()->is('stamps')" class="tracking-wide">
+                   <x-nav-link href="{{ route('stamps.index') }}" :active="request()->routeIs('stamps.*')" class="tracking-wide">
                        Stamps
                    </x-nav-link>
                    @endif
@@ -118,26 +124,42 @@
                <div class="px-4 py-4 space-y-4">
 
                    <div class="rounded-xl bg-black/20 ring-1 ring-black/30 p-3">
-                       <div class="text-xs tracking-[0.2em] text-white/70 mb-2">MAIN</div>
-                       <div class="flex flex-col gap-2">
-                           <x-nav-link href="/blog" :active="request()->is('blog')">Blog</x-nav-link>
-                           <x-nav-link href="/for-sale" :active="request()->is('for-sale')">For Sale</x-nav-link>
-                           <x-nav-link href="/map" :active="request()->is('map')">Map</x-nav-link>
-                           <x-nav-link href="/contact" :active="request()->is('contact')">Contact</x-nav-link>
-                       </div>
+                        <div class="text-xs tracking-[0.2em] text-white/70 mb-2">MAIN</div>
+                        <div class="flex flex-col gap-2">
+                            <x-nav-link href="/blog" :active="request()->is('blog')">Blog</x-nav-link>
+                            <x-nav-link href="{{ route('map.index') }}" :active="request()->routeIs('map.*')">Map</x-nav-link>
+                            <x-nav-link href="/for-sale" :active="request()->is('for-sale')">For Sale</x-nav-link>
+                            <x-nav-link href="/contact" :active="request()->is('contact')">Contact</x-nav-link>
+                        </div>
                    </div>
 
                    <div class="rounded-xl bg-black/20 ring-1 ring-black/30 p-3">
                        <div class="text-xs tracking-[0.2em] text-white/70 mb-2">COLLECTION</div>
                        <div class="flex flex-col gap-2">
+                           @if(config('collector.enabled_sections.books'))
                            <x-nav-link href="{{ route('books.index') }}" :active="request()->routeIs('books.*')">Books</x-nav-link>
+                           @endif
+                           @if(config('collector.enabled_sections.items'))
                            <x-nav-link href="{{ route('items.index') }}" :active="request()->routeIs('items.*')">Items</x-nav-link>
-                           <x-nav-link href="/newspapers" :active="request()->is('newspapers')">Newspapers</x-nav-link>
-                           <x-nav-link href="/magazines" :active="request()->is('magazines')">Magazines</x-nav-link>
-                           <x-nav-link href="/banknotes" :active="request()->is('banknotes')">Banknotes</x-nav-link>
-                           <x-nav-link href="/coins" :active="request()->is('coins')">Coins</x-nav-link>
-                           <x-nav-link href="/postcards" :active="request()->is('postcards')">Postcards</x-nav-link>
-                           <x-nav-link href="/stamps" :active="request()->is('stamps')">Stamps</x-nav-link>
+                           @endif
+                           @if(config('collector.enabled_sections.magazines'))
+                           <x-nav-link href="{{ route('magazines.index') }}" :active="request()->routeIs('magazines.*')">Magazines</x-nav-link>
+                           @endif
+                           @if(config('collector.enabled_sections.newspapers'))
+                           <x-nav-link href="{{ route('newspapers.index') }}" :active="request()->routeIs('newspapers.*')">Newspapers</x-nav-link>
+                           @endif
+                           @if(config('collector.enabled_sections.banknotes'))
+                           <x-nav-link href="{{ route('banknotes.index') }}" :active="request()->routeIs('banknotes.*')">Banknotes</x-nav-link>
+                           @endif
+                           @if(config('collector.enabled_sections.coins'))
+                           <x-nav-link href="{{ route('coins.index') }}" :active="request()->routeIs('coins.*')">Coins</x-nav-link>
+                           @endif
+                           @if(config('collector.enabled_sections.postcards'))
+                           <x-nav-link href="{{ route('postcards.index') }}" :active="request()->routeIs('postcards.*')">Postcards</x-nav-link>
+                           @endif
+                           @if(config('collector.enabled_sections.stamps'))
+                           <x-nav-link href="{{ route('stamps.index') }}" :active="request()->routeIs('stamps.*')">Stamps</x-nav-link>
+                           @endif
                        </div>
                    </div>
 

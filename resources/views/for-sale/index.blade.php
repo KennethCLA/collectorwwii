@@ -21,6 +21,12 @@
                         <option value="all" {{ request('type','all') == 'all' ? 'selected' : '' }}>All</option>
                         <option value="books" {{ request('type') == 'books' ? 'selected' : '' }}>Books</option>
                         <option value="items" {{ request('type') == 'items' ? 'selected' : '' }}>Items</option>
+                        <option value="banknotes" {{ request('type') == 'banknotes' ? 'selected' : '' }}>Banknotes</option>
+                        <option value="coins" {{ request('type') == 'coins' ? 'selected' : '' }}>Coins</option>
+                        <option value="magazines" {{ request('type') == 'magazines' ? 'selected' : '' }}>Magazines</option>
+                        <option value="newspapers" {{ request('type') == 'newspapers' ? 'selected' : '' }}>Newspapers</option>
+                        <option value="postcards" {{ request('type') == 'postcards' ? 'selected' : '' }}>Postcards</option>
+                        <option value="stamps" {{ request('type') == 'stamps' ? 'selected' : '' }}>Stamps</option>
                     </select>
                 </form>
 
@@ -77,7 +83,7 @@
                     <h2 class="text-lg font-bold">For Sale</h2>
 
                     <p class="text-sm text-white/90 mt-2">
-                        Browse all books and items currently marked as <span class="font-semibold">for sale</span>.
+                        Browse all collection entries currently marked as <span class="font-semibold">for sale</span>.
                     </p>
                     {{--
                     <div class="mt-4 space-y-2 text-sm">
@@ -162,7 +168,7 @@
                 class="bg-[#697367] text-white p-4 rounded-md shadow-md flex flex-col h-full hover:bg-[#5a6452]">
                 <div class="mb-2 flex items-start justify-between gap-2">
                     <span class="text-xs bg-white/15 rounded-full px-3 py-1">
-                        {{ $row['type'] === 'book' ? 'Book' : 'Item' }}
+                        {{ $row['type_label'] ?? ucfirst(rtrim((string) ($row['type'] ?? 'item'), 's')) }}
                     </span>
 
                     @if(!is_null($row['price']))
@@ -175,12 +181,12 @@
                 <div class="mb-2 flex-grow h-auto">
                     <h3 class="text-base font-bold text-center line-clamp-2">{{ $row['title'] }}</h3>
 
-                    @if(($row['type'] ?? null) === 'book' && !empty($row['subtitle']))
+                    @if(($row['type'] ?? null) === 'books' && !empty($row['subtitle']))
                     <h5 class="text-xs italic text-center text-gray-300 mt-1 line-clamp-2">
                         {{ $row['subtitle'] }}
                     </h5>
                     @endif
-                    @if(($row['type'] ?? null) === 'book')
+                    @if(($row['type'] ?? null) === 'books')
                     <p class="text-sm text-center text-gray-300 border-t border-gray-400 py-2 mt-2 min-h-[56px]">
                         @php $authors = $row['authors'] ?? []; @endphp
 

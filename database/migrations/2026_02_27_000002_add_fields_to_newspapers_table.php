@@ -8,28 +8,67 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (!Schema::hasTable('newspapers')) {
+            return;
+        }
+
         Schema::table('newspapers', function (Blueprint $table) {
-            $table->string('title')->after('id');
-            $table->string('publisher')->nullable()->after('title');
-            $table->date('publication_date')->nullable()->after('publisher');
-            $table->text('description')->nullable()->after('publication_date');
-            $table->date('purchase_date')->nullable()->after('description');
-            $table->decimal('purchase_price', 10, 2)->nullable()->after('purchase_date');
-            $table->boolean('for_sale')->default(false)->after('purchase_price');
-            $table->decimal('selling_price', 10, 2)->nullable()->after('for_sale');
-            $table->text('notes')->nullable()->after('selling_price');
-            $table->softDeletes();
+            if (!Schema::hasColumn('newspapers', 'title')) {
+                $table->string('title');
+            }
+            if (!Schema::hasColumn('newspapers', 'publisher')) {
+                $table->string('publisher')->nullable();
+            }
+            if (!Schema::hasColumn('newspapers', 'publication_date')) {
+                $table->date('publication_date')->nullable();
+            }
+            if (!Schema::hasColumn('newspapers', 'description')) {
+                $table->text('description')->nullable();
+            }
+            if (!Schema::hasColumn('newspapers', 'purchase_date')) {
+                $table->date('purchase_date')->nullable();
+            }
+            if (!Schema::hasColumn('newspapers', 'purchase_price')) {
+                $table->decimal('purchase_price', 10, 2)->nullable();
+            }
+            if (!Schema::hasColumn('newspapers', 'for_sale')) {
+                $table->boolean('for_sale')->default(false);
+            }
+            if (!Schema::hasColumn('newspapers', 'selling_price')) {
+                $table->decimal('selling_price', 10, 2)->nullable();
+            }
+            if (!Schema::hasColumn('newspapers', 'notes')) {
+                $table->text('notes')->nullable();
+            }
+            if (!Schema::hasColumn('newspapers', 'deleted_at')) {
+                $table->softDeletes();
+            }
         });
     }
 
     public function down(): void
     {
+        if (!Schema::hasTable('newspapers')) {
+            return;
+        }
+
         Schema::table('newspapers', function (Blueprint $table) {
-            $table->dropColumn([
-                'title', 'publisher', 'publication_date', 'description',
-                'purchase_date', 'purchase_price', 'for_sale', 'selling_price',
-                'notes', 'deleted_at',
-            ]);
+            $drop = array_values(array_filter([
+                Schema::hasColumn('newspapers', 'title') ? 'title' : null,
+                Schema::hasColumn('newspapers', 'publisher') ? 'publisher' : null,
+                Schema::hasColumn('newspapers', 'publication_date') ? 'publication_date' : null,
+                Schema::hasColumn('newspapers', 'description') ? 'description' : null,
+                Schema::hasColumn('newspapers', 'purchase_date') ? 'purchase_date' : null,
+                Schema::hasColumn('newspapers', 'purchase_price') ? 'purchase_price' : null,
+                Schema::hasColumn('newspapers', 'for_sale') ? 'for_sale' : null,
+                Schema::hasColumn('newspapers', 'selling_price') ? 'selling_price' : null,
+                Schema::hasColumn('newspapers', 'notes') ? 'notes' : null,
+                Schema::hasColumn('newspapers', 'deleted_at') ? 'deleted_at' : null,
+            ]));
+
+            if (!empty($drop)) {
+                $table->dropColumn($drop);
+            }
         });
     }
 };

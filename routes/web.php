@@ -6,6 +6,7 @@ use App\Http\Controllers\Public\BlogController;
 use App\Http\Controllers\Public\CoinController as PublicCoinController;
 use App\Http\Controllers\Public\ForSaleController;
 use App\Http\Controllers\Public\MagazineController as PublicMagazineController;
+use App\Http\Controllers\Public\MapController;
 use App\Http\Controllers\Public\NewspaperController as PublicNewspaperController;
 use App\Http\Controllers\Public\PostcardController as PublicPostcardController;
 use App\Http\Controllers\Public\SectionController;
@@ -30,6 +31,7 @@ Route::get('/contact', function () {
 })->name('contact');
 
 Route::get('/for-sale', [ForSaleController::class, 'index'])->name('for-sale.index');
+Route::get('/map', [MapController::class, 'index'])->name('map.index');
 
 // PUBLIC: Books
 Route::get('/books', [PublicBookController::class, 'index'])->name('books.index');

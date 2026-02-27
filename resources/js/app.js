@@ -20,7 +20,7 @@ Alpine.plugin(collapse);
 window.Alpine = Alpine;
 Alpine.start();
 
-Fancybox.bind("[data-fancybox='gallery']", {
+Fancybox.bind("[data-fancybox]", {
     Toolbar: true,
     infinite: true,
     wheel: "zoom",
