@@ -46,17 +46,17 @@ class MagazineController extends Controller
         $this->authorize('create', Magazine::class);
 
         $validated = $request->validate([
-            'title'          => 'required|string|max:255',
-            'subtitle'       => 'nullable|string|max:255',
-            'publisher'      => 'nullable|string|max:255',
-            'issue_number'   => 'nullable|integer|min:1',
-            'issue_year'     => 'nullable|integer|min:1800|max:' . (date('Y') + 1),
-            'description'    => 'nullable|string',
-            'purchase_date'  => 'nullable|date',
+            'title' => 'required|string|max:255',
+            'subtitle' => 'nullable|string|max:255',
+            'publisher' => 'nullable|string|max:255',
+            'issue_number' => 'nullable|integer|min:1',
+            'issue_year' => 'nullable|integer|min:1800|max:'.(date('Y') + 1),
+            'description' => 'nullable|string',
+            'purchase_date' => 'nullable|date',
             'purchase_price' => 'nullable|numeric|min:0',
-            'for_sale'       => 'nullable|boolean',
-            'selling_price'  => 'nullable|numeric|min:0',
-            'notes'          => 'nullable|string',
+            'for_sale' => 'nullable|boolean',
+            'selling_price' => 'nullable|numeric|min:0',
+            'notes' => 'nullable|string',
         ]);
 
         $validated['for_sale'] = $request->boolean('for_sale');
@@ -81,17 +81,17 @@ class MagazineController extends Controller
         $this->authorize('update', $magazine);
 
         $validated = $request->validate([
-            'title'          => 'required|string|max:255',
-            'subtitle'       => 'nullable|string|max:255',
-            'publisher'      => 'nullable|string|max:255',
-            'issue_number'   => 'nullable|integer|min:1',
-            'issue_year'     => 'nullable|integer|min:1800|max:' . (date('Y') + 1),
-            'description'    => 'nullable|string',
-            'purchase_date'  => 'nullable|date',
+            'title' => 'required|string|max:255',
+            'subtitle' => 'nullable|string|max:255',
+            'publisher' => 'nullable|string|max:255',
+            'issue_number' => 'nullable|integer|min:1',
+            'issue_year' => 'nullable|integer|min:1800|max:'.(date('Y') + 1),
+            'description' => 'nullable|string',
+            'purchase_date' => 'nullable|date',
             'purchase_price' => 'nullable|numeric|min:0',
-            'for_sale'       => 'nullable|boolean',
-            'selling_price'  => 'nullable|numeric|min:0',
-            'notes'          => 'nullable|string',
+            'for_sale' => 'nullable|boolean',
+            'selling_price' => 'nullable|numeric|min:0',
+            'notes' => 'nullable|string',
         ]);
 
         $validated['for_sale'] = $request->boolean('for_sale');
@@ -114,7 +114,7 @@ class MagazineController extends Controller
             }
         }
 
-        Storage::disk('b2')->deleteDirectory('magazines/' . $magazine->id);
+        Storage::disk('b2')->deleteDirectory('magazines/'.$magazine->id);
 
         $magazine->media()->delete();
         $magazine->delete();

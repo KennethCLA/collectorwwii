@@ -32,10 +32,10 @@ class ItemFileController extends Controller
 
         foreach ($request->file('files') as $i => $uploaded) {
             $folder = "items/{$item->id}";
-            $filename = uniqid('', true) . '.' . $uploaded->extension();
+            $filename = uniqid('', true).'.'.$uploaded->extension();
             $path = $uploaded->storeAs($folder, $filename, $disk);
 
-            $makeMain = (!$hasMainImage && $i === 0);
+            $makeMain = (! $hasMainImage && $i === 0);
 
             $item->media()->create([
                 'disk' => $disk,

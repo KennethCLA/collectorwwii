@@ -52,7 +52,7 @@ class NewspaperController extends Controller
         $newspaper->load(['images', 'mainImage', 'files']);
 
         $previousNewspaper = Newspaper::where('id', '<', $newspaper->id)->orderByDesc('id')->first();
-        $nextNewspaper     = Newspaper::where('id', '>', $newspaper->id)->orderBy('id')->first();
+        $nextNewspaper = Newspaper::where('id', '>', $newspaper->id)->orderBy('id')->first();
 
         return view('newspapers.show', compact('newspaper', 'previousNewspaper', 'nextNewspaper'));
     }

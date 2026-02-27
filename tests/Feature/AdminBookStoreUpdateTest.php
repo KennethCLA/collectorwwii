@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Http\Middleware\IsAdmin;
 use App\Models\Author;
 use App\Models\Book;
 use App\Models\User;
-use App\Http\Middleware\IsAdmin;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -80,8 +80,8 @@ class AdminBookStoreUpdateTest extends TestCase
 
         ['topicId' => $topicId, 'seriesId' => $seriesId, 'coverId' => $coverId, 'locationId' => $locationId] = $this->makeLookupIds();
 
-        $img1 = UploadedFile::fake()->image('a.jpg', 600, 800);
-        $img2 = UploadedFile::fake()->image('b.jpg', 600, 800);
+        $img1 = UploadedFile::fake()->create('a.jpg', 100, 'image/jpeg');
+        $img2 = UploadedFile::fake()->create('b.jpg', 100, 'image/jpeg');
         $pdf1 = UploadedFile::fake()->create('doc.pdf', 200, 'application/pdf');
 
         $payload = [

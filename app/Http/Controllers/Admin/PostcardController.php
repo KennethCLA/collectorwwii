@@ -45,9 +45,9 @@ class PostcardController extends Controller
         $this->authorize('create', Postcard::class);
 
         return view('admin.postcards.create', [
-            'countries'    => Country::orderBy('name')->get(),
+            'countries' => Country::orderBy('name')->get(),
             'postcardTypes' => PostcardType::orderBy('name')->get(),
-            'locations'    => Location::orderBy('name')->get(),
+            'locations' => Location::orderBy('name')->get(),
         ]);
     }
 
@@ -56,19 +56,19 @@ class PostcardController extends Controller
         $this->authorize('create', Postcard::class);
 
         $validated = $request->validate([
-            'country_id'       => 'nullable|exists:countries,id',
-            'year'             => 'nullable|integer|min:1800|max:' . (date('Y') + 1),
+            'country_id' => 'nullable|exists:countries,id',
+            'year' => 'nullable|integer|min:1800|max:'.(date('Y') + 1),
             'postcard_type_id' => 'nullable|exists:postcard_types,id',
-            'occasion'         => 'nullable|string|max:255',
-            'unstamped'        => 'nullable|boolean',
-            'stamped'          => 'nullable|boolean',
-            'special_stamp'    => 'nullable|boolean',
-            'for_sale'         => 'nullable|boolean',
-            'selling_price'    => 'nullable|numeric|min:0',
-            'purchase_date'    => 'nullable|date',
+            'occasion' => 'nullable|string|max:255',
+            'unstamped' => 'nullable|boolean',
+            'stamped' => 'nullable|boolean',
+            'special_stamp' => 'nullable|boolean',
+            'for_sale' => 'nullable|boolean',
+            'selling_price' => 'nullable|numeric|min:0',
+            'purchase_date' => 'nullable|date',
             'purchasing_price' => 'nullable|numeric|min:0',
-            'current_value'    => 'nullable|numeric|min:0',
-            'location_id'      => 'nullable|exists:locations,id',
+            'current_value' => 'nullable|numeric|min:0',
+            'location_id' => 'nullable|exists:locations,id',
             'personal_remarks' => 'nullable|string',
         ]);
 
@@ -90,10 +90,10 @@ class PostcardController extends Controller
         $postcard->load(['images', 'files']);
 
         return view('admin.postcards.edit', [
-            'postcard'     => $postcard,
-            'countries'    => Country::orderBy('name')->get(),
+            'postcard' => $postcard,
+            'countries' => Country::orderBy('name')->get(),
             'postcardTypes' => PostcardType::orderBy('name')->get(),
-            'locations'    => Location::orderBy('name')->get(),
+            'locations' => Location::orderBy('name')->get(),
         ]);
     }
 
@@ -102,19 +102,19 @@ class PostcardController extends Controller
         $this->authorize('update', $postcard);
 
         $validated = $request->validate([
-            'country_id'       => 'nullable|exists:countries,id',
-            'year'             => 'nullable|integer|min:1800|max:' . (date('Y') + 1),
+            'country_id' => 'nullable|exists:countries,id',
+            'year' => 'nullable|integer|min:1800|max:'.(date('Y') + 1),
             'postcard_type_id' => 'nullable|exists:postcard_types,id',
-            'occasion'         => 'nullable|string|max:255',
-            'unstamped'        => 'nullable|boolean',
-            'stamped'          => 'nullable|boolean',
-            'special_stamp'    => 'nullable|boolean',
-            'for_sale'         => 'nullable|boolean',
-            'selling_price'    => 'nullable|numeric|min:0',
-            'purchase_date'    => 'nullable|date',
+            'occasion' => 'nullable|string|max:255',
+            'unstamped' => 'nullable|boolean',
+            'stamped' => 'nullable|boolean',
+            'special_stamp' => 'nullable|boolean',
+            'for_sale' => 'nullable|boolean',
+            'selling_price' => 'nullable|numeric|min:0',
+            'purchase_date' => 'nullable|date',
             'purchasing_price' => 'nullable|numeric|min:0',
-            'current_value'    => 'nullable|numeric|min:0',
-            'location_id'      => 'nullable|exists:locations,id',
+            'current_value' => 'nullable|numeric|min:0',
+            'location_id' => 'nullable|exists:locations,id',
             'personal_remarks' => 'nullable|string',
         ]);
 
@@ -141,7 +141,7 @@ class PostcardController extends Controller
             }
         }
 
-        Storage::disk('b2')->deleteDirectory('postcards/' . $postcard->id);
+        Storage::disk('b2')->deleteDirectory('postcards/'.$postcard->id);
 
         $postcard->media()->delete();
         $postcard->delete();

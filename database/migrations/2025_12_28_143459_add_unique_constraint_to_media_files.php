@@ -2,10 +2,11 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         // 1) Ensure checksum exists (it does) and backfill deterministic values for existing rows
@@ -31,7 +32,7 @@ return new class extends Migration {
             LIMIT 1
         ");
 
-        if (!$exists) {
+        if (! $exists) {
             Schema::table('media_files', function (Blueprint $table) {
                 $table->unique(
                     ['attachable_type', 'attachable_id', 'collection', 'checksum'],

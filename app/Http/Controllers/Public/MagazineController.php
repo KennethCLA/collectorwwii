@@ -53,7 +53,7 @@ class MagazineController extends Controller
         $magazine->load(['images', 'mainImage', 'files']);
 
         $previousMagazine = Magazine::where('id', '<', $magazine->id)->orderByDesc('id')->first();
-        $nextMagazine     = Magazine::where('id', '>', $magazine->id)->orderBy('id')->first();
+        $nextMagazine = Magazine::where('id', '>', $magazine->id)->orderBy('id')->first();
 
         return view('magazines.show', compact('magazine', 'previousMagazine', 'nextMagazine'));
     }

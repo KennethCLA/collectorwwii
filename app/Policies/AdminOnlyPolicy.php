@@ -10,10 +10,10 @@ abstract class AdminOnlyPolicy
      * "Before" wordt altijd eerst uitgevoerd.
      * Als dit true teruggeeft, is alles toegelaten zonder verdere checks.
      */
-    public function before(?User $user, string $ability): bool|null
+    public function before(?User $user, string $ability): ?bool
     {
         // Niet ingelogd? laat andere checks beslissen (meestal false via middleware/guards)
-        if (!$user) {
+        if (! $user) {
             return null;
         }
 

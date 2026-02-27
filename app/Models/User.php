@@ -6,7 +6,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use App\Models\Role; // Ensure that the Role class exists in this namespace
+
+// Ensure that the Role class exists in this namespace
 
 class User extends Authenticatable
 {

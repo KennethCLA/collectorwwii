@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Models\Coin;
-use App\Models\Country;
 use App\Models\CoinMaterial;
+use App\Models\Country;
 use Illuminate\Http\Request;
 
 class CoinController extends Controller
@@ -51,7 +51,7 @@ class CoinController extends Controller
         $coin->load(['images', 'mainImage', 'files', 'country', 'currency', 'nominalValue', 'shape', 'material', 'occasion']);
 
         $previousCoin = Coin::where('id', '<', $coin->id)->orderByDesc('id')->first();
-        $nextCoin     = Coin::where('id', '>', $coin->id)->orderBy('id')->first();
+        $nextCoin = Coin::where('id', '>', $coin->id)->orderBy('id')->first();
 
         return view('coins.show', compact('coin', 'previousCoin', 'nextCoin'));
     }

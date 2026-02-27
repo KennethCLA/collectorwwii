@@ -49,13 +49,13 @@ class CoinController extends Controller
         $this->authorize('create', Coin::class);
 
         return view('admin.coins.create', [
-            'countries'    => Country::orderBy('name')->get(),
-            'currencies'   => Currency::orderBy('name')->get(),
+            'countries' => Country::orderBy('name')->get(),
+            'currencies' => Currency::orderBy('name')->get(),
             'nominalValues' => NominalValue::orderBy('name')->get(),
-            'shapes'       => CoinShape::orderBy('name')->get(),
-            'materials'    => CoinMaterial::orderBy('name')->get(),
-            'occasions'    => CoinOccasion::orderBy('name')->get(),
-            'locations'    => Location::orderBy('name')->get(),
+            'shapes' => CoinShape::orderBy('name')->get(),
+            'materials' => CoinMaterial::orderBy('name')->get(),
+            'occasions' => CoinOccasion::orderBy('name')->get(),
+            'locations' => Location::orderBy('name')->get(),
         ]);
     }
 
@@ -64,18 +64,18 @@ class CoinController extends Controller
         $this->authorize('create', Coin::class);
 
         $validated = $request->validate([
-            'country_id'       => 'nullable|exists:countries,id',
-            'currency_id'      => 'nullable|exists:currencies,id',
+            'country_id' => 'nullable|exists:countries,id',
+            'currency_id' => 'nullable|exists:currencies,id',
             'nominal_value_id' => 'nullable|exists:nominal_values,id',
-            'shape_id'         => 'nullable|exists:coin_shapes,id',
-            'material_id'      => 'nullable|exists:coin_materials,id',
-            'year'             => 'nullable|integer|min:1800|max:' . (date('Y') + 1),
-            'occasion_id'      => 'nullable|exists:coin_occasions,id',
-            'for_sale'         => 'nullable|boolean',
-            'selling_price'    => 'nullable|numeric|min:0',
-            'purchase_date'    => 'nullable|date',
+            'shape_id' => 'nullable|exists:coin_shapes,id',
+            'material_id' => 'nullable|exists:coin_materials,id',
+            'year' => 'nullable|integer|min:1800|max:'.(date('Y') + 1),
+            'occasion_id' => 'nullable|exists:coin_occasions,id',
+            'for_sale' => 'nullable|boolean',
+            'selling_price' => 'nullable|numeric|min:0',
+            'purchase_date' => 'nullable|date',
             'purchasing_price' => 'nullable|numeric|min:0',
-            'location_id'      => 'nullable|exists:locations,id',
+            'location_id' => 'nullable|exists:locations,id',
             'personal_remarks' => 'nullable|string',
         ]);
 
@@ -94,14 +94,14 @@ class CoinController extends Controller
         $coin->load(['images', 'files']);
 
         return view('admin.coins.edit', [
-            'coin'         => $coin,
-            'countries'    => Country::orderBy('name')->get(),
-            'currencies'   => Currency::orderBy('name')->get(),
+            'coin' => $coin,
+            'countries' => Country::orderBy('name')->get(),
+            'currencies' => Currency::orderBy('name')->get(),
             'nominalValues' => NominalValue::orderBy('name')->get(),
-            'shapes'       => CoinShape::orderBy('name')->get(),
-            'materials'    => CoinMaterial::orderBy('name')->get(),
-            'occasions'    => CoinOccasion::orderBy('name')->get(),
-            'locations'    => Location::orderBy('name')->get(),
+            'shapes' => CoinShape::orderBy('name')->get(),
+            'materials' => CoinMaterial::orderBy('name')->get(),
+            'occasions' => CoinOccasion::orderBy('name')->get(),
+            'locations' => Location::orderBy('name')->get(),
         ]);
     }
 
@@ -110,18 +110,18 @@ class CoinController extends Controller
         $this->authorize('update', $coin);
 
         $validated = $request->validate([
-            'country_id'       => 'nullable|exists:countries,id',
-            'currency_id'      => 'nullable|exists:currencies,id',
+            'country_id' => 'nullable|exists:countries,id',
+            'currency_id' => 'nullable|exists:currencies,id',
             'nominal_value_id' => 'nullable|exists:nominal_values,id',
-            'shape_id'         => 'nullable|exists:coin_shapes,id',
-            'material_id'      => 'nullable|exists:coin_materials,id',
-            'year'             => 'nullable|integer|min:1800|max:' . (date('Y') + 1),
-            'occasion_id'      => 'nullable|exists:coin_occasions,id',
-            'for_sale'         => 'nullable|boolean',
-            'selling_price'    => 'nullable|numeric|min:0',
-            'purchase_date'    => 'nullable|date',
+            'shape_id' => 'nullable|exists:coin_shapes,id',
+            'material_id' => 'nullable|exists:coin_materials,id',
+            'year' => 'nullable|integer|min:1800|max:'.(date('Y') + 1),
+            'occasion_id' => 'nullable|exists:coin_occasions,id',
+            'for_sale' => 'nullable|boolean',
+            'selling_price' => 'nullable|numeric|min:0',
+            'purchase_date' => 'nullable|date',
             'purchasing_price' => 'nullable|numeric|min:0',
-            'location_id'      => 'nullable|exists:locations,id',
+            'location_id' => 'nullable|exists:locations,id',
             'personal_remarks' => 'nullable|string',
         ]);
 
@@ -145,7 +145,7 @@ class CoinController extends Controller
             }
         }
 
-        Storage::disk('b2')->deleteDirectory('coins/' . $coin->id);
+        Storage::disk('b2')->deleteDirectory('coins/'.$coin->id);
 
         $coin->media()->delete();
         $coin->delete();

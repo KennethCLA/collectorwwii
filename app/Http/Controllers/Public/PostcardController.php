@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
-use App\Models\Postcard;
 use App\Models\Country;
+use App\Models\Postcard;
 use App\Models\PostcardType;
 use Illuminate\Http\Request;
 
@@ -12,7 +12,7 @@ class PostcardController extends Controller
 {
     public function index(Request $request)
     {
-        $countries     = Country::orderBy('name')->get();
+        $countries = Country::orderBy('name')->get();
         $postcardTypes = PostcardType::orderBy('name')->get();
 
         $query = Postcard::query()->with(['mainImage', 'country', 'postcardType']);
@@ -51,7 +51,7 @@ class PostcardController extends Controller
         $postcard->load(['images', 'mainImage', 'files', 'country', 'postcardType']);
 
         $previousPostcard = Postcard::where('id', '<', $postcard->id)->orderByDesc('id')->first();
-        $nextPostcard     = Postcard::where('id', '>', $postcard->id)->orderBy('id')->first();
+        $nextPostcard = Postcard::where('id', '>', $postcard->id)->orderBy('id')->first();
 
         return view('postcards.show', compact('postcard', 'previousPostcard', 'nextPostcard'));
     }

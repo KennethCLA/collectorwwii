@@ -1,4 +1,5 @@
 <?php
+
 // app/Models/BookFile.php
 
 namespace App\Models;
@@ -40,7 +41,9 @@ class BookFile extends Model
     public function storagePath(): ?string
     {
         $p = ltrim((string) $this->path, '/');
-        if ($p === '') return null;
+        if ($p === '') {
+            return null;
+        }
 
         // Legacy: sommige records/paths zaten onder "local/"
         if (str_starts_with($p, 'local/')) {
@@ -48,7 +51,7 @@ class BookFile extends Model
         }
 
         // Legacy: als path enkel filename is
-        if (!str_contains($p, '/')) {
+        if (! str_contains($p, '/')) {
             $p = "books/{$this->book_id}/{$p}";
         }
 

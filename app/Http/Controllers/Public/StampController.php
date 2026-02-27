@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
-use App\Models\Stamp;
 use App\Models\Country;
+use App\Models\Stamp;
 use App\Models\StampType;
 use Illuminate\Http\Request;
 
@@ -12,7 +12,7 @@ class StampController extends Controller
 {
     public function index(Request $request)
     {
-        $countries  = Country::orderBy('name')->get();
+        $countries = Country::orderBy('name')->get();
         $stampTypes = StampType::orderBy('name')->get();
 
         $query = Stamp::query()->with(['mainImage', 'country', 'nominalValue', 'stampType']);
@@ -51,7 +51,7 @@ class StampController extends Controller
         $stamp->load(['images', 'mainImage', 'files', 'country', 'currency', 'nominalValue', 'stampType']);
 
         $previousStamp = Stamp::where('id', '<', $stamp->id)->orderByDesc('id')->first();
-        $nextStamp     = Stamp::where('id', '>', $stamp->id)->orderBy('id')->first();
+        $nextStamp = Stamp::where('id', '>', $stamp->id)->orderBy('id')->first();
 
         return view('stamps.show', compact('stamp', 'previousStamp', 'nextStamp'));
     }

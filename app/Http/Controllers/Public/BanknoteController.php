@@ -12,7 +12,7 @@ class BanknoteController extends Controller
 {
     public function index(Request $request)
     {
-        $countries  = Country::orderBy('name')->get();
+        $countries = Country::orderBy('name')->get();
         $currencies = Currency::orderBy('name')->get();
 
         $query = Banknote::query()->with(['mainImage', 'country', 'currency', 'nominalValue']);
@@ -51,7 +51,7 @@ class BanknoteController extends Controller
         $banknote->load(['images', 'mainImage', 'files', 'country', 'currency', 'nominalValue', 'series', 'timePeriod']);
 
         $previousBanknote = Banknote::where('id', '<', $banknote->id)->orderByDesc('id')->first();
-        $nextBanknote     = Banknote::where('id', '>', $banknote->id)->orderBy('id')->first();
+        $nextBanknote = Banknote::where('id', '>', $banknote->id)->orderBy('id')->first();
 
         return view('banknotes.show', compact('banknote', 'previousBanknote', 'nextBanknote'));
     }

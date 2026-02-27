@@ -47,11 +47,11 @@ class StampController extends Controller
         $this->authorize('create', Stamp::class);
 
         return view('admin.stamps.create', [
-            'countries'    => Country::orderBy('name')->get(),
-            'currencies'   => Currency::orderBy('name')->get(),
+            'countries' => Country::orderBy('name')->get(),
+            'currencies' => Currency::orderBy('name')->get(),
             'nominalValues' => NominalValue::orderBy('name')->get(),
-            'stampTypes'   => StampType::orderBy('name')->get(),
-            'locations'    => Location::orderBy('name')->get(),
+            'stampTypes' => StampType::orderBy('name')->get(),
+            'locations' => Location::orderBy('name')->get(),
         ]);
     }
 
@@ -60,18 +60,18 @@ class StampController extends Controller
         $this->authorize('create', Stamp::class);
 
         $validated = $request->validate([
-            'country_id'       => 'nullable|exists:countries,id',
-            'currency_id'      => 'nullable|exists:currencies,id',
+            'country_id' => 'nullable|exists:countries,id',
+            'currency_id' => 'nullable|exists:currencies,id',
             'nominal_value_id' => 'nullable|exists:nominal_values,id',
-            'type_id'          => 'nullable|exists:stamp_types,id',
-            'year'             => 'nullable|integer|min:1800|max:' . (date('Y') + 1),
-            'michel_number'    => 'nullable|string|max:255',
-            'for_sale'         => 'nullable|boolean',
-            'selling_price'    => 'nullable|numeric|min:0',
-            'purchase_date'    => 'nullable|date',
+            'type_id' => 'nullable|exists:stamp_types,id',
+            'year' => 'nullable|integer|min:1800|max:'.(date('Y') + 1),
+            'michel_number' => 'nullable|string|max:255',
+            'for_sale' => 'nullable|boolean',
+            'selling_price' => 'nullable|numeric|min:0',
+            'purchase_date' => 'nullable|date',
             'purchasing_price' => 'nullable|numeric|min:0',
-            'current_value'    => 'nullable|numeric|min:0',
-            'location_id'      => 'nullable|exists:locations,id',
+            'current_value' => 'nullable|numeric|min:0',
+            'location_id' => 'nullable|exists:locations,id',
             'personal_remarks' => 'nullable|string',
         ]);
 
@@ -90,12 +90,12 @@ class StampController extends Controller
         $stamp->load(['images', 'files']);
 
         return view('admin.stamps.edit', [
-            'stamp'        => $stamp,
-            'countries'    => Country::orderBy('name')->get(),
-            'currencies'   => Currency::orderBy('name')->get(),
+            'stamp' => $stamp,
+            'countries' => Country::orderBy('name')->get(),
+            'currencies' => Currency::orderBy('name')->get(),
             'nominalValues' => NominalValue::orderBy('name')->get(),
-            'stampTypes'   => StampType::orderBy('name')->get(),
-            'locations'    => Location::orderBy('name')->get(),
+            'stampTypes' => StampType::orderBy('name')->get(),
+            'locations' => Location::orderBy('name')->get(),
         ]);
     }
 
@@ -104,18 +104,18 @@ class StampController extends Controller
         $this->authorize('update', $stamp);
 
         $validated = $request->validate([
-            'country_id'       => 'nullable|exists:countries,id',
-            'currency_id'      => 'nullable|exists:currencies,id',
+            'country_id' => 'nullable|exists:countries,id',
+            'currency_id' => 'nullable|exists:currencies,id',
             'nominal_value_id' => 'nullable|exists:nominal_values,id',
-            'type_id'          => 'nullable|exists:stamp_types,id',
-            'year'             => 'nullable|integer|min:1800|max:' . (date('Y') + 1),
-            'michel_number'    => 'nullable|string|max:255',
-            'for_sale'         => 'nullable|boolean',
-            'selling_price'    => 'nullable|numeric|min:0',
-            'purchase_date'    => 'nullable|date',
+            'type_id' => 'nullable|exists:stamp_types,id',
+            'year' => 'nullable|integer|min:1800|max:'.(date('Y') + 1),
+            'michel_number' => 'nullable|string|max:255',
+            'for_sale' => 'nullable|boolean',
+            'selling_price' => 'nullable|numeric|min:0',
+            'purchase_date' => 'nullable|date',
             'purchasing_price' => 'nullable|numeric|min:0',
-            'current_value'    => 'nullable|numeric|min:0',
-            'location_id'      => 'nullable|exists:locations,id',
+            'current_value' => 'nullable|numeric|min:0',
+            'location_id' => 'nullable|exists:locations,id',
             'personal_remarks' => 'nullable|string',
         ]);
 
@@ -139,7 +139,7 @@ class StampController extends Controller
             }
         }
 
-        Storage::disk('b2')->deleteDirectory('stamps/' . $stamp->id);
+        Storage::disk('b2')->deleteDirectory('stamps/'.$stamp->id);
 
         $stamp->media()->delete();
         $stamp->delete();

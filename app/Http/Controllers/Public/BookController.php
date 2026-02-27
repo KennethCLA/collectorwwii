@@ -1,4 +1,5 @@
 <?php
+
 // app/Http/Controllers/Public/BookController.php
 
 namespace App\Http\Controllers\Public;
@@ -126,7 +127,7 @@ class BookController extends Controller
         ]);
 
         $previousBook = Book::where('id', '<', $book->id)->orderByDesc('id')->first();
-        $nextBook     = Book::where('id', '>', $book->id)->orderBy('id')->first();
+        $nextBook = Book::where('id', '>', $book->id)->orderBy('id')->first();
 
         return view('books.show', compact('book', 'previousBook', 'nextBook'));
     }

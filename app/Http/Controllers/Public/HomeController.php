@@ -32,7 +32,7 @@ class HomeController extends Controller
             'latestBlog' => $latestBlog ? [
                 'date' => $latestBlog->date ?? $latestBlog->created_at,
                 'content' => $latestBlog->content,
-            ] : null
+            ] : null,
         ]);
     }
 }

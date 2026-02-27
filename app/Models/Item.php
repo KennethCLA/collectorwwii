@@ -1,19 +1,14 @@
 <?php
+
 // app/Models/Item.php
 
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Support\Facades\Storage;
-use App\Models\ItemCategory;
-use App\Models\ItemNationality;
-use App\Models\ItemOrganization;
-use App\Models\Origin;
-use App\Models\MediaFile;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Item extends Model
 {
@@ -33,7 +28,7 @@ class Item extends Model
         'storage_location',
         'current_price',
         'for_sale',
-        'selling_price'
+        'selling_price',
     ];
 
     protected $casts = [

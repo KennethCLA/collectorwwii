@@ -1,4 +1,5 @@
 <?php
+
 // config/collector.php
 
 return [

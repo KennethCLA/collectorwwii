@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Book;
-use App\Models\Item;
-use App\Models\Newspaper;
-use App\Models\Magazine;
 use App\Models\Banknote;
+use App\Models\Book;
 use App\Models\Coin;
+use App\Models\Item;
+use App\Models\Magazine;
+use App\Models\Newspaper;
 use App\Models\Postcard;
 use App\Models\Stamp;
 
@@ -26,6 +25,7 @@ class UserController extends Controller
         $postcard = Postcard::find(1);  // Voorbeeld om een postkaart op te halen.
         $stamp = Stamp::find(1);  // Voorbeeld om een stempel op te halen.
         $user = auth()->user();
+
         return view('profile.index', compact('book', 'item', 'newspaper', 'magazine', 'banknote', 'coin', 'postcard', 'stamp', 'user'));
     }
 }

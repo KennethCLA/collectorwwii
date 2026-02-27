@@ -2,9 +2,6 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Gate;
-
 use App\Models\Banknote;
 use App\Models\Book;
 use App\Models\Coin;
@@ -14,7 +11,6 @@ use App\Models\MapLocation;
 use App\Models\Newspaper;
 use App\Models\Postcard;
 use App\Models\Stamp;
-
 use App\Policies\BanknotePolicy;
 use App\Policies\BookPolicy;
 use App\Policies\CoinPolicy;
@@ -24,6 +20,8 @@ use App\Policies\MapLocationPolicy;
 use App\Policies\NewspaperPolicy;
 use App\Policies\PostcardPolicy;
 use App\Policies\StampPolicy;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {

@@ -1,25 +1,18 @@
 <?php
+
 // app/Models/Book.php
 
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Support\Facades\Storage;
-use App\Models\BookSeries;
-use App\Models\BookCover;
-use App\Models\BookTopic;
-use App\Models\MediaFile;
-use App\Models\Origin;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Book extends Model
 {
     use HasFactory, SoftDeletes;
-
-
 
     protected $fillable = [
         'isbn',

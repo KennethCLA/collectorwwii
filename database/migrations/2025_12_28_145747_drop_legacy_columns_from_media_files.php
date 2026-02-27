@@ -1,4 +1,5 @@
 <?php
+
 // database/migrations/2025_12_28_145747_drop_legacy_columns_from_media_files.php
 
 use Illuminate\Database\Migrations\Migration;
@@ -18,7 +19,7 @@ return new class extends Migration
                 }
             }
 
-            if (!empty($drops)) {
+            if (! empty($drops)) {
                 $table->dropColumn($drops);
             }
         });

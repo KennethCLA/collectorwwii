@@ -95,19 +95,19 @@ class BlogController extends Controller
     private function readPosts(): array
     {
         $path = $this->blogPath();
-        if (!File::exists($path)) {
+        if (! File::exists($path)) {
             return [];
         }
 
         $raw = json_decode(File::get($path), true);
-        if (!is_array($raw)) {
+        if (! is_array($raw)) {
             return [];
         }
 
         $posts = [];
 
         foreach ($raw as $row) {
-            if (!is_array($row)) {
+            if (! is_array($row)) {
                 continue;
             }
 
@@ -140,7 +140,7 @@ class BlogController extends Controller
         File::ensureDirectoryExists(dirname($path));
         File::put(
             $path,
-            json_encode($normalized, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . PHP_EOL
+            json_encode($normalized, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES).PHP_EOL
         );
     }
 

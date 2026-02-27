@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Admin\Ajax;
 
+use App\Http\Controllers\Controller;
 use App\Models\BookCover;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class BookCoverController extends Controller
 {

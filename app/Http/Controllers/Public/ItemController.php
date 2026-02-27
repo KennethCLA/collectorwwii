@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Item;
 use App\Models\ItemCategory;
 use App\Models\ItemNationality;
-use App\Models\Origin;
 use App\Models\ItemOrganization;
+use App\Models\Origin;
 use Illuminate\Http\Request;
 
 class ItemController extends Controller
@@ -103,7 +103,7 @@ class ItemController extends Controller
         ]);
 
         $previousItem = Item::where('id', '<', $item->id)->orderByDesc('id')->first();
-        $nextItem     = Item::where('id', '>', $item->id)->orderBy('id')->first();
+        $nextItem = Item::where('id', '>', $item->id)->orderBy('id')->first();
 
         return view('items.show', compact('item', 'previousItem', 'nextItem'));
     }

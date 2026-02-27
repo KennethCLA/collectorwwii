@@ -1,26 +1,23 @@
 <?php
+
 // routes/admin.php
 
-use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\Admin\{
-    MediaFileController,
-    BookController,
-    ItemController,
-    BlogController,
-    LookupIndexController,
-    MapLocationController,
-    BanknoteController,
-    CoinController,
-    MagazineController,
-    NewspaperController,
-    PostcardController,
-    StampController,
-    DashboardController,
-    UserController,
-};
-
 use App\Http\Controllers\Admin\Ajax\LookupController;
+use App\Http\Controllers\Admin\BanknoteController;
+use App\Http\Controllers\Admin\BlogController;
+use App\Http\Controllers\Admin\BookController;
+use App\Http\Controllers\Admin\CoinController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ItemController;
+use App\Http\Controllers\Admin\LookupIndexController;
+use App\Http\Controllers\Admin\MagazineController;
+use App\Http\Controllers\Admin\MapLocationController;
+use App\Http\Controllers\Admin\MediaFileController;
+use App\Http\Controllers\Admin\NewspaperController;
+use App\Http\Controllers\Admin\PostcardController;
+use App\Http\Controllers\Admin\StampController;
+use App\Http\Controllers\Admin\UserController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 

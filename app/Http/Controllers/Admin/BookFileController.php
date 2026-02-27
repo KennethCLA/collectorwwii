@@ -53,11 +53,11 @@ class BookFileController extends Controller
 
             // Folderstructuur: books/{book_id}/...
             $folder = "books/{$book->id}";
-            $filename = uniqid('', true) . '.' . $uploaded->extension();
+            $filename = uniqid('', true).'.'.$uploaded->extension();
             $path = $uploaded->storeAs($folder, $filename, $disk);
 
             // main image enkel voor images, en enkel als er nog geen main is
-            $makeMain = (!$hasMainImage && !$isPdf && $i === 0);
+            $makeMain = (! $hasMainImage && ! $isPdf && $i === 0);
 
             $sortOrder = $collection === 'images'
                 ? $nextImageSort++
@@ -78,9 +78,9 @@ class BookFileController extends Controller
                 $hasMainImage = true;
             }
         }
+
         return back()->with('success', 'Files uploaded.');
     }
-
 
     public function destroy(MediaFile $file)
     {
@@ -133,7 +133,9 @@ class BookFileController extends Controller
 
         if ($collection === 'images' && $wasMain) {
             $newMain = $book->images()->first();
-            if ($newMain) $newMain->update(['is_main' => 1]);
+            if ($newMain) {
+                $newMain->update(['is_main' => 1]);
+            }
         }
 
         return back()->with('success', 'File deleted.');

@@ -1,17 +1,18 @@
 <?php
+
 // routes/web.php
 
 use App\Http\Controllers\Public\BanknoteController as PublicBanknoteController;
 use App\Http\Controllers\Public\BlogController;
+use App\Http\Controllers\Public\BookController as PublicBookController;
 use App\Http\Controllers\Public\CoinController as PublicCoinController;
 use App\Http\Controllers\Public\ForSaleController;
+use App\Http\Controllers\Public\ItemController as PublicItemController;
 use App\Http\Controllers\Public\MagazineController as PublicMagazineController;
 use App\Http\Controllers\Public\MapController;
 use App\Http\Controllers\Public\NewspaperController as PublicNewspaperController;
 use App\Http\Controllers\Public\PostcardController as PublicPostcardController;
 use App\Http\Controllers\Public\SectionController;
-use App\Http\Controllers\Public\BookController as PublicBookController;
-use App\Http\Controllers\Public\ItemController as PublicItemController;
 use App\Http\Controllers\Public\StampController as PublicStampController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;

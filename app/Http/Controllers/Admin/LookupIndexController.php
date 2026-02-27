@@ -27,6 +27,7 @@ class LookupIndexController extends Controller
         $rows->getCollection()->transform(function ($row) use ($config) {
             $usage = $this->usageTotal($config['references'], (int) $row->id);
             $row->usage_total = $usage;
+
             return $row;
         });
 
@@ -83,7 +84,7 @@ class LookupIndexController extends Controller
         }
 
         $row = $query->first();
-        abort_if(!$row, 404);
+        abort_if(! $row, 404);
 
         $usage = $this->usageTotal($config['references'], $id);
         if ($usage > 0) {
@@ -118,7 +119,7 @@ class LookupIndexController extends Controller
     private function usageTotal(array $references, int $id): int
     {
         return collect($references)->sum(function (array $ref) use ($id) {
-            if (!Schema::hasTable($ref['table']) || !Schema::hasColumn($ref['table'], $ref['column'])) {
+            if (! Schema::hasTable($ref['table']) || ! Schema::hasColumn($ref['table'], $ref['column'])) {
                 return 0;
             }
 

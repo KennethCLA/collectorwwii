@@ -1,4 +1,5 @@
 <?php
+
 // app/Models/Location.php
 
 namespace App\Models;

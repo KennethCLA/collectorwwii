@@ -48,12 +48,12 @@ class BanknoteController extends Controller
         $this->authorize('create', Banknote::class);
 
         return view('admin.banknotes.create', [
-            'countries'    => Country::orderBy('name')->get(),
-            'currencies'   => Currency::orderBy('name')->get(),
+            'countries' => Country::orderBy('name')->get(),
+            'currencies' => Currency::orderBy('name')->get(),
             'nominalValues' => NominalValue::orderBy('name')->get(),
-            'seriesList'   => BanknoteSeries::orderBy('name')->get(),
-            'timePeriods'  => BanknoteTimePeriod::orderBy('name')->get(),
-            'locations'    => Location::orderBy('name')->get(),
+            'seriesList' => BanknoteSeries::orderBy('name')->get(),
+            'timePeriods' => BanknoteTimePeriod::orderBy('name')->get(),
+            'locations' => Location::orderBy('name')->get(),
         ]);
     }
 
@@ -62,18 +62,18 @@ class BanknoteController extends Controller
         $this->authorize('create', Banknote::class);
 
         $validated = $request->validate([
-            'country_id'       => 'nullable|exists:countries,id',
-            'currency_id'      => 'nullable|exists:currencies,id',
+            'country_id' => 'nullable|exists:countries,id',
+            'currency_id' => 'nullable|exists:currencies,id',
             'nominal_value_id' => 'nullable|exists:nominal_values,id',
-            'series_id'        => 'nullable|exists:banknote_series,id',
-            'time_period_id'   => 'nullable|exists:banknote_time_periods,id',
-            'year'             => 'nullable|integer|min:1800|max:' . (date('Y') + 1),
-            'variation'        => 'nullable|string|max:255',
-            'for_sale'         => 'nullable|boolean',
-            'selling_price'    => 'nullable|numeric|min:0',
-            'purchase_date'    => 'nullable|date',
+            'series_id' => 'nullable|exists:banknote_series,id',
+            'time_period_id' => 'nullable|exists:banknote_time_periods,id',
+            'year' => 'nullable|integer|min:1800|max:'.(date('Y') + 1),
+            'variation' => 'nullable|string|max:255',
+            'for_sale' => 'nullable|boolean',
+            'selling_price' => 'nullable|numeric|min:0',
+            'purchase_date' => 'nullable|date',
             'purchasing_price' => 'nullable|numeric|min:0',
-            'location_id'      => 'nullable|exists:locations,id',
+            'location_id' => 'nullable|exists:locations,id',
             'personal_remarks' => 'nullable|string',
         ]);
 
@@ -92,13 +92,13 @@ class BanknoteController extends Controller
         $banknote->load(['images', 'files']);
 
         return view('admin.banknotes.edit', [
-            'banknote'     => $banknote,
-            'countries'    => Country::orderBy('name')->get(),
-            'currencies'   => Currency::orderBy('name')->get(),
+            'banknote' => $banknote,
+            'countries' => Country::orderBy('name')->get(),
+            'currencies' => Currency::orderBy('name')->get(),
             'nominalValues' => NominalValue::orderBy('name')->get(),
-            'seriesList'   => BanknoteSeries::orderBy('name')->get(),
-            'timePeriods'  => BanknoteTimePeriod::orderBy('name')->get(),
-            'locations'    => Location::orderBy('name')->get(),
+            'seriesList' => BanknoteSeries::orderBy('name')->get(),
+            'timePeriods' => BanknoteTimePeriod::orderBy('name')->get(),
+            'locations' => Location::orderBy('name')->get(),
         ]);
     }
 
@@ -107,18 +107,18 @@ class BanknoteController extends Controller
         $this->authorize('update', $banknote);
 
         $validated = $request->validate([
-            'country_id'       => 'nullable|exists:countries,id',
-            'currency_id'      => 'nullable|exists:currencies,id',
+            'country_id' => 'nullable|exists:countries,id',
+            'currency_id' => 'nullable|exists:currencies,id',
             'nominal_value_id' => 'nullable|exists:nominal_values,id',
-            'series_id'        => 'nullable|exists:banknote_series,id',
-            'time_period_id'   => 'nullable|exists:banknote_time_periods,id',
-            'year'             => 'nullable|integer|min:1800|max:' . (date('Y') + 1),
-            'variation'        => 'nullable|string|max:255',
-            'for_sale'         => 'nullable|boolean',
-            'selling_price'    => 'nullable|numeric|min:0',
-            'purchase_date'    => 'nullable|date',
+            'series_id' => 'nullable|exists:banknote_series,id',
+            'time_period_id' => 'nullable|exists:banknote_time_periods,id',
+            'year' => 'nullable|integer|min:1800|max:'.(date('Y') + 1),
+            'variation' => 'nullable|string|max:255',
+            'for_sale' => 'nullable|boolean',
+            'selling_price' => 'nullable|numeric|min:0',
+            'purchase_date' => 'nullable|date',
             'purchasing_price' => 'nullable|numeric|min:0',
-            'location_id'      => 'nullable|exists:locations,id',
+            'location_id' => 'nullable|exists:locations,id',
             'personal_remarks' => 'nullable|string',
         ]);
 
@@ -142,7 +142,7 @@ class BanknoteController extends Controller
             }
         }
 
-        Storage::disk('b2')->deleteDirectory('banknotes/' . $banknote->id);
+        Storage::disk('b2')->deleteDirectory('banknotes/'.$banknote->id);
 
         $banknote->media()->delete();
         $banknote->delete();

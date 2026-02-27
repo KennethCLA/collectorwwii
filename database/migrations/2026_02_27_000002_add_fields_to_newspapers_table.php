@@ -8,39 +8,39 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (!Schema::hasTable('newspapers')) {
+        if (! Schema::hasTable('newspapers')) {
             return;
         }
 
         Schema::table('newspapers', function (Blueprint $table) {
-            if (!Schema::hasColumn('newspapers', 'title')) {
+            if (! Schema::hasColumn('newspapers', 'title')) {
                 $table->string('title');
             }
-            if (!Schema::hasColumn('newspapers', 'publisher')) {
+            if (! Schema::hasColumn('newspapers', 'publisher')) {
                 $table->string('publisher')->nullable();
             }
-            if (!Schema::hasColumn('newspapers', 'publication_date')) {
+            if (! Schema::hasColumn('newspapers', 'publication_date')) {
                 $table->date('publication_date')->nullable();
             }
-            if (!Schema::hasColumn('newspapers', 'description')) {
+            if (! Schema::hasColumn('newspapers', 'description')) {
                 $table->text('description')->nullable();
             }
-            if (!Schema::hasColumn('newspapers', 'purchase_date')) {
+            if (! Schema::hasColumn('newspapers', 'purchase_date')) {
                 $table->date('purchase_date')->nullable();
             }
-            if (!Schema::hasColumn('newspapers', 'purchase_price')) {
+            if (! Schema::hasColumn('newspapers', 'purchase_price')) {
                 $table->decimal('purchase_price', 10, 2)->nullable();
             }
-            if (!Schema::hasColumn('newspapers', 'for_sale')) {
+            if (! Schema::hasColumn('newspapers', 'for_sale')) {
                 $table->boolean('for_sale')->default(false);
             }
-            if (!Schema::hasColumn('newspapers', 'selling_price')) {
+            if (! Schema::hasColumn('newspapers', 'selling_price')) {
                 $table->decimal('selling_price', 10, 2)->nullable();
             }
-            if (!Schema::hasColumn('newspapers', 'notes')) {
+            if (! Schema::hasColumn('newspapers', 'notes')) {
                 $table->text('notes')->nullable();
             }
-            if (!Schema::hasColumn('newspapers', 'deleted_at')) {
+            if (! Schema::hasColumn('newspapers', 'deleted_at')) {
                 $table->softDeletes();
             }
         });
@@ -48,7 +48,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        if (!Schema::hasTable('newspapers')) {
+        if (! Schema::hasTable('newspapers')) {
             return;
         }
 
@@ -66,7 +66,7 @@ return new class extends Migration
                 Schema::hasColumn('newspapers', 'deleted_at') ? 'deleted_at' : null,
             ]));
 
-            if (!empty($drop)) {
+            if (! empty($drop)) {
                 $table->dropColumn($drop);
             }
         });

@@ -63,10 +63,10 @@ class MapLocationController extends Controller
         foreach ($request->file('photos', []) as $idx => $uploaded) {
             $folder = "map-locations/{$location->id}";
             $ext = strtolower($uploaded->extension() ?: 'bin');
-            $filename = (string) Str::uuid() . '.' . $ext;
+            $filename = (string) Str::uuid().'.'.$ext;
             $path = $uploaded->storeAs($folder, $filename, 'b2');
 
-            $isMain = !$hasMain && $idx === 0;
+            $isMain = ! $hasMain && $idx === 0;
             $location->media()->create([
                 'disk' => 'b2',
                 'path' => $path,
@@ -133,7 +133,7 @@ class MapLocationController extends Controller
             }
         }
 
-        Storage::disk('b2')->deleteDirectory('map-locations/' . $mapLocation->id);
+        Storage::disk('b2')->deleteDirectory('map-locations/'.$mapLocation->id);
         $mapLocation->media()->delete();
         $mapLocation->delete();
 
@@ -143,6 +143,6 @@ class MapLocationController extends Controller
 
     private function coordinates(float $lat, float $lng): string
     {
-        return number_format($lat, 6, '.', '') . ',' . number_format($lng, 6, '.', '');
+        return number_format($lat, 6, '.', '').','.number_format($lng, 6, '.', '');
     }
 }

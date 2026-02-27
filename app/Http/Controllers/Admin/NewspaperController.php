@@ -46,15 +46,15 @@ class NewspaperController extends Controller
         $this->authorize('create', Newspaper::class);
 
         $validated = $request->validate([
-            'title'            => 'required|string|max:255',
-            'publisher'        => 'nullable|string|max:255',
+            'title' => 'required|string|max:255',
+            'publisher' => 'nullable|string|max:255',
             'publication_date' => 'nullable|date',
-            'description'      => 'nullable|string',
-            'purchase_date'    => 'nullable|date',
-            'purchase_price'   => 'nullable|numeric|min:0',
-            'for_sale'         => 'nullable|boolean',
-            'selling_price'    => 'nullable|numeric|min:0',
-            'notes'            => 'nullable|string',
+            'description' => 'nullable|string',
+            'purchase_date' => 'nullable|date',
+            'purchase_price' => 'nullable|numeric|min:0',
+            'for_sale' => 'nullable|boolean',
+            'selling_price' => 'nullable|numeric|min:0',
+            'notes' => 'nullable|string',
         ]);
 
         $validated['for_sale'] = $request->boolean('for_sale');
@@ -79,15 +79,15 @@ class NewspaperController extends Controller
         $this->authorize('update', $newspaper);
 
         $validated = $request->validate([
-            'title'            => 'required|string|max:255',
-            'publisher'        => 'nullable|string|max:255',
+            'title' => 'required|string|max:255',
+            'publisher' => 'nullable|string|max:255',
             'publication_date' => 'nullable|date',
-            'description'      => 'nullable|string',
-            'purchase_date'    => 'nullable|date',
-            'purchase_price'   => 'nullable|numeric|min:0',
-            'for_sale'         => 'nullable|boolean',
-            'selling_price'    => 'nullable|numeric|min:0',
-            'notes'            => 'nullable|string',
+            'description' => 'nullable|string',
+            'purchase_date' => 'nullable|date',
+            'purchase_price' => 'nullable|numeric|min:0',
+            'for_sale' => 'nullable|boolean',
+            'selling_price' => 'nullable|numeric|min:0',
+            'notes' => 'nullable|string',
         ]);
 
         $validated['for_sale'] = $request->boolean('for_sale');
@@ -110,7 +110,7 @@ class NewspaperController extends Controller
             }
         }
 
-        Storage::disk('b2')->deleteDirectory('newspapers/' . $newspaper->id);
+        Storage::disk('b2')->deleteDirectory('newspapers/'.$newspaper->id);
 
         $newspaper->media()->delete();
         $newspaper->delete();

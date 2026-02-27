@@ -9,6 +9,10 @@
         </div>
     </div>
 
+    <div class="rounded-lg border border-blue-500/20 bg-blue-500/10 px-4 py-3 text-sm text-blue-100">
+        Options in use by active records cannot be deleted. Remove all references first.
+    </div>
+
     @if(session('success'))
     <div class="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
         {{ session('success') }}
@@ -78,17 +82,28 @@
                             </td>
                             <td class="px-4 py-3 text-xs text-white/60">{{ $createdAt }}</td>
                             <td class="px-4 py-3 text-right">
+                                @if(($row->usage_total ?? 0) > 0)
+                                <span class="group relative inline-block">
+                                    <button type="button" disabled
+                                        class="cursor-not-allowed rounded-md bg-white/10 px-2.5 py-1 text-xs text-white/40">
+                                        Delete
+                                    </button>
+                                    <span class="pointer-events-none absolute bottom-full right-0 mb-2 hidden w-max max-w-[200px] rounded-md bg-black/90 px-2.5 py-1.5 text-xs text-white/90 shadow-lg group-hover:block">
+                                        Cannot delete: in use by {{ $row->usage_total }} record(s)
+                                    </span>
+                                </span>
+                                @else
                                 <form method="POST" action="{{ route('admin.lookups.destroy', ['type' => $type, 'id' => $row->id]) }}"
                                     onsubmit="return confirm('Delete this option?');"
                                     class="inline">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
-                                        class="rounded-md px-2.5 py-1 text-xs {{ ($row->usage_total ?? 0) > 0 ? 'cursor-not-allowed bg-white/10 text-white/40' : 'bg-red-500/20 text-red-200 hover:bg-red-500/30' }}"
-                                        @disabled(($row->usage_total ?? 0) > 0)>
+                                        class="rounded-md bg-red-500/20 px-2.5 py-1 text-xs text-red-200 hover:bg-red-500/30">
                                         Delete
                                     </button>
                                 </form>
+                                @endif
                             </td>
                         </tr>
                         @empty

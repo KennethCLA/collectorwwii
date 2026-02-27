@@ -1,4 +1,5 @@
 <?php
+
 // app/Http/Controllers/Admin/MediaFileController.php
 
 namespace App\Http\Controllers\Admin;
@@ -10,10 +11,10 @@ use App\Models\Coin;
 use App\Models\Item;
 use App\Models\Magazine;
 use App\Models\MapLocation;
+use App\Models\MediaFile;
 use App\Models\Newspaper;
 use App\Models\Postcard;
 use App\Models\Stamp;
-use App\Models\MediaFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -29,7 +30,7 @@ class MediaFileController extends Controller
     private const TYPES = [
         'books' => [
             'model' => Book::class,
-            'disk'  => 'b2',
+            'disk' => 'b2',
             'folder' => 'books',
             'collections' => [
                 'images' => [
@@ -44,7 +45,7 @@ class MediaFileController extends Controller
         ],
         'items' => [
             'model' => Item::class,
-            'disk'  => 'b2',
+            'disk' => 'b2',
             'folder' => 'items',
             'collections' => [
                 'images' => [
@@ -59,7 +60,7 @@ class MediaFileController extends Controller
         ],
         'banknotes' => [
             'model' => Banknote::class,
-            'disk'  => 'b2',
+            'disk' => 'b2',
             'folder' => 'banknotes',
             'collections' => [
                 'images' => [
@@ -74,7 +75,7 @@ class MediaFileController extends Controller
         ],
         'coins' => [
             'model' => Coin::class,
-            'disk'  => 'b2',
+            'disk' => 'b2',
             'folder' => 'coins',
             'collections' => [
                 'images' => [
@@ -89,7 +90,7 @@ class MediaFileController extends Controller
         ],
         'magazines' => [
             'model' => Magazine::class,
-            'disk'  => 'b2',
+            'disk' => 'b2',
             'folder' => 'magazines',
             'collections' => [
                 'images' => [
@@ -104,7 +105,7 @@ class MediaFileController extends Controller
         ],
         'newspapers' => [
             'model' => Newspaper::class,
-            'disk'  => 'b2',
+            'disk' => 'b2',
             'folder' => 'newspapers',
             'collections' => [
                 'images' => [
@@ -119,7 +120,7 @@ class MediaFileController extends Controller
         ],
         'postcards' => [
             'model' => Postcard::class,
-            'disk'  => 'b2',
+            'disk' => 'b2',
             'folder' => 'postcards',
             'collections' => [
                 'images' => [
@@ -134,7 +135,7 @@ class MediaFileController extends Controller
         ],
         'stamps' => [
             'model' => Stamp::class,
-            'disk'  => 'b2',
+            'disk' => 'b2',
             'folder' => 'stamps',
             'collections' => [
                 'images' => [
@@ -149,7 +150,7 @@ class MediaFileController extends Controller
         ],
         'map-locations' => [
             'model' => MapLocation::class,
-            'disk'  => 'b2',
+            'disk' => 'b2',
             'folder' => 'map-locations',
             'collections' => [
                 'images' => [
@@ -167,6 +168,7 @@ class MediaFileController extends Controller
     private function typeConfigOrFail(string $type): array
     {
         abort_unless(isset(self::TYPES[$type]), 404);
+
         return self::TYPES[$type];
     }
 
@@ -189,8 +191,8 @@ class MediaFileController extends Controller
 
         $validated = $request->validate([
             'collection' => ['required', 'string', Rule::in($allowedCollections)],
-            'files'      => ['required', 'array', 'min:1'],
-            'files.*'    => ['file'], // mimetype/max voegen we hieronder toe per collection
+            'files' => ['required', 'array', 'min:1'],
+            'files.*' => ['file'], // mimetype/max voegen we hieronder toe per collection
         ]);
 
         $collection = $validated['collection'];
@@ -200,8 +202,8 @@ class MediaFileController extends Controller
         $request->validate([
             'files.*' => [
                 'file',
-                'max:' . $rulesCfg['max'],
-                'mimetypes:' . $rulesCfg['mimetypes'],
+                'max:'.$rulesCfg['max'],
+                'mimetypes:'.$rulesCfg['mimetypes'],
             ],
         ]);
 
@@ -223,25 +225,25 @@ class MediaFileController extends Controller
         foreach ($request->file('files', []) as $i => $uploaded) {
             $folder = "{$cfg['folder']}/{$attachable->id}";
             $ext = strtolower($uploaded->extension() ?: 'bin');
-            $filename = (string) Str::uuid() . '.' . $ext;
+            $filename = (string) Str::uuid().'.'.$ext;
 
             // 1) eerst uploaden
             $path = $uploaded->storeAs($folder, $filename, $disk);
             $uploadedPaths[] = [$disk, $path];
 
-            $makeMain = ($collection === 'images') && (!$hasMainImage && $i === 0);
+            $makeMain = ($collection === 'images') && (! $hasMainImage && $i === 0);
 
             // 2) dan DB record
             try {
                 $attachable->media()->create([
-                    'disk'          => $disk,
-                    'path'          => $path,
-                    'mime_type'     => $uploaded->getMimeType(),
-                    'size'          => $uploaded->getSize(),
+                    'disk' => $disk,
+                    'path' => $path,
+                    'mime_type' => $uploaded->getMimeType(),
+                    'size' => $uploaded->getSize(),
                     'original_name' => $uploaded->getClientOriginalName(),
-                    'collection'    => $collection,
-                    'is_main'       => $makeMain,
-                    'sort_order'    => $collection === 'images' ? $nextSort++ : null,
+                    'collection' => $collection,
+                    'is_main' => $makeMain,
+                    'sort_order' => $collection === 'images' ? $nextSort++ : null,
                 ]);
             } catch (\Throwable $e) {
                 // DB faalde → delete net geüploade file (best effort)
@@ -275,7 +277,7 @@ class MediaFileController extends Controller
         abort_unless(isset($cfg['collections'][$file->collection]), 404);
 
         $attachable = $file->attachable;
-        abort_if(!$attachable, 404);
+        abort_if(! $attachable, 404);
 
         $this->authorize('update', $attachable);
 
@@ -333,7 +335,7 @@ class MediaFileController extends Controller
         abort_unless($file->collection === 'images', 404); // makeMain enkel voor images
 
         $attachable = $file->attachable;
-        abort_if(!$attachable, 404);
+        abort_if(! $attachable, 404);
 
         $this->authorize('update', $attachable);
 

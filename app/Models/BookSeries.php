@@ -10,6 +10,6 @@ class BookSeries extends Model
     use HasFactory;
 
     protected $table = 'book_series'; // ✅ Zorg ervoor dat dit overeenkomt met je database
+
     protected $fillable = ['name'];
 }
-

@@ -8,45 +8,45 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (!Schema::hasTable('magazines')) {
+        if (! Schema::hasTable('magazines')) {
             return;
         }
 
         Schema::table('magazines', function (Blueprint $table) {
-            if (!Schema::hasColumn('magazines', 'title')) {
+            if (! Schema::hasColumn('magazines', 'title')) {
                 $table->string('title');
             }
-            if (!Schema::hasColumn('magazines', 'subtitle')) {
+            if (! Schema::hasColumn('magazines', 'subtitle')) {
                 $table->string('subtitle')->nullable();
             }
-            if (!Schema::hasColumn('magazines', 'publisher')) {
+            if (! Schema::hasColumn('magazines', 'publisher')) {
                 $table->string('publisher')->nullable();
             }
-            if (!Schema::hasColumn('magazines', 'issue_number')) {
+            if (! Schema::hasColumn('magazines', 'issue_number')) {
                 $table->integer('issue_number')->nullable();
             }
-            if (!Schema::hasColumn('magazines', 'issue_year')) {
+            if (! Schema::hasColumn('magazines', 'issue_year')) {
                 $table->integer('issue_year')->nullable();
             }
-            if (!Schema::hasColumn('magazines', 'description')) {
+            if (! Schema::hasColumn('magazines', 'description')) {
                 $table->text('description')->nullable();
             }
-            if (!Schema::hasColumn('magazines', 'purchase_date')) {
+            if (! Schema::hasColumn('magazines', 'purchase_date')) {
                 $table->date('purchase_date')->nullable();
             }
-            if (!Schema::hasColumn('magazines', 'purchase_price')) {
+            if (! Schema::hasColumn('magazines', 'purchase_price')) {
                 $table->decimal('purchase_price', 10, 2)->nullable();
             }
-            if (!Schema::hasColumn('magazines', 'for_sale')) {
+            if (! Schema::hasColumn('magazines', 'for_sale')) {
                 $table->boolean('for_sale')->default(false);
             }
-            if (!Schema::hasColumn('magazines', 'selling_price')) {
+            if (! Schema::hasColumn('magazines', 'selling_price')) {
                 $table->decimal('selling_price', 10, 2)->nullable();
             }
-            if (!Schema::hasColumn('magazines', 'notes')) {
+            if (! Schema::hasColumn('magazines', 'notes')) {
                 $table->text('notes')->nullable();
             }
-            if (!Schema::hasColumn('magazines', 'deleted_at')) {
+            if (! Schema::hasColumn('magazines', 'deleted_at')) {
                 $table->softDeletes();
             }
         });
@@ -54,7 +54,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        if (!Schema::hasTable('magazines')) {
+        if (! Schema::hasTable('magazines')) {
             return;
         }
 
@@ -74,7 +74,7 @@ return new class extends Migration
                 Schema::hasColumn('magazines', 'deleted_at') ? 'deleted_at' : null,
             ]));
 
-            if (!empty($drop)) {
+            if (! empty($drop)) {
                 $table->dropColumn($drop);
             }
         });

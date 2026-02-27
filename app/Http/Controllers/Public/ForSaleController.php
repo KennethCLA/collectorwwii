@@ -18,7 +18,7 @@ class ForSaleController extends Controller
     public function index(Request $request)
     {
         $type = $request->query('type', 'all');
-        $q    = trim((string) $request->query('q', ''));
+        $q = trim((string) $request->query('q', ''));
         $sort = $request->query('sort', 'title_asc');
 
         $searchMatches = static function (string $title, string $search): bool {
@@ -207,12 +207,12 @@ class ForSaleController extends Controller
 
         // sort
         $forSale = match ($sort) {
-            'title_desc' => $forSale->sortByDesc(fn($x) => mb_strtolower($x['title'])),
-            'price_asc' => $forSale->sortBy(fn($x) => $x['price'] ?? 999999999),
-            'price_desc' => $forSale->sortByDesc(fn($x) => $x['price'] ?? -1),
-            'created_at_asc' => $forSale->sortBy(fn($x) => $x['created_at'] ?? now()),
-            'created_at_desc' => $forSale->sortByDesc(fn($x) => $x['created_at'] ?? now()),
-            default => $forSale->sortBy(fn($x) => mb_strtolower($x['title'])),
+            'title_desc' => $forSale->sortByDesc(fn ($x) => mb_strtolower($x['title'])),
+            'price_asc' => $forSale->sortBy(fn ($x) => $x['price'] ?? 999999999),
+            'price_desc' => $forSale->sortByDesc(fn ($x) => $x['price'] ?? -1),
+            'created_at_asc' => $forSale->sortBy(fn ($x) => $x['created_at'] ?? now()),
+            'created_at_desc' => $forSale->sortByDesc(fn ($x) => $x['created_at'] ?? now()),
+            default => $forSale->sortBy(fn ($x) => mb_strtolower($x['title'])),
         };
 
         $forSale = $forSale->values();

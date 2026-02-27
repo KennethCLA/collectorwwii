@@ -1,23 +1,24 @@
 <?php
+
 // app/Http/Controllers/Admin/BookController.php
 
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Author;
 use App\Models\Book;
 use App\Models\BookCover;
-use App\Models\BookTopic;
 use App\Models\BookSeries;
+use App\Models\BookTopic;
 use App\Models\Location;
 use App\Models\MediaFile;
 use App\Models\Origin;
-use App\Models\Author;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
@@ -110,16 +111,16 @@ class BookController extends Controller
             'translator' => ['nullable', 'string', 'max:255'],
             'pages' => ['nullable', 'integer', 'min:1'],
 
-            'copyright_year' => ['nullable', 'integer', 'min:1000', 'max:' . date('Y')],
+            'copyright_year' => ['nullable', 'integer', 'min:1000', 'max:'.date('Y')],
             'issue_number' => ['nullable', 'string', 'max:255'],
-            'issue_year' => ['nullable', 'integer', 'min:1000', 'max:' . date('Y')],
+            'issue_year' => ['nullable', 'integer', 'min:1000', 'max:'.date('Y')],
 
             'topic_id' => ['nullable', 'exists:book_topics,id'],
             'series_id' => ['nullable', 'exists:book_series,id'],
             'series_number' => ['nullable', 'string', 'max:255'],
             'cover_id' => ['nullable', 'exists:book_covers,id'],
 
-            'copyright_year_first_issue' => ['nullable', 'integer', 'min:1000', 'max:' . date('Y')],
+            'copyright_year_first_issue' => ['nullable', 'integer', 'min:1000', 'max:'.date('Y')],
             'publisher_name' => ['nullable', 'string', 'max:255'],
             'publisher_first_issue' => ['nullable', 'string', 'max:255'],
 
@@ -130,7 +131,7 @@ class BookController extends Controller
             'location_id' => ['nullable', 'exists:locations,id'],
 
             'for_sale' => ['nullable', 'boolean'],
-            'selling_price' => ['nullable', 'numeric', 'min:0', Rule::requiredIf(fn() => $request->boolean('for_sale'))],
+            'selling_price' => ['nullable', 'numeric', 'min:0', Rule::requiredIf(fn () => $request->boolean('for_sale'))],
 
             'weight' => ['nullable', 'integer', 'min:0'],
             'width' => ['nullable', 'integer', 'min:0'],
@@ -151,12 +152,12 @@ class BookController extends Controller
 
     private function normalize(array $validated, Request $request): array
     {
-        $isbn = trim((string)($validated['isbn'] ?? ''));
+        $isbn = trim((string) ($validated['isbn'] ?? ''));
         $isbn = $isbn !== '' ? preg_replace('/[\s-]+/', '', $isbn) : null;
         $validated['isbn'] = $isbn;
 
         $validated['for_sale'] = (bool) $request->boolean('for_sale');
-        if (!$validated['for_sale']) {
+        if (! $validated['for_sale']) {
             $validated['selling_price'] = null;
         }
 
@@ -195,7 +196,7 @@ class BookController extends Controller
                                 'isbn' => $isbn,
                                 'title' => data_get($info, 'title'),
                                 'subtitle' => data_get($info, 'subtitle'),
-                                'authors' => ($a = data_get($info, 'authors')) ? implode(', ', (array)$a) : null,
+                                'authors' => ($a = data_get($info, 'authors')) ? implode(', ', (array) $a) : null,
                                 'publisher_name' => data_get($info, 'publisher'),
                                 'copyright_year' => $publishedDate ? (int) substr((string) $publishedDate, 0, 4) : null,
                                 'pages' => data_get($info, 'pageCount'),
@@ -269,19 +270,19 @@ class BookController extends Controller
                     $nextSort = 0;
 
                     foreach ($imageUploads as $i => $uploaded) {
-                        $filename = (string) \Illuminate\Support\Str::uuid() . '.' . $uploaded->extension();
+                        $filename = (string) \Illuminate\Support\Str::uuid().'.'.$uploaded->extension();
                         $path = $uploaded->storeAs($folderBase, $filename, $disk);
                         $uploadedForCleanup[] = [$disk, $path];
 
                         $book->media()->create([
-                            'disk'          => $disk,
-                            'path'          => $path,
-                            'mime_type'     => $uploaded->getMimeType(),
-                            'size'          => $uploaded->getSize(),
+                            'disk' => $disk,
+                            'path' => $path,
+                            'mime_type' => $uploaded->getMimeType(),
+                            'size' => $uploaded->getSize(),
                             'original_name' => $uploaded->getClientOriginalName(),
-                            'collection'    => 'images',
-                            'is_main'       => ($i === $mainIndex),
-                            'sort_order'    => $nextSort++,
+                            'collection' => 'images',
+                            'is_main' => ($i === $mainIndex),
+                            'sort_order' => $nextSort++,
                         ]);
                     }
 
@@ -308,19 +309,19 @@ class BookController extends Controller
                 // PDFs
                 $pdfUploads = $request->file('pdfs', []);
                 foreach ($pdfUploads as $uploaded) {
-                    $filename = (string) \Illuminate\Support\Str::uuid() . '.' . $uploaded->extension();
+                    $filename = (string) \Illuminate\Support\Str::uuid().'.'.$uploaded->extension();
                     $path = $uploaded->storeAs($folderBase, $filename, $disk);
                     $uploadedForCleanup[] = [$disk, $path];
 
                     $book->media()->create([
-                        'disk'          => $disk,
-                        'path'          => $path,
-                        'mime_type'     => $uploaded->getMimeType(),
-                        'size'          => $uploaded->getSize(),
+                        'disk' => $disk,
+                        'path' => $path,
+                        'mime_type' => $uploaded->getMimeType(),
+                        'size' => $uploaded->getSize(),
                         'original_name' => $uploaded->getClientOriginalName(),
-                        'collection'    => 'files',
-                        'is_main'       => false,
-                        'sort_order'    => null,
+                        'collection' => 'files',
+                        'is_main' => false,
+                        'sort_order' => null,
                     ]);
                 }
 
@@ -423,8 +424,8 @@ class BookController extends Controller
     private function parseAuthorNames(string $authors): array
     {
         return collect(explode(',', $authors))
-            ->map(fn($n) => trim($n))
-            ->filter(fn($n) => $n !== '')
+            ->map(fn ($n) => trim($n))
+            ->filter(fn ($n) => $n !== '')
             ->unique()
             ->values()
             ->all();
@@ -433,7 +434,7 @@ class BookController extends Controller
     private function syncAuthorsByNames(Book $book, array $authorNames): void
     {
         $authorIds = collect($authorNames)
-            ->map(fn($name) => Author::firstOrCreate(['name' => $name])->id)
+            ->map(fn ($name) => Author::firstOrCreate(['name' => $name])->id)
             ->all();
 
         $book->authors()->sync($authorIds);

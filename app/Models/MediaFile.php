@@ -1,4 +1,5 @@
 <?php
+
 // app/Models/MediaFile.php
 
 namespace App\Models;
@@ -35,6 +36,7 @@ class MediaFile extends Model
     public function url(): string
     {
         $path = ltrim((string) $this->path, '/');
+
         return Storage::disk($this->disk)->url($path);
     }
 

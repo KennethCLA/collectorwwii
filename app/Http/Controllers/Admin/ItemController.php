@@ -8,7 +8,6 @@ use App\Models\ItemCategory;
 use App\Models\ItemNationality;
 use App\Models\ItemOrganization;
 use App\Models\Origin;
-use App\Models\MediaFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -64,7 +63,7 @@ class ItemController extends Controller
                 case 'created_at_desc':
                     $query->orderBy('created_at', 'desc');
                     break;
-                // Je kunt hier extra cases toevoegen, bijvoorbeeld sorteren op 'category' of 'origin' etc.
+                    // Je kunt hier extra cases toevoegen, bijvoorbeeld sorteren op 'category' of 'origin' etc.
                 default:
                     // Geen extra sortering
                     break;
@@ -88,8 +87,8 @@ class ItemController extends Controller
     public function create()
     {
         return view('admin.items.create', [
-            'categories'    => ItemCategory::orderBy('name')->get(),
-            'origins'       => Origin::orderBy('name')->get(),
+            'categories' => ItemCategory::orderBy('name')->get(),
+            'origins' => Origin::orderBy('name')->get(),
             'nationalities' => ItemNationality::orderBy('name')->get(),
             'organizations' => ItemOrganization::orderBy('name')->get(),
         ]);
@@ -98,19 +97,19 @@ class ItemController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title'           => 'required|string|max:255',
-            'description'     => 'nullable|string',
-            'category_id'     => 'nullable|exists:item_categories,id',
-            'origin_id'       => 'nullable|exists:origins,id',
-            'nationality_id'  => 'nullable|exists:item_nationalities,id',
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'category_id' => 'nullable|exists:item_categories,id',
+            'origin_id' => 'nullable|exists:origins,id',
+            'nationality_id' => 'nullable|exists:item_nationalities,id',
             'organization_id' => 'nullable|exists:item_organizations,id',
-            'for_sale'        => 'nullable|boolean',
-            'selling_price'   => 'nullable|numeric|min:0',
-            'purchase_date'   => 'nullable|date',
-            'purchase_price'  => 'nullable|numeric|min:0',
+            'for_sale' => 'nullable|boolean',
+            'selling_price' => 'nullable|numeric|min:0',
+            'purchase_date' => 'nullable|date',
+            'purchase_price' => 'nullable|numeric|min:0',
             'purchase_location' => 'nullable|string|max:255',
-            'storage_location'  => 'nullable|string|max:255',
-            'notes'           => 'nullable|string',
+            'storage_location' => 'nullable|string|max:255',
+            'notes' => 'nullable|string',
         ]);
 
         $validated['for_sale'] = $request->boolean('for_sale');
@@ -141,19 +140,19 @@ class ItemController extends Controller
     public function update(Request $request, Item $item)
     {
         $validated = $request->validate([
-            'title'             => 'required|string|max:255',
-            'description'       => 'nullable|string',
-            'category_id'       => 'nullable|exists:item_categories,id',
-            'origin_id'         => 'nullable|exists:origins,id',
-            'nationality_id'    => 'nullable|exists:item_nationalities,id',
-            'organization_id'   => 'nullable|exists:item_organizations,id',
-            'for_sale'          => 'nullable|boolean',
-            'selling_price'     => 'nullable|numeric|min:0',
-            'purchase_date'     => 'nullable|date',
-            'purchase_price'    => 'nullable|numeric|min:0',
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'category_id' => 'nullable|exists:item_categories,id',
+            'origin_id' => 'nullable|exists:origins,id',
+            'nationality_id' => 'nullable|exists:item_nationalities,id',
+            'organization_id' => 'nullable|exists:item_organizations,id',
+            'for_sale' => 'nullable|boolean',
+            'selling_price' => 'nullable|numeric|min:0',
+            'purchase_date' => 'nullable|date',
+            'purchase_price' => 'nullable|numeric|min:0',
             'purchase_location' => 'nullable|string|max:255',
-            'storage_location'  => 'nullable|string|max:255',
-            'notes'             => 'nullable|string',
+            'storage_location' => 'nullable|string|max:255',
+            'notes' => 'nullable|string',
         ]);
 
         $validated['for_sale'] = $request->boolean('for_sale');
@@ -173,7 +172,7 @@ class ItemController extends Controller
             }
         }
 
-        Storage::disk('b2')->deleteDirectory('items/' . $item->id);
+        Storage::disk('b2')->deleteDirectory('items/'.$item->id);
 
         $item->media()->delete();
         $item->delete();
