@@ -80,7 +80,7 @@
                                 class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
                                 <option value="">—</option>
                                 @foreach($categories as $c)
-                                <option value="{{ $c->id }}" @selected(old('category_id')==(string)$c->id)>{{ $c->name }}</option>
+                                <option value="{{ $c->id }}" @selected((string)$val('category_id')===(string)$c->id)>{{ $c->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -92,7 +92,7 @@
                                 class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
                                 <option value="">—</option>
                                 @foreach($nationalities as $n)
-                                <option value="{{ $n->id }}" @selected(old('nationality_id')==(string)$n->id)>{{ $n->name }}</option>
+                                <option value="{{ $n->id }}" @selected((string)$val('nationality_id')===(string)$n->id)>{{ $n->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -104,7 +104,7 @@
                                 class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
                                 <option value="">—</option>
                                 @foreach($organizations as $o)
-                                <option value="{{ $o->id }}" @selected(old('organization_id')==(string)$o->id)>{{ $o->name }}</option>
+                                <option value="{{ $o->id }}" @selected((string)$val('organization_id')===(string)$o->id)>{{ $o->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -156,7 +156,7 @@
                                 class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
                                 <option value="">—</option>
                                 @foreach($origins as $o)
-                                <option value="{{ $o->id }}" @selected(old('origin_id')==(string)$o->id)>{{ $o->name }}</option>
+                                <option value="{{ $o->id }}" @selected((string)$val('origin_id')===(string)$o->id)>{{ $o->name }}</option>
                                 @endforeach
                             </select>
                         </div>
