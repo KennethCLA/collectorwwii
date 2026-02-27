@@ -202,6 +202,38 @@
                         </ul>
                         @endif
                     </div>
+                    {{-- FOR SALE --}}
+                    @php $forSale = request('for_sale', null); @endphp
+
+                    <div class="mt-6">
+                        <div class="sticky top-0 z-10 -mx-4 px-4 py-2 bg-[#697367] border-b border-black/20 shadow-sm">
+                            <h2 class="text-lg font-bold">Status</h2>
+                        </div>
+                        <ul class="mt-2 text-sm space-y-1">
+                            <li class="relative after:block after:mx-3 after:border-b after:border-white/10">
+                                <a href="{{ route('books.index', collect(request()->query())->except(['for_sale','page'])->all()) }}"
+                                    class="block rounded px-2 py-1 hover:bg-white/10 hover:underline
+                                        {{ !request()->filled('for_sale') ? 'bg-white/15 font-semibold ring-1 ring-white/30' : '' }}">
+                                    All
+                                </a>
+                            </li>
+                            <li class="relative after:block after:mx-3 after:border-b after:border-white/10">
+                                <a href="{{ route('books.index', array_merge(request()->query(), ['for_sale' => 1, 'page' => 1])) }}"
+                                    class="block rounded px-2 py-1 hover:bg-white/10 hover:underline
+                                        {{ $forSale === '1' ? 'bg-white/15 font-semibold ring-1 ring-white/30' : '' }}">
+                                    For sale
+                                </a>
+                            </li>
+                            <li class="relative after:block after:mx-3 after:border-b after:border-white/10">
+                                <a href="{{ route('books.index', array_merge(request()->query(), ['for_sale' => 0, 'page' => 1])) }}"
+                                    class="block rounded px-2 py-1 hover:bg-white/10 hover:underline
+                                        {{ $forSale === '0' ? 'bg-white/15 font-semibold ring-1 ring-white/30' : '' }}">
+                                    Not for sale
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
                 </div>
             </aside>
 
@@ -224,6 +256,7 @@
                                 @if(request()->filled('topic')) <input type="hidden" name="topic" value="{{ request('topic') }}"> @endif
                                 @if(request()->filled('series')) <input type="hidden" name="series" value="{{ request('series') }}"> @endif
                                 @if(request()->filled('cover')) <input type="hidden" name="cover" value="{{ request('cover') }}"> @endif
+                                @if(request()->filled('for_sale')) <input type="hidden" name="for_sale" value="{{ request('for_sale') }}"> @endif
 
                                 <select name="sort"
                                     class="p-2 rounded-md border text-white border-gray-300 bg-[#565e55] min-w-[150px]"
@@ -244,6 +277,7 @@
                                 @if(request()->filled('topic')) <input type="hidden" name="topic" value="{{ request('topic') }}"> @endif
                                 @if(request()->filled('series')) <input type="hidden" name="series" value="{{ request('series') }}"> @endif
                                 @if(request()->filled('cover')) <input type="hidden" name="cover" value="{{ request('cover') }}"> @endif
+                                @if(request()->filled('for_sale')) <input type="hidden" name="for_sale" value="{{ request('for_sale') }}"> @endif
 
                                 <div class="relative w-full sm:w-[320px]">
                                     <input type="text"
@@ -277,7 +311,8 @@
                 || request()->filled('sort')
                 || request()->filled('topic')
                 || request()->filled('series')
-                || request()->filled('cover');
+                || request()->filled('cover')
+                || request()->filled('for_sale');
 
                 $remove = fn($key) => route('books.index', collect($q)->except([$key, 'page'])->all());
                 $clearAll = route('books.index');
@@ -295,9 +330,10 @@
                 $sortLabel = $sortLabels[request('sort')] ?? request('sort');
 
                 // Resolve ids -> names using collections you already have on the page
-                $topicName = request()->filled('topic') ? optional($topics->firstWhere('id', (int) request('topic')))->name : null;
-                $seriesName = request()->filled('series') ? optional($series->firstWhere('id', (int) request('series')))->name : null;
-                $coverName = request()->filled('cover') ? optional($covers->firstWhere('id', (int) request('cover')))->name : null;
+                $topicName   = request()->filled('topic')    ? optional($topics->firstWhere('id',  (int) request('topic')))->name   : null;
+                $seriesName  = request()->filled('series')   ? optional($series->firstWhere('id',  (int) request('series')))->name  : null;
+                $coverName   = request()->filled('cover')    ? optional($covers->firstWhere('id',  (int) request('cover')))->name   : null;
+                $forSaleName = request()->filled('for_sale') ? (request('for_sale') === '1' ? 'For sale' : 'Not for sale')         : null;
                 @endphp
 
                 @if($hasFilters)
@@ -344,6 +380,14 @@
                     </a>
                     @endif
 
+                    @if(request()->filled('for_sale'))
+                    <a href="{{ $remove('for_sale') }}"
+                        class="inline-flex items-center gap-2 text-sm bg-[#697367] hover:bg-[#5a6452] rounded-full px-3 py-1">
+                        <span>Status: {{ $forSaleName ?? 'Unknown' }}</span>
+                        <span class="text-white/80">×</span>
+                    </a>
+                    @endif
+
                     <a href="{{ $clearAll }}"
                         class="ml-auto text-sm underline text-white/90 hover:text-white">
                         Clear all
@@ -360,7 +404,8 @@
                 || request()->filled('sort')
                 || request()->filled('topic')
                 || request()->filled('series')
-                || request()->filled('cover');
+                || request()->filled('cover')
+                || request()->filled('for_sale');
                 @endphp
 
                 <div class="mb-3 flex items-center justify-between">

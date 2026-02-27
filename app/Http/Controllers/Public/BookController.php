@@ -65,6 +65,11 @@ class BookController extends Controller
             // $booksQuery->whereHas('covers', fn ($q) => $q->where('book_covers.id', $coverId));
         }
 
+        // FOR SALE filter
+        if ($request->filled('for_sale')) {
+            $booksQuery->where('for_sale', (bool) $request->input('for_sale'));
+        }
+
         // SORT (whitelist + echte author sort)
         $sort = $request->input('sort', 'title_asc');
 
