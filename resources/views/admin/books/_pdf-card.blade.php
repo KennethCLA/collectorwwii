@@ -44,7 +44,7 @@ $title = $pdf->original_name
             </a>
             @endif
 
-            <form action="{{ route('admin.media.destroy', ['type' => 'books', 'file' => $pdf->id]) }}"
+            <form action="{{ route('admin.media.destroy', ['type' => $type ?? 'books', 'file' => $pdf->id]) }}"
                 method="POST"
                 onsubmit="return confirm('Delete this file?');">
                 @csrf

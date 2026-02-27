@@ -30,7 +30,7 @@ $url = $img->url();
             Main
         </span>
         @else
-        <form action="{{ route('admin.media.main', ['type' => 'books', 'file' => $img->id]) }}" method="POST" class="m-0">
+        <form action="{{ route('admin.media.main', ['type' => $type ?? 'books', 'file' => $img->id]) }}" method="POST" class="m-0">
             @csrf
             @method('PATCH')
             <button type="submit"
@@ -43,7 +43,7 @@ $url = $img->url();
         <div></div>
 
         {{-- RIGHT: Delete --}}
-        <form action="{{ route('admin.media.destroy', ['type' => 'books', 'file' => $img->id]) }}"
+        <form action="{{ route('admin.media.destroy', ['type' => $type ?? 'books', 'file' => $img->id]) }}"
             method="POST"
             onsubmit="return confirm('Delete this file?');"
             class="m-0">

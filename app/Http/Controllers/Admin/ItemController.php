@@ -127,7 +127,7 @@ class ItemController extends Controller
 
     public function edit(Item $item)
     {
-        $item->load(['images']); // en eventueel andere relaties later
+        $item->load(['images', 'files']);
 
         return view('items.edit', [
             'item' => $item,
@@ -141,12 +141,22 @@ class ItemController extends Controller
     public function update(Request $request, Item $item)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'category_id' => 'nullable|exists:item_categories,id',
-            'origin_id' => 'nullable|exists:origins,id',
-            'nationality_id' => 'nullable|exists:item_nationalities,id',
-            'organization_id' => 'nullable|exists:item_organizations,id',
+            'title'             => 'required|string|max:255',
+            'description'       => 'nullable|string',
+            'category_id'       => 'nullable|exists:item_categories,id',
+            'origin_id'         => 'nullable|exists:origins,id',
+            'nationality_id'    => 'nullable|exists:item_nationalities,id',
+            'organization_id'   => 'nullable|exists:item_organizations,id',
+            'for_sale'          => 'nullable|boolean',
+            'selling_price'     => 'nullable|numeric|min:0',
+            'purchase_date'     => 'nullable|date',
+            'purchase_price'    => 'nullable|numeric|min:0',
+            'purchase_location' => 'nullable|string|max:255',
+            'storage_location'  => 'nullable|string|max:255',
+            'notes'             => 'nullable|string',
         ]);
+
+        $validated['for_sale'] = $request->boolean('for_sale');
 
         $item->update($validated);
 
