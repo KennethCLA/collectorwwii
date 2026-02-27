@@ -56,8 +56,8 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
 @endphp
 
 {{-- ISBN --}}
-<div class="flex items-center space-x-4">
-    <label for="isbn" class="w-32 text-sm font-medium text-gray-300">ISBN</label>
+<div class="grid grid-cols-1 sm:grid-cols-[8rem_1fr_auto] gap-1 sm:gap-x-4 sm:items-center">
+    <label for="isbn" class="text-sm font-medium text-gray-300">ISBN</label>
 
     <input
         type="text"
@@ -68,15 +68,15 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
 
     @unless($isEdit)
     <button type="button" id="search-isbn"
-        class="w-32 bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-700">
+        class="bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-700">
         Search ISBN
     </button>
     @endunless
 </div>
 
 {{-- Title --}}
-<div class="flex items-center space-x-4">
-    <label for="title" class="w-32 text-sm font-medium text-gray-700">Title</label>
+<div class="grid grid-cols-1 sm:grid-cols-[8rem_1fr] gap-1 sm:gap-x-4 sm:items-center">
+    <label for="title" class="text-sm font-medium text-gray-700">Title</label>
     <input
         type="text"
         id="title"
@@ -87,8 +87,8 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
 </div>
 
 {{-- Subtitle --}}
-<div class="flex items-center space-x-4">
-    <label for="subtitle" class="w-32 text-sm font-medium text-gray-700">Subtitle</label>
+<div class="grid grid-cols-1 sm:grid-cols-[8rem_1fr] gap-1 sm:gap-x-4 sm:items-center">
+    <label for="subtitle" class="text-sm font-medium text-gray-700">Subtitle</label>
     <input
         type="text"
         id="subtitle"
@@ -98,8 +98,8 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
 </div>
 
 {{-- Authors --}}
-<div class="flex items-center space-x-4">
-    <label for="authors" class="w-32 text-sm font-medium text-gray-700">Author(s)</label>
+<div class="grid grid-cols-1 sm:grid-cols-[8rem_1fr] gap-1 sm:gap-x-4 sm:items-center">
+    <label for="authors" class="text-sm font-medium text-gray-700">Author(s)</label>
     <input
         type="text"
         id="authors"
@@ -110,8 +110,8 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
 </div>
 
 {{-- Topic --}}
-<div class="flex items-center space-x-4">
-    <label for="topic_id" class="w-32 text-sm font-medium text-gray-700">Topic</label>
+<div class="grid grid-cols-1 sm:grid-cols-[8rem_1fr_auto] gap-1 sm:gap-x-4 sm:items-center">
+    <label for="topic_id" class="text-sm font-medium text-gray-700">Topic</label>
 
     <select id="topic_id" name="topic_id"
         class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]">
@@ -125,14 +125,14 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
     </select>
 
     <button type="button" data-add-option="/topics/ajax/store" data-select-id="topic_id"
-        class="w-32 bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-700">
+        class="bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-700">
         Add Topic
     </button>
 </div>
 
 {{-- Publisher --}}
-<div class="flex items-center space-x-4">
-    <label for="publisher_name" class="w-32 text-sm font-medium text-gray-700">Publisher</label>
+<div class="grid grid-cols-1 sm:grid-cols-[8rem_1fr] gap-1 sm:gap-x-4 sm:items-center">
+    <label for="publisher_name" class="text-sm font-medium text-gray-700">Publisher</label>
     <input
         type="text"
         id="publisher_name"
@@ -142,8 +142,8 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
 </div>
 
 {{-- Copyright Year --}}
-<div class="flex items-center space-x-4">
-    <label for="copyright_year" class="w-32 text-sm font-medium text-gray-700">Copyright Year</label>
+<div class="grid grid-cols-1 sm:grid-cols-[8rem_1fr] gap-1 sm:gap-x-4 sm:items-center">
+    <label for="copyright_year" class="text-sm font-medium text-gray-700">Copyright Year</label>
     <input
         type="number"
         id="copyright_year"
@@ -153,8 +153,8 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
 </div>
 
 {{-- Translator --}}
-<div class="flex items-center space-x-4">
-    <label for="translator" class="w-32 text-sm font-medium text-gray-700">Translator</label>
+<div class="grid grid-cols-1 sm:grid-cols-[8rem_1fr] gap-1 sm:gap-x-4 sm:items-center">
+    <label for="translator" class="text-sm font-medium text-gray-700">Translator</label>
     <input
         type="text"
         id="translator"
@@ -164,8 +164,8 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
 </div>
 
 {{-- Issue Number --}}
-<div class="flex items-center space-x-4">
-    <label for="issue_number" class="w-32 text-sm font-medium text-gray-700">Issue Number</label>
+<div class="grid grid-cols-1 sm:grid-cols-[8rem_1fr] gap-1 sm:gap-x-4 sm:items-center">
+    <label for="issue_number" class="text-sm font-medium text-gray-700">Issue Number</label>
     <input
         type="text"
         id="issue_number"
@@ -175,8 +175,8 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
 </div>
 
 {{-- Issue Year --}}
-<div class="flex items-center space-x-4">
-    <label for="issue_year" class="w-32 text-sm font-medium text-gray-700">Issue Year</label>
+<div class="grid grid-cols-1 sm:grid-cols-[8rem_1fr] gap-1 sm:gap-x-4 sm:items-center">
+    <label for="issue_year" class="text-sm font-medium text-gray-700">Issue Year</label>
     <input
         type="number"
         id="issue_year"
@@ -186,8 +186,8 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
 </div>
 
 {{-- Series --}}
-<div class="flex items-center space-x-4">
-    <label for="series_id" class="w-32 text-sm font-medium text-gray-700">Series</label>
+<div class="grid grid-cols-1 sm:grid-cols-[8rem_1fr_auto] gap-1 sm:gap-x-4 sm:items-center">
+    <label for="series_id" class="text-sm font-medium text-gray-700">Series</label>
 
     <select id="series_id" name="series_id"
         class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]">
@@ -201,14 +201,14 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
     </select>
 
     <button type="button" data-add-option="/series/ajax/store" data-select-id="series_id"
-        class="w-32 bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-700">
+        class="bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-700">
         Add Series
     </button>
 </div>
 
 {{-- Series Number --}}
-<div class="flex items-center space-x-4">
-    <label for="series_number" class="w-32 text-sm font-medium text-gray-700">Series Number</label>
+<div class="grid grid-cols-1 sm:grid-cols-[8rem_1fr] gap-1 sm:gap-x-4 sm:items-center">
+    <label for="series_number" class="text-sm font-medium text-gray-700">Series Number</label>
     <input
         type="text"
         id="series_number"
@@ -218,8 +218,8 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
 </div>
 
 {{-- Cover --}}
-<div class="flex items-center space-x-4">
-    <label for="cover_id" class="w-32 text-sm font-medium text-gray-700">Cover</label>
+<div class="grid grid-cols-1 sm:grid-cols-[8rem_1fr_auto] gap-1 sm:gap-x-4 sm:items-center">
+    <label for="cover_id" class="text-sm font-medium text-gray-700">Cover</label>
 
     <select id="cover_id" name="cover_id"
         class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]">
@@ -233,14 +233,14 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
     </select>
 
     <button type="button" data-add-option="/covers/ajax/store" data-select-id="cover_id"
-        class="w-32 bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-700">
+        class="bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-700">
         Add Cover
     </button>
 </div>
 
 {{-- Pages --}}
-<div class="flex items-center space-x-4">
-    <label for="pages" class="w-32 text-sm font-medium text-gray-700">Pages</label>
+<div class="grid grid-cols-1 sm:grid-cols-[8rem_1fr] gap-1 sm:gap-x-4 sm:items-center">
+    <label for="pages" class="text-sm font-medium text-gray-700">Pages</label>
     <input
         type="number"
         id="pages"
@@ -250,8 +250,8 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
 </div>
 
 {{-- Title (First Edition) --}}
-<div class="flex items-center space-x-4">
-    <label for="title_first_edition" class="w-32 text-sm font-medium text-gray-700">Title (First Edition)</label>
+<div class="grid grid-cols-1 sm:grid-cols-[8rem_1fr] gap-1 sm:gap-x-4 sm:items-center">
+    <label for="title_first_edition" class="text-sm font-medium text-gray-700">Title (First Edition)</label>
     <input
         type="text"
         id="title_first_edition"
@@ -261,8 +261,8 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
 </div>
 
 {{-- Subtitle (First Edition) --}}
-<div class="flex items-center space-x-4">
-    <label for="subtitle_first_edition" class="w-32 text-sm font-medium text-gray-700">Subtitle (First Edition)</label>
+<div class="grid grid-cols-1 sm:grid-cols-[8rem_1fr] gap-1 sm:gap-x-4 sm:items-center">
+    <label for="subtitle_first_edition" class="text-sm font-medium text-gray-700">Subtitle (First Edition)</label>
     <input
         type="text"
         id="subtitle_first_edition"
@@ -272,8 +272,8 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
 </div>
 
 {{-- Publisher (First Issue) --}}
-<div class="flex items-center space-x-4">
-    <label for="publisher_first_issue" class="w-32 text-sm font-medium text-gray-700">Publisher (First Issue)</label>
+<div class="grid grid-cols-1 sm:grid-cols-[8rem_1fr] gap-1 sm:gap-x-4 sm:items-center">
+    <label for="publisher_first_issue" class="text-sm font-medium text-gray-700">Publisher (First Issue)</label>
     <input
         type="text"
         id="publisher_first_issue"
@@ -283,8 +283,8 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
 </div>
 
 {{-- Copyright Year (First Edition) --}}
-<div class="flex items-center space-x-4">
-    <label for="copyright_year_first_issue" class="w-32 text-sm font-medium text-gray-700">
+<div class="grid grid-cols-1 sm:grid-cols-[8rem_1fr] gap-1 sm:gap-x-4 sm:items-center">
+    <label for="copyright_year_first_issue" class="text-sm font-medium text-gray-700">
         Copyright Year (First Edition)
     </label>
     <input
@@ -296,8 +296,8 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
 </div>
 
 {{-- Purchase Date --}}
-<div class="flex items-center space-x-4">
-    <label for="purchase_date" class="w-32 text-sm font-medium text-gray-700">Purchase Date</label>
+<div class="grid grid-cols-1 sm:grid-cols-[8rem_1fr] gap-1 sm:gap-x-4 sm:items-center">
+    <label for="purchase_date" class="text-sm font-medium text-gray-700">Purchase Date</label>
     <input
         type="date"
         id="purchase_date"
@@ -307,8 +307,8 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
 </div>
 
 {{-- Purchase Price --}}
-<div class="flex items-center space-x-4">
-    <label for="purchase_price" class="w-32 text-sm font-medium text-gray-700">Purchase Price</label>
+<div class="grid grid-cols-1 sm:grid-cols-[8rem_1fr] gap-1 sm:gap-x-4 sm:items-center">
+    <label for="purchase_price" class="text-sm font-medium text-gray-700">Purchase Price</label>
     <input
         type="number"
         step="0.01"
@@ -319,8 +319,8 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
 </div>
 
 {{-- Purchase Origin --}}
-<div class="flex items-center space-x-4">
-    <label for="origin_id" class="w-32 text-sm font-medium text-gray-700">Purchase Origin</label>
+<div class="grid grid-cols-1 sm:grid-cols-[8rem_1fr] gap-1 sm:gap-x-4 sm:items-center">
+    <label for="origin_id" class="text-sm font-medium text-gray-700">Purchase Origin</label>
     <select id="origin_id" name="origin_id"
         class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]">
         <option value="">—</option>
@@ -334,8 +334,8 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
 </div>
 
 {{-- Description --}}
-<div class="flex items-center space-x-4">
-    <label for="description" class="w-32 text-sm font-medium text-gray-700">Description</label>
+<div class="grid grid-cols-1 sm:grid-cols-[8rem_1fr] gap-1 sm:gap-x-4 sm:items-center">
+    <label for="description" class="text-sm font-medium text-gray-700">Description</label>
     <textarea
         id="description"
         name="description"
@@ -344,8 +344,8 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
 </div>
 
 {{-- Notes --}}
-<div class="flex items-center space-x-4">
-    <label for="notes" class="w-32 text-sm font-medium text-gray-700">Notes</label>
+<div class="grid grid-cols-1 sm:grid-cols-[8rem_1fr] gap-1 sm:gap-x-4 sm:items-center">
+    <label for="notes" class="text-sm font-medium text-gray-700">Notes</label>
     <textarea
         id="notes"
         name="notes"
@@ -357,8 +357,8 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
 <div
     x-data="{ forSale: {{ $forSaleChecked ? 'true' : 'false' }}, sellingPrice: '{{ $sellingPriceVal }}' }"
     x-init="$watch('forSale', v => { if (!v) sellingPrice = '' })">
-    <div class="flex items-center space-x-4">
-        <label for="for_sale" class="w-32 text-sm font-medium text-gray-700">For Sale</label>
+    <div class="grid grid-cols-1 sm:grid-cols-[8rem_1fr] gap-1 sm:gap-x-4 sm:items-center">
+        <label for="for_sale" class="text-sm font-medium text-gray-700">For Sale</label>
         <input
             type="checkbox"
             id="for_sale"
@@ -368,8 +368,8 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
             {{ $forSaleChecked ? 'checked' : '' }} />
     </div>
 
-    <div x-show="forSale" x-cloak class="flex items-center space-x-4 mt-4">
-        <label for="selling_price" class="w-32 text-sm font-medium text-gray-700">Selling Price</label>
+    <div x-show="forSale" x-cloak class="grid grid-cols-1 sm:grid-cols-[8rem_1fr] gap-1 sm:gap-x-4 sm:items-center mt-4">
+        <label for="selling_price" class="text-sm font-medium text-gray-700">Selling Price</label>
         <input
             type="number"
             step="0.01"
@@ -381,8 +381,8 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
 </div>
 
 {{-- Weight --}}
-<div class="flex items-center space-x-4">
-    <label for="weight" class="w-32 text-sm font-medium text-gray-700">Weight</label>
+<div class="grid grid-cols-1 sm:grid-cols-[8rem_1fr] gap-1 sm:gap-x-4 sm:items-center">
+    <label for="weight" class="text-sm font-medium text-gray-700">Weight</label>
     <input
         type="number"
         id="weight"
@@ -392,8 +392,8 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
 </div>
 
 {{-- Dimensions --}}
-<div class="flex items-center space-x-4">
-    <label class="w-32 text-sm font-medium text-gray-700">Dimensions (W x H x T mm)</label>
+<div class="grid grid-cols-1 sm:grid-cols-[8rem_1fr] gap-1 sm:gap-x-4 sm:items-center">
+    <label class="text-sm font-medium text-gray-700">Dimensions (W x H x T mm)</label>
     <div class="flex-1 flex gap-2">
         <input type="number" name="width" placeholder="W"
             class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]"
@@ -408,8 +408,8 @@ $sellingPriceVal = old('selling_price', $book->selling_price ?? '');
 </div>
 
 {{-- Location --}}
-<div class="flex items-center space-x-4">
-    <label for="location_id" class="w-32 text-sm font-medium text-gray-700">Location</label>
+<div class="grid grid-cols-1 sm:grid-cols-[8rem_1fr_auto] gap-1 sm:gap-x-4 sm:items-center">
+    <label for="location_id" class="text-sm font-medium text-gray-700">Location</label>
 
     <select id="location_id" name="location_id"
         class="flex-1 p-2 border border-gray-900 rounded-md bg-[#565e55]">

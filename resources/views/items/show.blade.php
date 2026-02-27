@@ -37,7 +37,7 @@
         }
     </style>
 
-    <div class="w-full max-w-[2200px] mx-auto px-8 sm:px-12 lg:px-16 2xl:px-24">
+    <div class="w-full max-w-[2200px] mx-auto px-4 sm:px-8 lg:px-16 2xl:px-24">
         {{-- Breadcrumbs --}}
         <nav class="flex items-center gap-2 text-sm text-white/70 mb-10">
             <a href="{{ route('home') }}" class="hover:text-white hover:underline">Home</a>
