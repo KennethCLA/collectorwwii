@@ -47,38 +47,6 @@
             <span class="text-white font-medium">{{ $item->title }}</span>
         </nav>
 
-        @if($previousItem || $nextItem)
-        <div class="mb-10 flex items-center justify-between gap-3">
-            {{-- Previous --}}
-            <div class="w-1/2">
-                @if($previousItem)
-                <a href="{{ route('items.show', $previousItem) }}"
-                    class="group inline-flex w-full items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white hover:bg-white/10 transition">
-                    <span class="text-white/70 group-hover:text-white">←</span>
-                    <span class="min-w-0">
-                        <span class="block text-xs text-white/60">Previous</span>
-                        <span class="block truncate font-semibold">{{ $previousItem->title }}</span>
-                    </span>
-                </a>
-                @endif
-            </div>
-
-            {{-- Next --}}
-            <div class="w-1/2 text-right">
-                @if($nextItem)
-                <a href="{{ route('items.show', $nextItem) }}"
-                    class="group inline-flex w-full justify-end items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white hover:bg-white/10 transition">
-                    <span class="min-w-0 text-right">
-                        <span class="block text-xs text-white/60">Next</span>
-                        <span class="block truncate font-semibold">{{ $nextItem->title }}</span>
-                    </span>
-                    <span class="text-white/70 group-hover:text-white">→</span>
-                </a>
-                @endif
-            </div>
-        </div>
-        @endif
-
         <div class="item-layout">
             {{-- LEFT: MEDIA --}}
             <aside class="item-sticky sticky top-8 space-y-10">
@@ -203,41 +171,41 @@
                 <section class="bg-[#697367] text-white rounded-2xl shadow-lg border border-black/20 p-8 lg:p-10 mb-4">
                     <dl class="space-y-6">
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Category</dt>
-                            <dd class="text-white text-lg">{{ $item->category?->name ?? '—' }}</dd>
+                            <dt class="text-sm text-white/70 font-semibold">Category</dt>
+                            <dd class="text-white">{{ $item->category?->name ?? '—' }}</dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Nationality</dt>
-                            <dd class="text-white text-lg">{{ $item->nationality?->name ?? '—' }}</dd>
+                            <dt class="text-sm text-white/70 font-semibold">Nationality</dt>
+                            <dd class="text-white">{{ $item->nationality?->name ?? '—' }}</dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Origin</dt>
-                            <dd class="text-white text-lg">{{ $item->origin?->name ?? '—' }}</dd>
+                            <dt class="text-sm text-white/70 font-semibold">Origin</dt>
+                            <dd class="text-white">{{ $item->origin?->name ?? '—' }}</dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Organization</dt>
-                            <dd class="text-white text-lg">{{ $item->organization?->name ?? '—' }}</dd>
+                            <dt class="text-sm text-white/70 font-semibold">Organization</dt>
+                            <dd class="text-white">{{ $item->organization?->name ?? '—' }}</dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">For sale</dt>
-                            <dd class="text-white text-lg">{{ $item->for_sale ? 'Yes' : 'No' }}</dd>
+                            <dt class="text-sm text-white/70 font-semibold">For sale</dt>
+                            <dd class="text-white">{{ $item->for_sale ? 'Yes' : 'No' }}</dd>
                         </div>
 
                         @if($item->selling_price !== null)
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Selling price</dt>
-                            <dd class="text-white text-lg">{{ number_format($item->selling_price, 2, ',', '.') }}</dd>
+                            <dt class="text-sm text-white/70 font-semibold">Selling price</dt>
+                            <dd class="text-white">{{ number_format($item->selling_price, 2, ',', '.') }}</dd>
                         </div>
                         @endif
 
                         @if($item->current_price !== null)
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Current price</dt>
-                            <dd class="text-white text-lg">{{ number_format($item->current_price, 2, ',', '.') }}</dd>
+                            <dt class="text-sm text-white/70 font-semibold">Current price</dt>
+                            <dd class="text-white">{{ number_format($item->current_price, 2, ',', '.') }}</dd>
                         </div>
                         @endif
                     </dl>
@@ -252,31 +220,31 @@
 
                     <dl class="space-y-6">
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Purchase date</dt>
-                            <dd class="text-white text-lg">
+                            <dt class="text-sm text-white/70 font-semibold">Purchase date</dt>
+                            <dd class="text-white">
                                 {{ $item->purchase_date ? $item->purchase_date->format('d/m/Y') : '—' }}
                             </dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Purchase price</dt>
-                            <dd class="text-white text-lg">
+                            <dt class="text-sm text-white/70 font-semibold">Purchase price</dt>
+                            <dd class="text-white">
                                 {{ $item->purchase_price !== null ? number_format($item->purchase_price, 2, ',', '.') : '—' }}
                             </dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Purchase location</dt>
-                            <dd class="text-white text-lg">{{ $item->purchase_location ?: '—' }}</dd>
+                            <dt class="text-sm text-white/70 font-semibold">Purchase location</dt>
+                            <dd class="text-white">{{ $item->purchase_location ?: '—' }}</dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Storage location</dt>
-                            <dd class="text-white text-lg">{{ $item->storage_location ?: '—' }}</dd>
+                            <dt class="text-sm text-white/70 font-semibold">Storage location</dt>
+                            <dd class="text-white">{{ $item->storage_location ?: '—' }}</dd>
                         </div>
 
                         <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-xl text-white/70 font-semibold">Notes</dt>
+                            <dt class="text-sm text-white/70 font-semibold">Notes</dt>
                             <dd class="text-white/90 whitespace-pre-line">{{ $item->notes ?: '—' }}</dd>
                         </div>
 
@@ -307,5 +275,37 @@
                 @endcanany
             </div>
         </div>
+
+        @if($previousItem || $nextItem)
+        <div class="mb-10 mt-10 flex items-center justify-between gap-3">
+            {{-- Previous --}}
+            <div class="w-1/2">
+                @if($previousItem)
+                <a href="{{ route('items.show', $previousItem) }}"
+                    class="group inline-flex w-full items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white hover:bg-white/10 transition">
+                    <span class="text-white/70 group-hover:text-white">←</span>
+                    <span class="min-w-0">
+                        <span class="block text-xs text-white/60">Previous</span>
+                        <span class="block truncate font-semibold">{{ $previousItem->title }}</span>
+                    </span>
+                </a>
+                @endif
+            </div>
+
+            {{-- Next --}}
+            <div class="w-1/2 text-right">
+                @if($nextItem)
+                <a href="{{ route('items.show', $nextItem) }}"
+                    class="group inline-flex w-full justify-end items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white hover:bg-white/10 transition">
+                    <span class="min-w-0 text-right">
+                        <span class="block text-xs text-white/60">Next</span>
+                        <span class="block truncate font-semibold">{{ $nextItem->title }}</span>
+                    </span>
+                    <span class="text-white/70 group-hover:text-white">→</span>
+                </a>
+                @endif
+            </div>
+        </div>
+        @endif
     </div>
 </x-layout>
