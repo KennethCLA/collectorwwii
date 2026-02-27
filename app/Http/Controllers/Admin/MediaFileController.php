@@ -9,6 +9,7 @@ use App\Models\Book;
 use App\Models\Coin;
 use App\Models\Item;
 use App\Models\Magazine;
+use App\Models\MapLocation;
 use App\Models\Newspaper;
 use App\Models\Postcard;
 use App\Models\Stamp;
@@ -146,6 +147,21 @@ class MediaFileController extends Controller
                 ],
             ],
         ],
+        'map-locations' => [
+            'model' => MapLocation::class,
+            'disk'  => 'b2',
+            'folder' => 'map-locations',
+            'collections' => [
+                'images' => [
+                    'mimetypes' => 'image/jpeg,image/png,image/webp,image/gif,image/heic,image/heif',
+                    'max' => 51200,
+                ],
+                'files' => [
+                    'mimetypes' => 'application/pdf',
+                    'max' => 51200,
+                ],
+            ],
+        ],
     ];
 
     private function typeConfigOrFail(string $type): array
@@ -266,19 +282,8 @@ class MediaFileController extends Controller
         $wasMain = (bool) $file->is_main;
         $collection = $file->collection;
 
-        // Delete in storage (best effort, log result)
-        if ($file->path) {
-            $deleted = Storage::disk($file->disk)->delete($file->path);
-
-            Log::info('Media delete attempt', [
-                'disk' => $file->disk,
-                'path' => $file->path,
-                'deleted_return' => $deleted,
-                'media_id' => $file->id,
-                'attachable_type' => $file->attachable_type,
-                'attachable_id' => $file->attachable_id,
-            ]);
-        }
+        $filePath = $file->path;
+        $fileDisk = $file->disk;
 
         DB::transaction(function () use ($file, $cfg, $attachable, $wasMain, $collection) {
             $file->delete();
@@ -302,6 +307,20 @@ class MediaFileController extends Controller
                 }
             }
         });
+
+        // Delete from storage after successful DB transaction (best effort)
+        if ($filePath) {
+            $deleted = Storage::disk($fileDisk)->delete($filePath);
+
+            Log::info('Media delete attempt', [
+                'disk' => $fileDisk,
+                'path' => $filePath,
+                'deleted_return' => $deleted,
+                'media_id' => $file->id,
+                'attachable_type' => $file->attachable_type,
+                'attachable_id' => $file->attachable_id,
+            ]);
+        }
 
         return back()->with('success', 'File deleted.');
     }

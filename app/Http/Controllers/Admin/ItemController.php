@@ -87,7 +87,7 @@ class ItemController extends Controller
 
     public function create()
     {
-        return view('items.create', [
+        return view('admin.items.create', [
             'categories'    => ItemCategory::orderBy('name')->get(),
             'origins'       => Origin::orderBy('name')->get(),
             'nationalities' => ItemNationality::orderBy('name')->get(),
@@ -129,7 +129,7 @@ class ItemController extends Controller
     {
         $item->load(['images', 'files']);
 
-        return view('items.edit', [
+        return view('admin.items.edit', [
             'item' => $item,
             'categories' => ItemCategory::orderBy('name')->get(),
             'origins' => Origin::orderBy('name')->get(),
@@ -165,18 +165,17 @@ class ItemController extends Controller
 
     public function destroy(Item $item)
     {
-        $item->load(['images', 'files']);
+        $item->load('media');
 
-        foreach ($item->images as $img) {
-            if ($img->path) {
-                Storage::disk($img->disk)->delete($img->path);
+        foreach ($item->media as $file) {
+            if ($file->path) {
+                Storage::disk($file->disk)->delete($file->path);
             }
         }
 
         Storage::disk('b2')->deleteDirectory('items/' . $item->id);
 
-        $item->images()->delete();
-        $item->files()->delete();
+        $item->media()->delete();
         $item->delete();
 
         return redirect()->route('admin.items.index')->with('success', 'Item verwijderd!');
