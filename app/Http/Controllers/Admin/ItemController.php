@@ -117,7 +117,7 @@ class ItemController extends Controller
 
         $item = Item::create($validated);
 
-        return redirect()->route('items.edit', $item)->with('success', 'Item created. Upload images below.');
+        return redirect()->route('admin.items.edit', $item)->with('success', 'Item created. Upload images below.');
     }
 
     public function show(Item $item)
@@ -160,12 +160,12 @@ class ItemController extends Controller
 
         $item->update($validated);
 
-        return redirect()->route('items.edit', $item)->with('success', 'Item updated!');
+        return redirect()->route('admin.items.edit', $item)->with('success', 'Item updated!');
     }
 
     public function destroy(Item $item)
     {
-        $item->load('images');
+        $item->load(['images', 'files']);
 
         foreach ($item->images as $img) {
             if ($img->path) {
@@ -176,8 +176,9 @@ class ItemController extends Controller
         Storage::disk('b2')->deleteDirectory('items/' . $item->id);
 
         $item->images()->delete();
+        $item->files()->delete();
         $item->delete();
 
-        return redirect()->route('items.index')->with('success', 'Item verwijderd!');
+        return redirect()->route('admin.items.index')->with('success', 'Item verwijderd!');
     }
 }

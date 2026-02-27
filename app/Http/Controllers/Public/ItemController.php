@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Item;
 use App\Models\ItemCategory;
 use App\Models\ItemNationality;
-use App\Models\ItemOrigin;
+use App\Models\Origin;
 use App\Models\ItemOrganization;
 use Illuminate\Http\Request;
 
@@ -16,7 +16,7 @@ class ItemController extends Controller
     {
         $categories = ItemCategory::orderBy('name')->get();
         $nationalities = ItemNationality::orderBy('name')->get();
-        $origins = ItemOrigin::orderBy('name')->get();
+        $origins = Origin::orderBy('name')->get();
         $organizations = ItemOrganization::orderBy('name')->get();
 
         $itemsQuery = Item::query()
