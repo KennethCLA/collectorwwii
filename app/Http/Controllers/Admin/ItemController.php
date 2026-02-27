@@ -87,18 +87,33 @@ class ItemController extends Controller
 
     public function create()
     {
-        return view('items.create');
+        return view('items.create', [
+            'categories'    => ItemCategory::orderBy('name')->get(),
+            'origins'       => Origin::orderBy('name')->get(),
+            'nationalities' => ItemNationality::orderBy('name')->get(),
+            'organizations' => ItemOrganization::orderBy('name')->get(),
+        ]);
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'category_id' => 'nullable|exists:item_categories,id',
-            'origin_id' => 'nullable|exists:origins,id',
-            'nationality_id' => 'nullable|exists:item_nationalities,id',
+            'title'           => 'required|string|max:255',
+            'description'     => 'nullable|string',
+            'category_id'     => 'nullable|exists:item_categories,id',
+            'origin_id'       => 'nullable|exists:origins,id',
+            'nationality_id'  => 'nullable|exists:item_nationalities,id',
             'organization_id' => 'nullable|exists:item_organizations,id',
+            'for_sale'        => 'nullable|boolean',
+            'selling_price'   => 'nullable|numeric|min:0',
+            'purchase_date'   => 'nullable|date',
+            'purchase_price'  => 'nullable|numeric|min:0',
+            'purchase_location' => 'nullable|string|max:255',
+            'storage_location'  => 'nullable|string|max:255',
+            'notes'           => 'nullable|string',
         ]);
+
+        $validated['for_sale'] = $request->boolean('for_sale');
 
         $item = Item::create($validated);
 
