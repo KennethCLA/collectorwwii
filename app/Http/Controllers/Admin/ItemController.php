@@ -73,10 +73,10 @@ class ItemController extends Controller
 
         // 5. Paginatie
         //    Pas het getal (10) aan naar wens. Bijvoorbeeld 20, 50, 100...
-        $items = $query->paginate(500);
+        $items = $query->paginate(50);
 
         // 6. Retourneer de view met de resultaten en de benodigde filters
-        return view('items.index', [
+        return view('admin.items.index', [
             'items' => $items,
             'categories' => ItemCategory::all(),
             'origins' => Origin::orderBy('name')->get(),

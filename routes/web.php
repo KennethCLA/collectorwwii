@@ -1,11 +1,17 @@
 <?php
 // routes/web.php
 
+use App\Http\Controllers\Public\BanknoteController as PublicBanknoteController;
 use App\Http\Controllers\Public\BlogController;
+use App\Http\Controllers\Public\CoinController as PublicCoinController;
 use App\Http\Controllers\Public\ForSaleController;
+use App\Http\Controllers\Public\MagazineController as PublicMagazineController;
+use App\Http\Controllers\Public\NewspaperController as PublicNewspaperController;
+use App\Http\Controllers\Public\PostcardController as PublicPostcardController;
 use App\Http\Controllers\Public\SectionController;
 use App\Http\Controllers\Public\BookController as PublicBookController;
 use App\Http\Controllers\Public\ItemController as PublicItemController;
+use App\Http\Controllers\Public\StampController as PublicStampController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +38,30 @@ Route::get('/books/{book}', [PublicBookController::class, 'show'])->name('books.
 // PUBLIC: Items
 Route::get('/items', [PublicItemController::class, 'index'])->name('items.index');
 Route::get('/items/{item}', [PublicItemController::class, 'show'])->name('items.show');
+
+// PUBLIC: Magazines
+Route::get('/magazines', [PublicMagazineController::class, 'index'])->name('magazines.index');
+Route::get('/magazines/{magazine}', [PublicMagazineController::class, 'show'])->name('magazines.show');
+
+// PUBLIC: Newspapers
+Route::get('/newspapers', [PublicNewspaperController::class, 'index'])->name('newspapers.index');
+Route::get('/newspapers/{newspaper}', [PublicNewspaperController::class, 'show'])->name('newspapers.show');
+
+// PUBLIC: Banknotes
+Route::get('/banknotes', [PublicBanknoteController::class, 'index'])->name('banknotes.index');
+Route::get('/banknotes/{banknote}', [PublicBanknoteController::class, 'show'])->name('banknotes.show');
+
+// PUBLIC: Coins
+Route::get('/coins', [PublicCoinController::class, 'index'])->name('coins.index');
+Route::get('/coins/{coin}', [PublicCoinController::class, 'show'])->name('coins.show');
+
+// PUBLIC: Postcards
+Route::get('/postcards', [PublicPostcardController::class, 'index'])->name('postcards.index');
+Route::get('/postcards/{postcard}', [PublicPostcardController::class, 'show'])->name('postcards.show');
+
+// PUBLIC: Stamps
+Route::get('/stamps', [PublicStampController::class, 'index'])->name('stamps.index');
+Route::get('/stamps/{stamp}', [PublicStampController::class, 'show'])->name('stamps.show');
 
 Auth::routes();
 

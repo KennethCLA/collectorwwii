@@ -4,8 +4,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Banknote;
 use App\Models\Book;
+use App\Models\Coin;
 use App\Models\Item;
+use App\Models\Magazine;
+use App\Models\Newspaper;
+use App\Models\Postcard;
+use App\Models\Stamp;
 use App\Models\MediaFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -43,6 +49,100 @@ class MediaFileController extends Controller
                 'images' => [
                     'mimetypes' => 'image/jpeg,image/png,image/webp,image/gif,image/heic,image/heif',
                     'max' => 51200, // KB
+                ],
+                'files' => [
+                    'mimetypes' => 'application/pdf',
+                    'max' => 51200, // KB
+                ],
+            ],
+        ],
+        'banknotes' => [
+            'model' => Banknote::class,
+            'disk'  => 'b2',
+            'folder' => 'banknotes',
+            'collections' => [
+                'images' => [
+                    'mimetypes' => 'image/jpeg,image/png,image/webp,image/gif,image/heic,image/heif',
+                    'max' => 51200,
+                ],
+                'files' => [
+                    'mimetypes' => 'application/pdf',
+                    'max' => 51200,
+                ],
+            ],
+        ],
+        'coins' => [
+            'model' => Coin::class,
+            'disk'  => 'b2',
+            'folder' => 'coins',
+            'collections' => [
+                'images' => [
+                    'mimetypes' => 'image/jpeg,image/png,image/webp,image/gif,image/heic,image/heif',
+                    'max' => 51200,
+                ],
+                'files' => [
+                    'mimetypes' => 'application/pdf',
+                    'max' => 51200,
+                ],
+            ],
+        ],
+        'magazines' => [
+            'model' => Magazine::class,
+            'disk'  => 'b2',
+            'folder' => 'magazines',
+            'collections' => [
+                'images' => [
+                    'mimetypes' => 'image/jpeg,image/png,image/webp,image/gif,image/heic,image/heif',
+                    'max' => 51200,
+                ],
+                'files' => [
+                    'mimetypes' => 'application/pdf',
+                    'max' => 51200,
+                ],
+            ],
+        ],
+        'newspapers' => [
+            'model' => Newspaper::class,
+            'disk'  => 'b2',
+            'folder' => 'newspapers',
+            'collections' => [
+                'images' => [
+                    'mimetypes' => 'image/jpeg,image/png,image/webp,image/gif,image/heic,image/heif',
+                    'max' => 51200,
+                ],
+                'files' => [
+                    'mimetypes' => 'application/pdf',
+                    'max' => 51200,
+                ],
+            ],
+        ],
+        'postcards' => [
+            'model' => Postcard::class,
+            'disk'  => 'b2',
+            'folder' => 'postcards',
+            'collections' => [
+                'images' => [
+                    'mimetypes' => 'image/jpeg,image/png,image/webp,image/gif,image/heic,image/heif',
+                    'max' => 51200,
+                ],
+                'files' => [
+                    'mimetypes' => 'application/pdf',
+                    'max' => 51200,
+                ],
+            ],
+        ],
+        'stamps' => [
+            'model' => Stamp::class,
+            'disk'  => 'b2',
+            'folder' => 'stamps',
+            'collections' => [
+                'images' => [
+                    'mimetypes' => 'image/jpeg,image/png,image/webp,image/gif,image/heic,image/heif',
+                    'max' => 51200,
+                ],
+                'files' => [
+                    'mimetypes' => 'application/pdf',
+                    'max' => 51200,
                 ],
             ],
         ],

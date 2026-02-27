@@ -24,17 +24,17 @@ Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 Route::resource('books', BookController::class);
 Route::resource('items', ItemController::class);
 
-// Polymorphic media (books/items)
+// Polymorphic media
 Route::post('{type}/{id}/media', [MediaFileController::class, 'store'])
-    ->whereIn('type', ['books', 'items'])
+    ->whereIn('type', ['books', 'items', 'banknotes', 'coins', 'magazines', 'newspapers', 'postcards', 'stamps'])
     ->name('media.store');
 
 Route::delete('{type}/media/{file}', [MediaFileController::class, 'destroy'])
-    ->whereIn('type', ['books', 'items'])
+    ->whereIn('type', ['books', 'items', 'banknotes', 'coins', 'magazines', 'newspapers', 'postcards', 'stamps'])
     ->name('media.destroy');
 
 Route::patch('{type}/media/{file}/main', [MediaFileController::class, 'makeMain'])
-    ->whereIn('type', ['books', 'items'])
+    ->whereIn('type', ['books', 'items', 'banknotes', 'coins', 'magazines', 'newspapers', 'postcards', 'stamps'])
     ->name('media.main');
 
 Route::resource('newspapers', NewspaperController::class);

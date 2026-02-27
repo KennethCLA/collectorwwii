@@ -1,0 +1,217 @@
+{{-- resources/views/admin/magazines/edit.blade.php --}}
+
+<x-layout>
+    <x-form-layout>
+        @php
+        $val = fn(string $key, $fallback = '') => old($key, data_get($magazine, $key, $fallback));
+        $forSaleOld = old('for_sale', $magazine->for_sale ?? false);
+        $forSaleJs = filter_var($forSaleOld, FILTER_VALIDATE_BOOLEAN) ? 'true' : 'false';
+        @endphp
+
+        <form action="{{ route('admin.magazines.update', $magazine) }}" method="POST"
+            class="w-full mx-auto max-w-7xl">
+            @csrf
+            @method('PUT')
+
+            <div class="mb-6 flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-semibold text-white">Edit magazine</h1>
+                    <p class="mt-1 text-sm text-white/60">Update the magazine details.</p>
+                </div>
+                <a href="{{ route('admin.magazines.index') }}"
+                    class="rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/15">Back</a>
+            </div>
+
+            @if(session('success'))
+            <div class="mb-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
+                {{ session('success') }}
+            </div>
+            @endif
+
+            @if ($errors->any())
+            <div class="mb-6 rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-100">
+                <div class="font-semibold mb-2">Please fix the following:</div>
+                <ul class="list-disc pl-5 space-y-1">
+                    @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
+
+            <div class="rounded-xl border border-black/20 bg-black/10 p-6 space-y-8">
+
+                {{-- PUBLIC FIELDS --}}
+                <section class="rounded-xl border border-black/20 bg-black/10 p-6">
+                    <div class="flex items-center justify-between gap-4 mb-5">
+                        <h2 class="text-base font-semibold text-white">Public details</h2>
+                        <span class="text-xs text-white/50">Visible on the public page</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="lg:col-span-2 space-y-2">
+                            <label class="text-sm font-medium text-white/80">Title *</label>
+                            <input type="text" name="title" value="{{ $val('title') }}" required
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Subtitle</label>
+                            <input type="text" name="subtitle" value="{{ $val('subtitle') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Publisher</label>
+                            <input type="text" name="publisher" value="{{ $val('publisher') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Issue number</label>
+                            <input type="number" name="issue_number" value="{{ $val('issue_number') }}" min="1"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Issue year</label>
+                            <input type="number" name="issue_year" value="{{ $val('issue_year') }}"
+                                min="1800" max="{{ date('Y') + 1 }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+                    </div>
+
+                    <div class="mt-6 space-y-2">
+                        <label class="text-sm font-medium text-white/80">Description</label>
+                        <textarea name="description" rows="5"
+                            class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">{{ old('description', $magazine->description) }}</textarea>
+                    </div>
+                </section>
+
+                {{-- ADMIN-ONLY FIELDS --}}
+                <section class="rounded-xl border border-white/10 bg-black/20 p-6">
+                    <div class="flex items-center justify-between gap-4 mb-5">
+                        <div class="flex items-center gap-3">
+                            <h2 class="text-base font-semibold text-white">Admin-only</h2>
+                            <span class="inline-flex items-center rounded-full bg-white/10 px-2 py-0.5 text-xs text-white/70">Not visible publicly</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Purchase date</label>
+                            <input type="date" name="purchase_date"
+                                value="{{ old('purchase_date', $magazine->purchase_date?->format('Y-m-d') ?? '') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Purchase price €</label>
+                            <input type="number" step="0.01" name="purchase_price" value="{{ $val('purchase_price') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div x-data="{ forSale: {{ $forSaleJs }} }" class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">For sale</label>
+                            <div class="flex items-center gap-3">
+                                <input type="hidden" name="for_sale" value="0">
+                                <input type="checkbox" name="for_sale" value="1" x-model="forSale"
+                                    class="h-5 w-5 rounded border-white/20 bg-white/10">
+                                <span class="text-sm text-white/70">Mark as for sale</span>
+                            </div>
+                            <div x-show="forSale" x-cloak class="pt-2">
+                                <label class="text-sm font-medium text-white/80">Selling price €</label>
+                                <input type="number" step="0.01" name="selling_price" value="{{ $val('selling_price') }}"
+                                    class="mt-2 w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 space-y-2">
+                        <label class="text-sm font-medium text-white/80">Notes</label>
+                        <textarea name="notes" rows="4"
+                            class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">{{ old('notes', $magazine->notes) }}</textarea>
+                    </div>
+                </section>
+
+                {{-- MEDIA --}}
+                <section class="rounded-xl border border-black/20 bg-black/10 p-6 space-y-6">
+                    <div class="flex items-center justify-between gap-4">
+                        <h2 class="text-base font-semibold text-white">Media</h2>
+                        <span class="text-xs text-white/50">Upload new files or manage existing ones</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="rounded-md bg-[#343933] p-4 border border-white/10">
+                            <div class="text-white font-semibold mb-2">Upload images</div>
+                            <form action="{{ route('admin.media.store', ['type' => 'magazines', 'id' => $magazine->id]) }}"
+                                method="POST" enctype="multipart/form-data" class="flex flex-col gap-3">
+                                @csrf
+                                <input type="hidden" name="collection" value="images">
+                                <input type="file" name="files[]" multiple accept="image/*"
+                                    class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white file:mr-3 file:rounded-md file:border-0 file:bg-white/10 file:px-3 file:py-2 file:text-white hover:file:bg-white/15">
+                                <button type="submit"
+                                    class="rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/15">Upload images</button>
+                            </form>
+                        </div>
+
+                        <div class="rounded-md bg-[#343933] p-4 border border-white/10">
+                            <div class="text-white font-semibold mb-2">Upload PDFs</div>
+                            <form action="{{ route('admin.media.store', ['type' => 'magazines', 'id' => $magazine->id]) }}"
+                                method="POST" enctype="multipart/form-data" class="flex flex-col gap-3">
+                                @csrf
+                                <input type="hidden" name="collection" value="files">
+                                <input type="file" name="files[]" multiple accept="application/pdf"
+                                    class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white file:mr-3 file:rounded-md file:border-0 file:bg-white/10 file:px-3 file:py-2 file:text-white hover:file:bg-white/15">
+                                <button type="submit"
+                                    class="rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/15">Upload PDFs</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <p class="text-xs text-white/50">Max 50MB per file.</p>
+
+                    @php
+                    $mediaImages = $magazine->images;
+                    $mediaPdfs = $magazine->files->filter(fn($f) => $f->isPdf())->values();
+                    @endphp
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-[#697367] rounded-md p-4 border border-black/20">
+                            <h3 class="text-lg font-semibold text-white mb-3">Images ({{ $mediaImages->count() }})</h3>
+                            @if($mediaImages->isEmpty())
+                            <p class="text-white/80 text-sm">No images uploaded yet.</p>
+                            @else
+                            <div class="flex flex-wrap gap-2 items-start">
+                                @foreach($mediaImages as $img)
+                                @include('admin.books._image-card', ['img' => $img, 'type' => 'magazines'])
+                                @endforeach
+                            </div>
+                            @endif
+                        </div>
+
+                        <div class="bg-[#697367] rounded-md p-4 border border-black/20">
+                            <h3 class="text-lg font-semibold text-white mb-3">PDFs ({{ $mediaPdfs->count() }})</h3>
+                            @if($mediaPdfs->isEmpty())
+                            <p class="text-white/80 text-sm">No PDFs uploaded yet.</p>
+                            @else
+                            <div class="space-y-4">
+                                @foreach($mediaPdfs as $pdf)
+                                @include('admin.books._pdf-card', ['pdf' => $pdf, 'type' => 'magazines'])
+                                @endforeach
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+                </section>
+
+                <div class="flex items-center justify-end gap-3 pt-2">
+                    <a href="{{ route('admin.magazines.index') }}"
+                        class="rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/15">Cancel</a>
+                    <button type="submit"
+                        class="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500">Save changes</button>
+                </div>
+            </div>
+        </form>
+    </x-form-layout>
+</x-layout>
