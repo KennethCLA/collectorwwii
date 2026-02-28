@@ -528,7 +528,6 @@
                 </div>
             </div>
         </form>
-    </x-form-layout>
 
     {{-- ISBN lookup --}}
     <script>
