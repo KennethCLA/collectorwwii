@@ -10,6 +10,7 @@ use App\Models\NominalValue;
 use App\Models\Stamp;
 use App\Models\StampType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class StampController extends Controller
@@ -52,6 +53,13 @@ class StampController extends Controller
             'nominalValues' => NominalValue::orderBy('name')->get(),
             'stampTypes' => StampType::orderBy('name')->get(),
             'locations' => Location::orderBy('name')->get(),
+            'designers' => DB::table('stamp_designers')->orderBy('name')->get(),
+            'colours' => DB::table('colours')->orderBy('name')->get(),
+            'printTypes' => DB::table('print_types')->orderBy('name')->get(),
+            'watermarks' => DB::table('stamp_watermarks')->orderBy('name')->get(),
+            'gums' => DB::table('stamp_gums')->orderBy('name')->get(),
+            'perforations' => DB::table('stamp_perforations')->orderBy('name')->get(),
+            'printingHouses' => DB::table('stamp_printing_houses')->orderBy('name')->get(),
         ]);
     }
 
@@ -64,18 +72,47 @@ class StampController extends Controller
             'currency_id' => 'nullable|exists:currencies,id',
             'nominal_value_id' => 'nullable|exists:nominal_values,id',
             'type_id' => 'nullable|exists:stamp_types,id',
+            'designer_id' => 'nullable|exists:stamp_designers,id',
+            'colour_id' => 'nullable|exists:colours,id',
+            'print_type_id' => 'nullable|exists:print_types,id',
+            'watermark_id' => 'nullable|exists:stamp_watermarks,id',
+            'gum_id' => 'nullable|exists:stamp_gums,id',
+            'perforation_id' => 'nullable|exists:stamp_perforations,id',
+            'printing_house_id' => 'nullable|exists:stamp_printing_houses,id',
             'year' => 'nullable|integer|min:1800|max:'.(date('Y') + 1),
             'michel_number' => 'nullable|string|max:255',
+            'yvert_tellier_number' => 'nullable|string|max:255',
+            'date_of_issue' => 'nullable|string|max:255',
+            'occasion' => 'nullable|string|max:255',
+            'illustration' => 'nullable|string',
+            'special_features' => 'nullable|string',
+            'mnh' => 'nullable|boolean',
+            'hinged' => 'nullable|boolean',
+            'postmarked' => 'nullable|boolean',
+            'special_postmark' => 'nullable|boolean',
+            'postmark_date' => 'nullable|string|max:255',
+            'postmark_location' => 'nullable|string|max:255',
+            'postmark_text' => 'nullable|string|max:255',
+            'perforation' => 'nullable|boolean',
+            'width' => 'nullable|numeric|min:0',
+            'height' => 'nullable|numeric|min:0',
+            'print_run' => 'nullable|integer|min:0',
             'for_sale' => 'nullable|boolean',
             'selling_price' => 'nullable|numeric|min:0',
             'purchase_date' => 'nullable|date',
             'purchasing_price' => 'nullable|numeric|min:0',
             'current_value' => 'nullable|numeric|min:0',
             'location_id' => 'nullable|exists:locations,id',
+            'location_detail' => 'nullable|string|max:255',
             'personal_remarks' => 'nullable|string',
         ]);
 
         $validated['for_sale'] = $request->boolean('for_sale');
+        $validated['mnh'] = $request->boolean('mnh');
+        $validated['hinged'] = $request->boolean('hinged');
+        $validated['postmarked'] = $request->boolean('postmarked');
+        $validated['special_postmark'] = $request->boolean('special_postmark');
+        $validated['perforation'] = $request->boolean('perforation');
 
         $stamp = Stamp::create($validated);
 
@@ -96,6 +133,13 @@ class StampController extends Controller
             'nominalValues' => NominalValue::orderBy('name')->get(),
             'stampTypes' => StampType::orderBy('name')->get(),
             'locations' => Location::orderBy('name')->get(),
+            'designers' => DB::table('stamp_designers')->orderBy('name')->get(),
+            'colours' => DB::table('colours')->orderBy('name')->get(),
+            'printTypes' => DB::table('print_types')->orderBy('name')->get(),
+            'watermarks' => DB::table('stamp_watermarks')->orderBy('name')->get(),
+            'gums' => DB::table('stamp_gums')->orderBy('name')->get(),
+            'perforations' => DB::table('stamp_perforations')->orderBy('name')->get(),
+            'printingHouses' => DB::table('stamp_printing_houses')->orderBy('name')->get(),
         ]);
     }
 
@@ -108,18 +152,47 @@ class StampController extends Controller
             'currency_id' => 'nullable|exists:currencies,id',
             'nominal_value_id' => 'nullable|exists:nominal_values,id',
             'type_id' => 'nullable|exists:stamp_types,id',
+            'designer_id' => 'nullable|exists:stamp_designers,id',
+            'colour_id' => 'nullable|exists:colours,id',
+            'print_type_id' => 'nullable|exists:print_types,id',
+            'watermark_id' => 'nullable|exists:stamp_watermarks,id',
+            'gum_id' => 'nullable|exists:stamp_gums,id',
+            'perforation_id' => 'nullable|exists:stamp_perforations,id',
+            'printing_house_id' => 'nullable|exists:stamp_printing_houses,id',
             'year' => 'nullable|integer|min:1800|max:'.(date('Y') + 1),
             'michel_number' => 'nullable|string|max:255',
+            'yvert_tellier_number' => 'nullable|string|max:255',
+            'date_of_issue' => 'nullable|string|max:255',
+            'occasion' => 'nullable|string|max:255',
+            'illustration' => 'nullable|string',
+            'special_features' => 'nullable|string',
+            'mnh' => 'nullable|boolean',
+            'hinged' => 'nullable|boolean',
+            'postmarked' => 'nullable|boolean',
+            'special_postmark' => 'nullable|boolean',
+            'postmark_date' => 'nullable|string|max:255',
+            'postmark_location' => 'nullable|string|max:255',
+            'postmark_text' => 'nullable|string|max:255',
+            'perforation' => 'nullable|boolean',
+            'width' => 'nullable|numeric|min:0',
+            'height' => 'nullable|numeric|min:0',
+            'print_run' => 'nullable|integer|min:0',
             'for_sale' => 'nullable|boolean',
             'selling_price' => 'nullable|numeric|min:0',
             'purchase_date' => 'nullable|date',
             'purchasing_price' => 'nullable|numeric|min:0',
             'current_value' => 'nullable|numeric|min:0',
             'location_id' => 'nullable|exists:locations,id',
+            'location_detail' => 'nullable|string|max:255',
             'personal_remarks' => 'nullable|string',
         ]);
 
         $validated['for_sale'] = $request->boolean('for_sale');
+        $validated['mnh'] = $request->boolean('mnh');
+        $validated['hinged'] = $request->boolean('hinged');
+        $validated['postmarked'] = $request->boolean('postmarked');
+        $validated['special_postmark'] = $request->boolean('special_postmark');
+        $validated['perforation'] = $request->boolean('perforation');
 
         $stamp->update($validated);
 

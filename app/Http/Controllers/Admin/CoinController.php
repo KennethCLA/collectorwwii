@@ -12,6 +12,7 @@ use App\Models\Currency;
 use App\Models\Location;
 use App\Models\NominalValue;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class CoinController extends Controller
@@ -56,6 +57,15 @@ class CoinController extends Controller
             'materials' => CoinMaterial::orderBy('name')->get(),
             'occasions' => CoinOccasion::orderBy('name')->get(),
             'locations' => Location::orderBy('name')->get(),
+            'headsOfState' => DB::table('heads_of_state')->orderBy('name')->get(),
+            'strikeMarks' => DB::table('coin_strike_marks')->orderBy('name')->get(),
+            'designers' => DB::table('coin_designers')->orderBy('name')->get(),
+            'frontImages' => DB::table('coin_front_images')->orderBy('name')->get(),
+            'frontTexts' => DB::table('coin_front_texts')->orderBy('name')->get(),
+            'reverseImages' => DB::table('coin_reverse_images')->orderBy('name')->get(),
+            'reverseTexts' => DB::table('coin_reverse_texts')->orderBy('name')->get(),
+            'rims' => DB::table('coin_rims')->orderBy('name')->get(),
+            'rimTexts' => DB::table('coin_rim_texts')->orderBy('name')->get(),
         ]);
     }
 
@@ -71,11 +81,31 @@ class CoinController extends Controller
             'material_id' => 'nullable|exists:coin_materials,id',
             'year' => 'nullable|integer|min:1800|max:'.(date('Y') + 1),
             'occasion_id' => 'nullable|exists:coin_occasions,id',
+            'head_of_state_id' => 'nullable|exists:heads_of_state,id',
+            'strike_mark_id' => 'nullable|exists:coin_strike_marks,id',
+            'designer_id' => 'nullable|exists:coin_designers,id',
+            'front_image_id' => 'nullable|exists:coin_front_images,id',
+            'front_text_id' => 'nullable|exists:coin_front_texts,id',
+            'reverse_image_id' => 'nullable|exists:coin_reverse_images,id',
+            'reverse_text_id' => 'nullable|exists:coin_reverse_texts,id',
+            'rim_id' => 'nullable|exists:coin_rims,id',
+            'rim_text_id' => 'nullable|exists:coin_rim_texts,id',
+            'time_period' => 'nullable|string|max:255',
+            'number_jaeger' => 'nullable|string|max:255',
+            'date_of_issue' => 'nullable|date',
+            'special_features' => 'nullable|string',
+            'gold_silver_content' => 'nullable|numeric|min:0',
+            'weight' => 'nullable|numeric|min:0',
+            'diameter' => 'nullable|numeric|min:0',
+            'thickness' => 'nullable|numeric|min:0',
+            'run' => 'nullable|integer|min:0',
+            'current_value' => 'nullable|numeric|min:0',
             'for_sale' => 'nullable|boolean',
             'selling_price' => 'nullable|numeric|min:0',
             'purchase_date' => 'nullable|date',
             'purchasing_price' => 'nullable|numeric|min:0',
             'location_id' => 'nullable|exists:locations,id',
+            'location_detail' => 'nullable|string|max:255',
             'personal_remarks' => 'nullable|string',
         ]);
 
@@ -102,6 +132,15 @@ class CoinController extends Controller
             'materials' => CoinMaterial::orderBy('name')->get(),
             'occasions' => CoinOccasion::orderBy('name')->get(),
             'locations' => Location::orderBy('name')->get(),
+            'headsOfState' => DB::table('heads_of_state')->orderBy('name')->get(),
+            'strikeMarks' => DB::table('coin_strike_marks')->orderBy('name')->get(),
+            'designers' => DB::table('coin_designers')->orderBy('name')->get(),
+            'frontImages' => DB::table('coin_front_images')->orderBy('name')->get(),
+            'frontTexts' => DB::table('coin_front_texts')->orderBy('name')->get(),
+            'reverseImages' => DB::table('coin_reverse_images')->orderBy('name')->get(),
+            'reverseTexts' => DB::table('coin_reverse_texts')->orderBy('name')->get(),
+            'rims' => DB::table('coin_rims')->orderBy('name')->get(),
+            'rimTexts' => DB::table('coin_rim_texts')->orderBy('name')->get(),
         ]);
     }
 
@@ -117,11 +156,31 @@ class CoinController extends Controller
             'material_id' => 'nullable|exists:coin_materials,id',
             'year' => 'nullable|integer|min:1800|max:'.(date('Y') + 1),
             'occasion_id' => 'nullable|exists:coin_occasions,id',
+            'head_of_state_id' => 'nullable|exists:heads_of_state,id',
+            'strike_mark_id' => 'nullable|exists:coin_strike_marks,id',
+            'designer_id' => 'nullable|exists:coin_designers,id',
+            'front_image_id' => 'nullable|exists:coin_front_images,id',
+            'front_text_id' => 'nullable|exists:coin_front_texts,id',
+            'reverse_image_id' => 'nullable|exists:coin_reverse_images,id',
+            'reverse_text_id' => 'nullable|exists:coin_reverse_texts,id',
+            'rim_id' => 'nullable|exists:coin_rims,id',
+            'rim_text_id' => 'nullable|exists:coin_rim_texts,id',
+            'time_period' => 'nullable|string|max:255',
+            'number_jaeger' => 'nullable|string|max:255',
+            'date_of_issue' => 'nullable|date',
+            'special_features' => 'nullable|string',
+            'gold_silver_content' => 'nullable|numeric|min:0',
+            'weight' => 'nullable|numeric|min:0',
+            'diameter' => 'nullable|numeric|min:0',
+            'thickness' => 'nullable|numeric|min:0',
+            'run' => 'nullable|integer|min:0',
+            'current_value' => 'nullable|numeric|min:0',
             'for_sale' => 'nullable|boolean',
             'selling_price' => 'nullable|numeric|min:0',
             'purchase_date' => 'nullable|date',
             'purchasing_price' => 'nullable|numeric|min:0',
             'location_id' => 'nullable|exists:locations,id',
+            'location_detail' => 'nullable|string|max:255',
             'personal_remarks' => 'nullable|string',
         ]);
 

@@ -7,32 +7,90 @@
             ],
         ],
         [
-            'title' => 'Collection',
+            'title' => 'Books',
             'items' => [
-                ['label' => 'All books', 'route' => 'admin.books.index', 'active' => 'admin.books.*'],
-                ['label' => 'All items', 'route' => 'admin.items.index', 'active' => 'admin.items.*'],
-                ['label' => 'Map locations', 'route' => 'admin.map-locations.index', 'active' => 'admin.map-locations.*'],
-                ['label' => 'Banknotes', 'route' => 'admin.banknotes.index', 'active' => 'admin.banknotes.*'],
-                ['label' => 'Coins', 'route' => 'admin.coins.index', 'active' => 'admin.coins.*'],
-                ['label' => 'Stamps', 'route' => 'admin.stamps.index', 'active' => 'admin.stamps.*'],
-                ['label' => 'Postcards', 'route' => 'admin.postcards.index', 'active' => 'admin.postcards.*'],
-                ['label' => 'Magazines', 'route' => 'admin.magazines.index', 'active' => 'admin.magazines.*'],
-                ['label' => 'Newspapers', 'route' => 'admin.newspapers.index', 'active' => 'admin.newspapers.*'],
+                ['label' => 'Create book', 'route' => 'admin.books.create', 'active' => 'admin.books.create'],
+                ['label' => 'Topics', 'route' => 'admin.lookups.index', 'params' => ['type' => 'book-topics'], 'active' => 'admin.lookups.*', 'active_types' => ['book-topics']],
+                ['label' => 'Covers', 'route' => 'admin.lookups.index', 'params' => ['type' => 'book-covers'], 'active' => 'admin.lookups.*', 'active_types' => ['book-covers']],
+                ['label' => 'Series', 'route' => 'admin.lookups.index', 'params' => ['type' => 'book-series'], 'active' => 'admin.lookups.*', 'active_types' => ['book-series']],
             ],
         ],
         [
-            'title' => 'Lookup: Books/Items',
+            'title' => 'Items',
             'items' => [
-                ['label' => 'Book Topics', 'route' => 'admin.lookups.index', 'params' => ['type' => 'book-topics'], 'active' => 'admin.lookups.*', 'active_types' => ['book-topics']],
-                ['label' => 'Book Covers', 'route' => 'admin.lookups.index', 'params' => ['type' => 'book-covers'], 'active' => 'admin.lookups.*', 'active_types' => ['book-covers']],
-                ['label' => 'Book Series', 'route' => 'admin.lookups.index', 'params' => ['type' => 'book-series'], 'active' => 'admin.lookups.*', 'active_types' => ['book-series']],
-                ['label' => 'Item Categories', 'route' => 'admin.lookups.index', 'params' => ['type' => 'item-categories'], 'active' => 'admin.lookups.*', 'active_types' => ['item-categories']],
-                ['label' => 'Item Nationalities', 'route' => 'admin.lookups.index', 'params' => ['type' => 'item-nationalities'], 'active' => 'admin.lookups.*', 'active_types' => ['item-nationalities']],
-                ['label' => 'Item Organizations', 'route' => 'admin.lookups.index', 'params' => ['type' => 'item-organizations'], 'active' => 'admin.lookups.*', 'active_types' => ['item-organizations']],
+                ['label' => 'Create item', 'route' => 'admin.items.create', 'active' => 'admin.items.create'],
+                ['label' => 'Categories', 'route' => 'admin.lookups.index', 'params' => ['type' => 'item-categories'], 'active' => 'admin.lookups.*', 'active_types' => ['item-categories']],
+                ['label' => 'Nationalities', 'route' => 'admin.lookups.index', 'params' => ['type' => 'item-nationalities'], 'active' => 'admin.lookups.*', 'active_types' => ['item-nationalities']],
+                ['label' => 'Organizations', 'route' => 'admin.lookups.index', 'params' => ['type' => 'item-organizations'], 'active' => 'admin.lookups.*', 'active_types' => ['item-organizations']],
             ],
         ],
         [
-            'title' => 'Lookup: Shared',
+            'title' => 'Map locations',
+            'items' => [
+                ['label' => 'Create location', 'route' => 'admin.map-locations.create', 'active' => 'admin.map-locations.create'],
+            ],
+        ],
+        [
+            'title' => 'Banknotes',
+            'items' => [
+                ['label' => 'Create banknote', 'route' => 'admin.banknotes.create', 'active' => 'admin.banknotes.create'],
+                ['label' => 'Series', 'route' => 'admin.lookups.index', 'params' => ['type' => 'banknote-series'], 'active' => 'admin.lookups.*', 'active_types' => ['banknote-series']],
+                ['label' => 'Time Periods', 'route' => 'admin.lookups.index', 'params' => ['type' => 'banknote-time-periods'], 'active' => 'admin.lookups.*', 'active_types' => ['banknote-time-periods']],
+                ['label' => 'Designers', 'route' => 'admin.lookups.index', 'params' => ['type' => 'banknote-designers'], 'active' => 'admin.lookups.*', 'active_types' => ['banknote-designers']],
+                ['label' => 'Watermarks', 'route' => 'admin.lookups.index', 'params' => ['type' => 'banknote-watermarks'], 'active' => 'admin.lookups.*', 'active_types' => ['banknote-watermarks']],
+            ],
+        ],
+        [
+            'title' => 'Coins',
+            'items' => [
+                ['label' => 'Create coin', 'route' => 'admin.coins.create', 'active' => 'admin.coins.create'],
+                ['label' => 'Shapes', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-shapes'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-shapes']],
+                ['label' => 'Materials', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-materials'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-materials']],
+                ['label' => 'Occasions', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-occasions'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-occasions']],
+                ['label' => 'Designers', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-designers'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-designers']],
+                ['label' => 'Strike Marks', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-strike-marks'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-strike-marks']],
+                ['label' => 'Front Images', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-front-images'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-front-images']],
+                ['label' => 'Front Texts', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-front-texts'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-front-texts']],
+                ['label' => 'Reverse Images', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-reverse-images'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-reverse-images']],
+                ['label' => 'Reverse Texts', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-reverse-texts'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-reverse-texts']],
+                ['label' => 'Rims', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-rims'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-rims']],
+                ['label' => 'Rim Texts', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-rim-texts'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-rim-texts']],
+            ],
+        ],
+        [
+            'title' => 'Stamps',
+            'items' => [
+                ['label' => 'Create stamp', 'route' => 'admin.stamps.create', 'active' => 'admin.stamps.create'],
+                ['label' => 'Types', 'route' => 'admin.lookups.index', 'params' => ['type' => 'stamp-types'], 'active' => 'admin.lookups.*', 'active_types' => ['stamp-types']],
+                ['label' => 'Designers', 'route' => 'admin.lookups.index', 'params' => ['type' => 'stamp-designers'], 'active' => 'admin.lookups.*', 'active_types' => ['stamp-designers']],
+                ['label' => 'Watermarks', 'route' => 'admin.lookups.index', 'params' => ['type' => 'stamp-watermarks'], 'active' => 'admin.lookups.*', 'active_types' => ['stamp-watermarks']],
+                ['label' => 'Gums', 'route' => 'admin.lookups.index', 'params' => ['type' => 'stamp-gums'], 'active' => 'admin.lookups.*', 'active_types' => ['stamp-gums']],
+                ['label' => 'Perforations', 'route' => 'admin.lookups.index', 'params' => ['type' => 'stamp-perforations'], 'active' => 'admin.lookups.*', 'active_types' => ['stamp-perforations']],
+                ['label' => 'Printing Houses', 'route' => 'admin.lookups.index', 'params' => ['type' => 'stamp-printing-houses'], 'active' => 'admin.lookups.*', 'active_types' => ['stamp-printing-houses']],
+            ],
+        ],
+        [
+            'title' => 'Postcards',
+            'items' => [
+                ['label' => 'Create postcard', 'route' => 'admin.postcards.create', 'active' => 'admin.postcards.create'],
+                ['label' => 'Types', 'route' => 'admin.lookups.index', 'params' => ['type' => 'postcard-types'], 'active' => 'admin.lookups.*', 'active_types' => ['postcard-types']],
+                ['label' => 'Valuation Images', 'route' => 'admin.lookups.index', 'params' => ['type' => 'postcard-valuation-images'], 'active' => 'admin.lookups.*', 'active_types' => ['postcard-valuation-images']],
+            ],
+        ],
+        [
+            'title' => 'Magazines',
+            'items' => [
+                ['label' => 'Create magazine', 'route' => 'admin.magazines.create', 'active' => 'admin.magazines.create'],
+            ],
+        ],
+        [
+            'title' => 'Newspapers',
+            'items' => [
+                ['label' => 'Create newspaper', 'route' => 'admin.newspapers.create', 'active' => 'admin.newspapers.create'],
+            ],
+        ],
+        [
+            'title' => 'Shared lookups',
             'items' => [
                 ['label' => 'Countries', 'route' => 'admin.lookups.index', 'params' => ['type' => 'countries'], 'active' => 'admin.lookups.*', 'active_types' => ['countries']],
                 ['label' => 'Currencies', 'route' => 'admin.lookups.index', 'params' => ['type' => 'currencies'], 'active' => 'admin.lookups.*', 'active_types' => ['currencies']],
@@ -42,44 +100,6 @@
                 ['label' => 'Heads of State', 'route' => 'admin.lookups.index', 'params' => ['type' => 'heads-of-state'], 'active' => 'admin.lookups.*', 'active_types' => ['heads-of-state']],
                 ['label' => 'Colours', 'route' => 'admin.lookups.index', 'params' => ['type' => 'colours'], 'active' => 'admin.lookups.*', 'active_types' => ['colours']],
                 ['label' => 'Print Types', 'route' => 'admin.lookups.index', 'params' => ['type' => 'print-types'], 'active' => 'admin.lookups.*', 'active_types' => ['print-types']],
-            ],
-        ],
-        [
-            'title' => 'Lookup: Banknotes',
-            'items' => [
-                ['label' => 'Banknote Series', 'route' => 'admin.lookups.index', 'params' => ['type' => 'banknote-series'], 'active' => 'admin.lookups.*', 'active_types' => ['banknote-series']],
-                ['label' => 'Banknote Time Periods', 'route' => 'admin.lookups.index', 'params' => ['type' => 'banknote-time-periods'], 'active' => 'admin.lookups.*', 'active_types' => ['banknote-time-periods']],
-                ['label' => 'Banknote Designers', 'route' => 'admin.lookups.index', 'params' => ['type' => 'banknote-designers'], 'active' => 'admin.lookups.*', 'active_types' => ['banknote-designers']],
-                ['label' => 'Banknote Watermarks', 'route' => 'admin.lookups.index', 'params' => ['type' => 'banknote-watermarks'], 'active' => 'admin.lookups.*', 'active_types' => ['banknote-watermarks']],
-            ],
-        ],
-        [
-            'title' => 'Lookup: Coins',
-            'items' => [
-                ['label' => 'Coin Shapes', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-shapes'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-shapes']],
-                ['label' => 'Coin Materials', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-materials'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-materials']],
-                ['label' => 'Coin Occasions', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-occasions'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-occasions']],
-                ['label' => 'Coin Designers', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-designers'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-designers']],
-                ['label' => 'Coin Strike Marks', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-strike-marks'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-strike-marks']],
-                ['label' => 'Coin Front Images', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-front-images'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-front-images']],
-                ['label' => 'Coin Front Texts', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-front-texts'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-front-texts']],
-                ['label' => 'Coin Reverse Images', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-reverse-images'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-reverse-images']],
-                ['label' => 'Coin Reverse Texts', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-reverse-texts'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-reverse-texts']],
-                ['label' => 'Coin Rims', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-rims'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-rims']],
-                ['label' => 'Coin Rim Texts', 'route' => 'admin.lookups.index', 'params' => ['type' => 'coin-rim-texts'], 'active' => 'admin.lookups.*', 'active_types' => ['coin-rim-texts']],
-            ],
-        ],
-        [
-            'title' => 'Lookup: Postcards/Stamps',
-            'items' => [
-                ['label' => 'Postcard Types', 'route' => 'admin.lookups.index', 'params' => ['type' => 'postcard-types'], 'active' => 'admin.lookups.*', 'active_types' => ['postcard-types']],
-                ['label' => 'Postcard Valuation Images', 'route' => 'admin.lookups.index', 'params' => ['type' => 'postcard-valuation-images'], 'active' => 'admin.lookups.*', 'active_types' => ['postcard-valuation-images']],
-                ['label' => 'Stamp Types', 'route' => 'admin.lookups.index', 'params' => ['type' => 'stamp-types'], 'active' => 'admin.lookups.*', 'active_types' => ['stamp-types']],
-                ['label' => 'Stamp Designers', 'route' => 'admin.lookups.index', 'params' => ['type' => 'stamp-designers'], 'active' => 'admin.lookups.*', 'active_types' => ['stamp-designers']],
-                ['label' => 'Stamp Watermarks', 'route' => 'admin.lookups.index', 'params' => ['type' => 'stamp-watermarks'], 'active' => 'admin.lookups.*', 'active_types' => ['stamp-watermarks']],
-                ['label' => 'Stamp Gums', 'route' => 'admin.lookups.index', 'params' => ['type' => 'stamp-gums'], 'active' => 'admin.lookups.*', 'active_types' => ['stamp-gums']],
-                ['label' => 'Stamp Perforations', 'route' => 'admin.lookups.index', 'params' => ['type' => 'stamp-perforations'], 'active' => 'admin.lookups.*', 'active_types' => ['stamp-perforations']],
-                ['label' => 'Stamp Printing Houses', 'route' => 'admin.lookups.index', 'params' => ['type' => 'stamp-printing-houses'], 'active' => 'admin.lookups.*', 'active_types' => ['stamp-printing-houses']],
             ],
         ],
         [
@@ -125,7 +145,8 @@
                 <div x-show="open['{{ $groupKey }}'] ?? true" x-collapse class="space-y-1">
                     @foreach($group['items'] as $item)
                         @php
-                            $isRouteMatch = request()->routeIs($item['active']);
+                            $activePatterns = is_array($item['active']) ? $item['active'] : explode('|', $item['active']);
+                            $isRouteMatch = request()->routeIs(...$activePatterns);
                             $isTypeMatch = in_array(request()->route('type'), $item['active_types'] ?? [], true);
                             $isActive = $isRouteMatch && ($isTypeMatch || !isset($item['active_types']));
                             $labelLower = mb_strtolower($item['label']);

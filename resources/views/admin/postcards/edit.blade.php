@@ -1,7 +1,8 @@
 {{-- resources/views/admin/postcards/edit.blade.php --}}
 
-<x-layout>
-    <x-form-layout>
+@extends('layouts.admin')
+
+@section('admin-content')
         @php
         $val = fn(string $key, $fallback = '') => old($key, data_get($postcard, $key, $fallback));
         $forSaleOld = old('for_sale', $postcard->for_sale ?? false);
@@ -17,7 +18,7 @@
                     <h1 class="text-2xl font-semibold text-white">Edit postcard</h1>
                     <p class="mt-1 text-sm text-white/60">Update the postcard details.</p>
                 </div>
-                <a href="{{ route('admin.postcards.index') }}" class="rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/15">Back</a>
+                <a href="{{ route('admin.dashboard') }}" class="rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/15">Back</a>
             </div>
 
             @if(session('success'))
@@ -45,11 +46,13 @@
                                 @endforeach
                             </select>
                         </div>
+
                         <div class="space-y-2">
                             <label class="text-sm font-medium text-white/80">Year</label>
                             <input type="number" name="year" value="{{ $val('year') }}" min="1800" max="{{ date('Y') + 1 }}"
                                 class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
                         </div>
+
                         <div class="space-y-2">
                             <label class="text-sm font-medium text-white/80">Postcard type</label>
                             <select name="postcard_type_id" class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
@@ -59,25 +62,149 @@
                                 @endforeach
                             </select>
                         </div>
+
                         <div class="space-y-2">
                             <label class="text-sm font-medium text-white/80">Occasion</label>
                             <input type="text" name="occasion" value="{{ $val('occasion') }}"
                                 class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
                         </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Currency</label>
+                            <select name="currency_id" class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                <option value="">—</option>
+                                @foreach($currencies as $cur)
+                                <option value="{{ $cur->id }}" @selected((string)$val('currency_id') === (string)$cur->id)>{{ $cur->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Nominal value</label>
+                            <select name="nominal_value_id" class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                <option value="">—</option>
+                                @foreach($nominalValues as $nv)
+                                <option value="{{ $nv->id }}" @selected((string)$val('nominal_value_id') === (string)$nv->id)>{{ $nv->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Michel number</label>
+                            <input type="text" name="michel_number" value="{{ $val('michel_number') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Date of issue</label>
+                            <input type="text" name="date_of_issue" value="{{ $val('date_of_issue') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Valuation image</label>
+                            <select name="valuation_image_id" class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                <option value="">—</option>
+                                @foreach($valuationImages as $vi)
+                                <option value="{{ $vi->id }}" @selected((string)$val('valuation_image_id') === (string)$vi->id)>{{ $vi->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Colour</label>
+                            <select name="colour_id" class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                <option value="">—</option>
+                                @foreach($colours as $col)
+                                <option value="{{ $col->id }}" @selected((string)$val('colour_id') === (string)$col->id)>{{ $col->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Print type</label>
+                            <select name="print_type_id" class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                <option value="">—</option>
+                                @foreach($printTypes as $pt)
+                                <option value="{{ $pt->id }}" @selected((string)$val('print_type_id') === (string)$pt->id)>{{ $pt->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="space-y-2 lg:col-span-2">
+                            <label class="text-sm font-medium text-white/80">Front image description</label>
+                            <textarea name="front_image" rows="3"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">{{ old('front_image', $postcard->front_image) }}</textarea>
+                        </div>
+
+                        <div class="space-y-2 lg:col-span-2">
+                            <label class="text-sm font-medium text-white/80">Special features</label>
+                            <textarea name="special_features" rows="3"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">{{ old('special_features', $postcard->special_features) }}</textarea>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Stamp text</label>
+                            <input type="text" name="stamp_text" value="{{ $val('stamp_text') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Stamp date</label>
+                            <input type="text" name="stamp_date" value="{{ $val('stamp_date') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Stamp location</label>
+                            <input type="text" name="stamp_location" value="{{ $val('stamp_location') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Width (mm)</label>
+                            <input type="number" step="0.01" name="width" value="{{ $val('width') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Height (mm)</label>
+                            <input type="number" step="0.01" name="height" value="{{ $val('height') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Print run</label>
+                            <input type="number" name="print_run" value="{{ $val('print_run') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
                         <div class="space-y-2 lg:col-span-2">
                             <label class="text-sm font-medium text-white/80">Stamp status</label>
                             <div class="flex flex-wrap gap-6">
                                 <label class="flex items-center gap-2 text-sm text-white/70">
+                                    <input type="hidden" name="unstamped" value="0">
                                     <input type="checkbox" name="unstamped" value="1" @checked($val('unstamped'))
-                                        class="h-4 w-4 rounded border-white/20 bg-white/10"> Unstamped
+                                        class="h-4 w-4 rounded border-white/20 bg-white/10">
+                                    Unstamped
                                 </label>
                                 <label class="flex items-center gap-2 text-sm text-white/70">
+                                    <input type="hidden" name="stamped" value="0">
                                     <input type="checkbox" name="stamped" value="1" @checked($val('stamped'))
-                                        class="h-4 w-4 rounded border-white/20 bg-white/10"> Stamped
+                                        class="h-4 w-4 rounded border-white/20 bg-white/10">
+                                    Stamped
                                 </label>
                                 <label class="flex items-center gap-2 text-sm text-white/70">
+                                    <input type="hidden" name="special_stamp" value="0">
                                     <input type="checkbox" name="special_stamp" value="1" @checked($val('special_stamp'))
-                                        class="h-4 w-4 rounded border-white/20 bg-white/10"> Special stamp
+                                        class="h-4 w-4 rounded border-white/20 bg-white/10">
+                                    Special stamp
+                                </label>
+                                <label class="flex items-center gap-2 text-sm text-white/70">
+                                    <input type="hidden" name="perforation" value="0">
+                                    <input type="checkbox" name="perforation" value="1" @checked($val('perforation'))
+                                        class="h-4 w-4 rounded border-white/20 bg-white/10">
+                                    Perforation
                                 </label>
                             </div>
                         </div>
@@ -127,6 +254,11 @@
                                     class="mt-2 w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
                             </div>
                         </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Location detail</label>
+                            <input type="text" name="location_detail" value="{{ $val('location_detail') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
                     </div>
                     <div class="mt-6 space-y-2">
                         <label class="text-sm font-medium text-white/80">Personal remarks</label>
@@ -166,26 +298,35 @@
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div class="bg-[#697367] rounded-md p-4 border border-black/20">
                             <h3 class="text-lg font-semibold text-white mb-3">Images ({{ $mediaImages->count() }})</h3>
-                            @if($mediaImages->isEmpty())<p class="text-white/80 text-sm">No images uploaded yet.</p>
-                            @else<div class="flex flex-wrap gap-2 items-start">
-                                @foreach($mediaImages as $img)@include('admin.books._image-card', ['img' => $img, 'type' => 'postcards'])@endforeach
-                            </div>@endif
+                            @if($mediaImages->isEmpty())
+                            <p class="text-white/80 text-sm">No images uploaded yet.</p>
+                            @else
+                            <div class="flex flex-wrap gap-2 items-start">
+                                @foreach($mediaImages as $img)
+                                @include('admin.books._image-card', ['img' => $img, 'type' => 'postcards'])
+                                @endforeach
+                            </div>
+                            @endif
                         </div>
                         <div class="bg-[#697367] rounded-md p-4 border border-black/20">
                             <h3 class="text-lg font-semibold text-white mb-3">PDFs ({{ $mediaPdfs->count() }})</h3>
-                            @if($mediaPdfs->isEmpty())<p class="text-white/80 text-sm">No PDFs uploaded yet.</p>
-                            @else<div class="space-y-4">
-                                @foreach($mediaPdfs as $pdf)@include('admin.books._pdf-card', ['pdf' => $pdf, 'type' => 'postcards'])@endforeach
-                            </div>@endif
+                            @if($mediaPdfs->isEmpty())
+                            <p class="text-white/80 text-sm">No PDFs uploaded yet.</p>
+                            @else
+                            <div class="space-y-4">
+                                @foreach($mediaPdfs as $pdf)
+                                @include('admin.books._pdf-card', ['pdf' => $pdf, 'type' => 'postcards'])
+                                @endforeach
+                            </div>
+                            @endif
                         </div>
                     </div>
                 </section>
 
                 <div class="flex items-center justify-end gap-3 pt-2">
-                    <a href="{{ route('admin.postcards.index') }}" class="rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/15">Cancel</a>
+                    <a href="{{ route('admin.dashboard') }}" class="rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/15">Cancel</a>
                     <button type="submit" class="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500">Save changes</button>
                 </div>
             </div>
         </form>
-    </x-form-layout>
-</x-layout>
+@endsection

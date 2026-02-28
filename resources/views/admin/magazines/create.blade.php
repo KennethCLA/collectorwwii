@@ -1,7 +1,8 @@
 {{-- resources/views/admin/magazines/create.blade.php --}}
 
-<x-layout>
-    <x-form-layout>
+@extends('layouts.admin')
+
+@section('admin-content')
         @php
         $val = fn(string $key, $fallback = '') => old($key, $fallback);
         $forSaleJs = old('for_sale') ? 'true' : 'false';
@@ -16,7 +17,7 @@
                     <h1 class="text-2xl font-semibold text-white">Create magazine</h1>
                     <p class="mt-1 text-sm text-white/60">Add a new magazine to the collection.</p>
                 </div>
-                <a href="{{ route('admin.magazines.index') }}"
+                <a href="{{ route('admin.dashboard') }}"
                     class="rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/15">Back</a>
             </div>
 
@@ -126,12 +127,11 @@
                 </section>
 
                 <div class="flex items-center justify-end gap-3 pt-2">
-                    <a href="{{ route('admin.magazines.index') }}"
+                    <a href="{{ route('admin.dashboard') }}"
                         class="rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/15">Cancel</a>
                     <button type="submit"
                         class="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500">Create magazine</button>
                 </div>
             </div>
         </form>
-    </x-form-layout>
-</x-layout>
+@endsection

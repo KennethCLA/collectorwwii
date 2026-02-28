@@ -6,6 +6,7 @@ use App\Http\Controllers\Public\BanknoteController as PublicBanknoteController;
 use App\Http\Controllers\Public\BlogController;
 use App\Http\Controllers\Public\BookController as PublicBookController;
 use App\Http\Controllers\Public\CoinController as PublicCoinController;
+use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\ForSaleController;
 use App\Http\Controllers\Public\ItemController as PublicItemController;
 use App\Http\Controllers\Public\MagazineController as PublicMagazineController;
@@ -27,9 +28,8 @@ Route::get('/change-language/{language}', function (string $language) {
 
 Route::get('/blog', [BlogController::class, 'showAllPosts'])->name('blog');
 
-Route::get('/contact', function () {
-    return view('contact');
-})->name('contact');
+Route::get('/contact', [ContactController::class, 'show'])->name('contact');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 Route::get('/for-sale', [ForSaleController::class, 'index'])->name('for-sale.index');
 Route::get('/map', [MapController::class, 'index'])->name('map.index');

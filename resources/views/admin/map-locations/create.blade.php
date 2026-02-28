@@ -13,7 +13,7 @@
             <p class="mt-1 text-sm text-white/60">Add a visited location with exact coordinates.</p>
             <p class="mt-1 text-xs text-white/55">You can upload photos now or add more after saving.</p>
         </div>
-        <a href="{{ route('admin.map-locations.index') }}"
+        <a href="{{ route('admin.dashboard') }}"
             class="rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/15">Back</a>
     </div>
 
@@ -77,7 +77,7 @@
         </div>
 
         <div class="flex items-center justify-end gap-3 pt-2">
-            <a href="{{ route('admin.map-locations.index') }}"
+            <a href="{{ route('admin.dashboard') }}"
                 class="rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/15">Cancel</a>
             <button type="submit"
                 class="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500">Create location</button>

@@ -17,13 +17,30 @@ class Banknote extends Model
         'nominal_value_id',
         'series_id',
         'time_period_id',
+        'head_of_state_id',
+        'colour_id',
+        'designer_id',
+        'watermark_id',
         'year',
         'variation',
+        'number_on_note',
+        'special_features',
+        'number_jaeger',
+        'date_of_issue',
+        'front_image',
+        'front_text',
+        'reverse_image',
+        'reverse_text',
+        'width',
+        'height',
+        'print_run',
         'for_sale',
         'selling_price',
         'purchase_date',
         'purchasing_price',
+        'current_value',
         'location_id',
+        'location_detail',
         'personal_remarks',
     ];
 
@@ -32,6 +49,7 @@ class Banknote extends Model
         'purchase_date' => 'date',
         'selling_price' => 'decimal:2',
         'purchasing_price' => 'decimal:2',
+        'current_value' => 'decimal:2',
     ];
 
     public function country()

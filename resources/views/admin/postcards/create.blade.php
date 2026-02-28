@@ -1,7 +1,8 @@
 {{-- resources/views/admin/postcards/create.blade.php --}}
 
-<x-layout>
-    <x-form-layout>
+@extends('layouts.admin')
+
+@section('admin-content')
         @php
         $val = fn(string $key, $fallback = '') => old($key, $fallback);
         $forSaleJs = old('for_sale') ? 'true' : 'false';
@@ -15,7 +16,7 @@
                     <h1 class="text-2xl font-semibold text-white">Create postcard</h1>
                     <p class="mt-1 text-sm text-white/60">Add a new postcard to the collection.</p>
                 </div>
-                <a href="{{ route('admin.postcards.index') }}" class="rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/15">Back</a>
+                <a href="{{ route('admin.dashboard') }}" class="rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/15">Back</a>
             </div>
 
             @if ($errors->any())
@@ -62,6 +63,116 @@
                                 class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
                         </div>
 
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Currency</label>
+                            <select name="currency_id" class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                <option value="">—</option>
+                                @foreach($currencies as $cur)
+                                <option value="{{ $cur->id }}" @selected($val('currency_id') == $cur->id)>{{ $cur->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Nominal value</label>
+                            <select name="nominal_value_id" class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                <option value="">—</option>
+                                @foreach($nominalValues as $nv)
+                                <option value="{{ $nv->id }}" @selected($val('nominal_value_id') == $nv->id)>{{ $nv->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Michel number</label>
+                            <input type="text" name="michel_number" value="{{ $val('michel_number') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Date of issue</label>
+                            <input type="text" name="date_of_issue" value="{{ $val('date_of_issue') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Valuation image</label>
+                            <select name="valuation_image_id" class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                <option value="">—</option>
+                                @foreach($valuationImages as $vi)
+                                <option value="{{ $vi->id }}" @selected($val('valuation_image_id') == $vi->id)>{{ $vi->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Colour</label>
+                            <select name="colour_id" class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                <option value="">—</option>
+                                @foreach($colours as $col)
+                                <option value="{{ $col->id }}" @selected($val('colour_id') == $col->id)>{{ $col->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Print type</label>
+                            <select name="print_type_id" class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                <option value="">—</option>
+                                @foreach($printTypes as $pt)
+                                <option value="{{ $pt->id }}" @selected($val('print_type_id') == $pt->id)>{{ $pt->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="space-y-2 lg:col-span-2">
+                            <label class="text-sm font-medium text-white/80">Front image description</label>
+                            <textarea name="front_image" rows="3"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">{{ old('front_image') }}</textarea>
+                        </div>
+
+                        <div class="space-y-2 lg:col-span-2">
+                            <label class="text-sm font-medium text-white/80">Special features</label>
+                            <textarea name="special_features" rows="3"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">{{ old('special_features') }}</textarea>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Stamp text</label>
+                            <input type="text" name="stamp_text" value="{{ $val('stamp_text') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Stamp date</label>
+                            <input type="text" name="stamp_date" value="{{ $val('stamp_date') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Stamp location</label>
+                            <input type="text" name="stamp_location" value="{{ $val('stamp_location') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Width (mm)</label>
+                            <input type="number" step="0.01" name="width" value="{{ $val('width') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Height (mm)</label>
+                            <input type="number" step="0.01" name="height" value="{{ $val('height') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Print run</label>
+                            <input type="number" name="print_run" value="{{ $val('print_run') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
                         <div class="space-y-2 lg:col-span-2">
                             <label class="text-sm font-medium text-white/80">Stamp status</label>
                             <div class="flex flex-wrap gap-6">
@@ -79,6 +190,11 @@
                                     <input type="checkbox" name="special_stamp" value="1" @checked($val('special_stamp'))
                                         class="h-4 w-4 rounded border-white/20 bg-white/10">
                                     Special stamp
+                                </label>
+                                <label class="flex items-center gap-2 text-sm text-white/70">
+                                    <input type="checkbox" name="perforation" value="1" @checked($val('perforation'))
+                                        class="h-4 w-4 rounded border-white/20 bg-white/10">
+                                    Perforation
                                 </label>
                             </div>
                         </div>
@@ -128,6 +244,11 @@
                                     class="mt-2 w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
                             </div>
                         </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Location detail</label>
+                            <input type="text" name="location_detail" value="{{ $val('location_detail') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
                     </div>
                     <div class="mt-6 space-y-2">
                         <label class="text-sm font-medium text-white/80">Personal remarks</label>
@@ -137,10 +258,9 @@
                 </section>
 
                 <div class="flex items-center justify-end gap-3 pt-2">
-                    <a href="{{ route('admin.postcards.index') }}" class="rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/15">Cancel</a>
+                    <a href="{{ route('admin.dashboard') }}" class="rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/15">Cancel</a>
                     <button type="submit" class="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500">Create postcard</button>
                 </div>
             </div>
         </form>
-    </x-form-layout>
-</x-layout>
+@endsection

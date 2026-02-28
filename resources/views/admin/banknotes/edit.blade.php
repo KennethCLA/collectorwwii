@@ -1,7 +1,8 @@
 {{-- resources/views/admin/banknotes/edit.blade.php --}}
 
-<x-layout>
-    <x-form-layout>
+@extends('layouts.admin')
+
+@section('admin-content')
         @php
         $val = fn(string $key, $fallback = '') => old($key, data_get($banknote, $key, $fallback));
         $forSaleOld = old('for_sale', $banknote->for_sale ?? false);
@@ -18,7 +19,7 @@
                     <h1 class="text-2xl font-semibold text-white">Edit banknote</h1>
                     <p class="mt-1 text-sm text-white/60">Update the banknote details.</p>
                 </div>
-                <a href="{{ route('admin.banknotes.index') }}"
+                <a href="{{ route('admin.dashboard') }}"
                     class="rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/15">Back</a>
             </div>
 
@@ -114,6 +115,112 @@
                             <input type="text" name="variation" value="{{ $val('variation') }}"
                                 class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
                         </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Head of state</label>
+                            <select name="head_of_state_id" class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                <option value="">—</option>
+                                @foreach($headsOfState as $h)
+                                <option value="{{ $h->id }}" @selected((string)$val('head_of_state_id') === (string)$h->id)>{{ $h->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Colour</label>
+                            <select name="colour_id" class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                <option value="">—</option>
+                                @foreach($colours as $col)
+                                <option value="{{ $col->id }}" @selected((string)$val('colour_id') === (string)$col->id)>{{ $col->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Designer</label>
+                            <select name="designer_id" class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                <option value="">—</option>
+                                @foreach($designers as $d)
+                                <option value="{{ $d->id }}" @selected((string)$val('designer_id') === (string)$d->id)>{{ $d->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Watermark</label>
+                            <select name="watermark_id" class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                <option value="">—</option>
+                                @foreach($watermarks as $w)
+                                <option value="{{ $w->id }}" @selected((string)$val('watermark_id') === (string)$w->id)>{{ $w->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Date of issue</label>
+                            <input type="date" name="date_of_issue" value="{{ old('date_of_issue', $banknote->date_of_issue?->format('Y-m-d') ?? $banknote->date_of_issue ?? '') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Number on note</label>
+                            <input type="text" name="number_on_note" value="{{ $val('number_on_note') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Number Jaeger</label>
+                            <input type="text" name="number_jaeger" value="{{ $val('number_jaeger') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2 lg:col-span-2">
+                            <label class="text-sm font-medium text-white/80">Special features</label>
+                            <textarea name="special_features" rows="3"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">{{ old('special_features', $banknote->special_features) }}</textarea>
+                        </div>
+
+                        <div class="space-y-2 lg:col-span-2">
+                            <label class="text-sm font-medium text-white/80">Front image description</label>
+                            <textarea name="front_image" rows="3"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">{{ old('front_image', $banknote->front_image) }}</textarea>
+                        </div>
+
+                        <div class="space-y-2 lg:col-span-2">
+                            <label class="text-sm font-medium text-white/80">Front text</label>
+                            <textarea name="front_text" rows="3"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">{{ old('front_text', $banknote->front_text) }}</textarea>
+                        </div>
+
+                        <div class="space-y-2 lg:col-span-2">
+                            <label class="text-sm font-medium text-white/80">Reverse image description</label>
+                            <textarea name="reverse_image" rows="3"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">{{ old('reverse_image', $banknote->reverse_image) }}</textarea>
+                        </div>
+
+                        <div class="space-y-2 lg:col-span-2">
+                            <label class="text-sm font-medium text-white/80">Reverse text</label>
+                            <textarea name="reverse_text" rows="3"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">{{ old('reverse_text', $banknote->reverse_text) }}</textarea>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Width mm</label>
+                            <input type="number" name="width" value="{{ $val('width') }}" min="0"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Height mm</label>
+                            <input type="number" name="height" value="{{ $val('height') }}" min="0"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Print run</label>
+                            <input type="number" name="print_run" value="{{ $val('print_run') }}" min="0"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
                     </div>
                 </section>
 
@@ -139,6 +246,12 @@
                         </div>
 
                         <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Current value €</label>
+                            <input type="number" step="0.01" name="current_value" value="{{ $val('current_value') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
                             <label class="text-sm font-medium text-white/80">Location</label>
                             <select name="location_id"
                                 class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
@@ -147,6 +260,12 @@
                                 <option value="{{ $loc->id }}" @selected((string)$val('location_id') === (string)$loc->id)>{{ $loc->name }}</option>
                                 @endforeach
                             </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Location detail</label>
+                            <input type="text" name="location_detail" value="{{ $val('location_detail') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
                         </div>
 
                         <div x-data="{ forSale: {{ $forSaleJs }} }" class="space-y-2">
@@ -243,12 +362,11 @@
                 </section>
 
                 <div class="flex items-center justify-end gap-3 pt-2">
-                    <a href="{{ route('admin.banknotes.index') }}"
+                    <a href="{{ route('admin.dashboard') }}"
                         class="rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/15">Cancel</a>
                     <button type="submit"
                         class="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500">Save changes</button>
                 </div>
             </div>
         </form>
-    </x-form-layout>
-</x-layout>
+@endsection

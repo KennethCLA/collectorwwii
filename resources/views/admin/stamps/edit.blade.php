@@ -1,7 +1,8 @@
 {{-- resources/views/admin/stamps/edit.blade.php --}}
 
-<x-layout>
-    <x-form-layout>
+@extends('layouts.admin')
+
+@section('admin-content')
         @php
         $val = fn(string $key, $fallback = '') => old($key, data_get($stamp, $key, $fallback));
         $forSaleOld = old('for_sale', $stamp->for_sale ?? false);
@@ -18,7 +19,7 @@
                     <h1 class="text-2xl font-semibold text-white">Edit stamp</h1>
                     <p class="mt-1 text-sm text-white/60">Update the stamp details.</p>
                 </div>
-                <a href="{{ route('admin.stamps.index') }}"
+                <a href="{{ route('admin.dashboard') }}"
                     class="rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/15">Back</a>
             </div>
 
@@ -95,6 +96,178 @@
                             <input type="text" name="michel_number" value="{{ $val('michel_number') }}"
                                 class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
                         </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Yvert & Tellier number</label>
+                            <input type="text" name="yvert_tellier_number" value="{{ $val('yvert_tellier_number') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Date of issue</label>
+                            <input type="text" name="date_of_issue" value="{{ $val('date_of_issue') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Occasion</label>
+                            <input type="text" name="occasion" value="{{ $val('occasion') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Designer</label>
+                            <select name="designer_id" class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                <option value="">—</option>
+                                @foreach($designers as $d)
+                                <option value="{{ $d->id }}" @selected((string)$val('designer_id') === (string)$d->id)>{{ $d->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Colour</label>
+                            <select name="colour_id" class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                <option value="">—</option>
+                                @foreach($colours as $c)
+                                <option value="{{ $c->id }}" @selected((string)$val('colour_id') === (string)$c->id)>{{ $c->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Print type</label>
+                            <select name="print_type_id" class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                <option value="">—</option>
+                                @foreach($printTypes as $pt)
+                                <option value="{{ $pt->id }}" @selected((string)$val('print_type_id') === (string)$pt->id)>{{ $pt->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Watermark</label>
+                            <select name="watermark_id" class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                <option value="">—</option>
+                                @foreach($watermarks as $w)
+                                <option value="{{ $w->id }}" @selected((string)$val('watermark_id') === (string)$w->id)>{{ $w->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Gum</label>
+                            <select name="gum_id" class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                <option value="">—</option>
+                                @foreach($gums as $g)
+                                <option value="{{ $g->id }}" @selected((string)$val('gum_id') === (string)$g->id)>{{ $g->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Perforation type</label>
+                            <select name="perforation_id" class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                <option value="">—</option>
+                                @foreach($perforations as $p)
+                                <option value="{{ $p->id }}" @selected((string)$val('perforation_id') === (string)$p->id)>{{ $p->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Printing house</label>
+                            <select name="printing_house_id" class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                <option value="">—</option>
+                                @foreach($printingHouses as $ph)
+                                <option value="{{ $ph->id }}" @selected((string)$val('printing_house_id') === (string)$ph->id)>{{ $ph->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Width (mm)</label>
+                            <input type="number" step="0.01" name="width" value="{{ $val('width') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Height (mm)</label>
+                            <input type="number" step="0.01" name="height" value="{{ $val('height') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Print run</label>
+                            <input type="number" name="print_run" value="{{ $val('print_run') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2 lg:col-span-2">
+                            <label class="text-sm font-medium text-white/80">Illustration</label>
+                            <textarea name="illustration" rows="3"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">{{ old('illustration', $stamp->illustration) }}</textarea>
+                        </div>
+
+                        <div class="space-y-2 lg:col-span-2">
+                            <label class="text-sm font-medium text-white/80">Special features</label>
+                            <textarea name="special_features" rows="3"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">{{ old('special_features', $stamp->special_features) }}</textarea>
+                        </div>
+
+                        <div class="space-y-2 lg:col-span-2">
+                            <label class="text-sm font-medium text-white/80">Condition</label>
+                            <div class="flex flex-wrap gap-6">
+                                <label class="flex items-center gap-2 text-sm text-white/70">
+                                    <input type="hidden" name="mnh" value="0">
+                                    <input type="checkbox" name="mnh" value="1" @checked($val('mnh'))
+                                        class="h-4 w-4 rounded border-white/20 bg-white/10">
+                                    MNH
+                                </label>
+                                <label class="flex items-center gap-2 text-sm text-white/70">
+                                    <input type="hidden" name="hinged" value="0">
+                                    <input type="checkbox" name="hinged" value="1" @checked($val('hinged'))
+                                        class="h-4 w-4 rounded border-white/20 bg-white/10">
+                                    Hinged
+                                </label>
+                                <label class="flex items-center gap-2 text-sm text-white/70">
+                                    <input type="hidden" name="postmarked" value="0">
+                                    <input type="checkbox" name="postmarked" value="1" @checked($val('postmarked'))
+                                        class="h-4 w-4 rounded border-white/20 bg-white/10">
+                                    Postmarked
+                                </label>
+                                <label class="flex items-center gap-2 text-sm text-white/70">
+                                    <input type="hidden" name="special_postmark" value="0">
+                                    <input type="checkbox" name="special_postmark" value="1" @checked($val('special_postmark'))
+                                        class="h-4 w-4 rounded border-white/20 bg-white/10">
+                                    Special postmark
+                                </label>
+                                <label class="flex items-center gap-2 text-sm text-white/70">
+                                    <input type="hidden" name="perforation" value="0">
+                                    <input type="checkbox" name="perforation" value="1" @checked($val('perforation'))
+                                        class="h-4 w-4 rounded border-white/20 bg-white/10">
+                                    Perforation
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Postmark date</label>
+                            <input type="text" name="postmark_date" value="{{ $val('postmark_date') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Postmark location</label>
+                            <input type="text" name="postmark_location" value="{{ $val('postmark_location') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
+
+                        <div class="space-y-2 lg:col-span-2">
+                            <label class="text-sm font-medium text-white/80">Postmark text</label>
+                            <input type="text" name="postmark_text" value="{{ $val('postmark_text') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                        </div>
                     </div>
                 </section>
 
@@ -147,6 +320,12 @@
                                 <input type="number" step="0.01" name="selling_price" value="{{ $val('selling_price') }}"
                                     class="mt-2 w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
                             </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Location detail</label>
+                            <input type="text" name="location_detail" value="{{ $val('location_detail') }}"
+                                class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
                         </div>
                     </div>
 
@@ -222,12 +401,11 @@
                 </section>
 
                 <div class="flex items-center justify-end gap-3 pt-2">
-                    <a href="{{ route('admin.stamps.index') }}"
+                    <a href="{{ route('admin.dashboard') }}"
                         class="rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/15">Cancel</a>
                     <button type="submit"
                         class="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500">Save changes</button>
                 </div>
             </div>
         </form>
-    </x-form-layout>
-</x-layout>
+@endsection

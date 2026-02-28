@@ -15,16 +15,33 @@ class Postcard extends Model
         'country_id',
         'year',
         'postcard_type_id',
+        'nominal_value_id',
+        'currency_id',
+        'valuation_image_id',
+        'colour_id',
+        'print_type_id',
         'occasion',
+        'michel_number',
+        'date_of_issue',
+        'front_image',
+        'special_features',
+        'stamp_text',
+        'stamp_date',
+        'stamp_location',
         'unstamped',
         'stamped',
         'special_stamp',
+        'perforation',
         'for_sale',
         'selling_price',
         'purchase_date',
         'purchasing_price',
         'current_value',
+        'width',
+        'height',
+        'print_run',
         'location_id',
+        'location_detail',
         'personal_remarks',
     ];
 
@@ -33,6 +50,7 @@ class Postcard extends Model
         'unstamped' => 'boolean',
         'stamped' => 'boolean',
         'special_stamp' => 'boolean',
+        'perforation' => 'boolean',
         'purchase_date' => 'date',
         'selling_price' => 'decimal:2',
         'purchasing_price' => 'decimal:2',
@@ -47,6 +65,16 @@ class Postcard extends Model
     public function postcardType()
     {
         return $this->belongsTo(PostcardType::class, 'postcard_type_id');
+    }
+
+    public function nominalValue()
+    {
+        return $this->belongsTo(NominalValue::class);
+    }
+
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class);
     }
 
     public function location()

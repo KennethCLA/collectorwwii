@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Country;
+use App\Models\Currency;
 use App\Models\Location;
+use App\Models\NominalValue;
 use App\Models\Postcard;
 use App\Models\PostcardType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class PostcardController extends Controller
@@ -48,6 +51,11 @@ class PostcardController extends Controller
             'countries' => Country::orderBy('name')->get(),
             'postcardTypes' => PostcardType::orderBy('name')->get(),
             'locations' => Location::orderBy('name')->get(),
+            'currencies' => Currency::orderBy('name')->get(),
+            'nominalValues' => NominalValue::orderBy('name')->get(),
+            'valuationImages' => DB::table('postcard_valuation_images')->orderBy('name')->get(),
+            'colours' => DB::table('colours')->orderBy('name')->get(),
+            'printTypes' => DB::table('print_types')->orderBy('name')->get(),
         ]);
     }
 
@@ -59,16 +67,33 @@ class PostcardController extends Controller
             'country_id' => 'nullable|exists:countries,id',
             'year' => 'nullable|integer|min:1800|max:'.(date('Y') + 1),
             'postcard_type_id' => 'nullable|exists:postcard_types,id',
+            'nominal_value_id' => 'nullable|exists:nominal_values,id',
+            'currency_id' => 'nullable|exists:currencies,id',
+            'valuation_image_id' => 'nullable|exists:postcard_valuation_images,id',
+            'colour_id' => 'nullable|exists:colours,id',
+            'print_type_id' => 'nullable|exists:print_types,id',
             'occasion' => 'nullable|string|max:255',
+            'michel_number' => 'nullable|string|max:255',
+            'date_of_issue' => 'nullable|string|max:255',
+            'front_image' => 'nullable|string',
+            'special_features' => 'nullable|string',
+            'stamp_text' => 'nullable|string|max:255',
+            'stamp_date' => 'nullable|string|max:255',
+            'stamp_location' => 'nullable|string|max:255',
             'unstamped' => 'nullable|boolean',
             'stamped' => 'nullable|boolean',
             'special_stamp' => 'nullable|boolean',
+            'perforation' => 'nullable|boolean',
             'for_sale' => 'nullable|boolean',
             'selling_price' => 'nullable|numeric|min:0',
             'purchase_date' => 'nullable|date',
             'purchasing_price' => 'nullable|numeric|min:0',
             'current_value' => 'nullable|numeric|min:0',
+            'width' => 'nullable|numeric|min:0',
+            'height' => 'nullable|numeric|min:0',
+            'print_run' => 'nullable|integer|min:0',
             'location_id' => 'nullable|exists:locations,id',
+            'location_detail' => 'nullable|string|max:255',
             'personal_remarks' => 'nullable|string',
         ]);
 
@@ -76,6 +101,7 @@ class PostcardController extends Controller
         $validated['unstamped'] = $request->boolean('unstamped');
         $validated['stamped'] = $request->boolean('stamped');
         $validated['special_stamp'] = $request->boolean('special_stamp');
+        $validated['perforation'] = $request->boolean('perforation');
 
         $postcard = Postcard::create($validated);
 
@@ -94,6 +120,11 @@ class PostcardController extends Controller
             'countries' => Country::orderBy('name')->get(),
             'postcardTypes' => PostcardType::orderBy('name')->get(),
             'locations' => Location::orderBy('name')->get(),
+            'currencies' => Currency::orderBy('name')->get(),
+            'nominalValues' => NominalValue::orderBy('name')->get(),
+            'valuationImages' => DB::table('postcard_valuation_images')->orderBy('name')->get(),
+            'colours' => DB::table('colours')->orderBy('name')->get(),
+            'printTypes' => DB::table('print_types')->orderBy('name')->get(),
         ]);
     }
 
@@ -105,16 +136,33 @@ class PostcardController extends Controller
             'country_id' => 'nullable|exists:countries,id',
             'year' => 'nullable|integer|min:1800|max:'.(date('Y') + 1),
             'postcard_type_id' => 'nullable|exists:postcard_types,id',
+            'nominal_value_id' => 'nullable|exists:nominal_values,id',
+            'currency_id' => 'nullable|exists:currencies,id',
+            'valuation_image_id' => 'nullable|exists:postcard_valuation_images,id',
+            'colour_id' => 'nullable|exists:colours,id',
+            'print_type_id' => 'nullable|exists:print_types,id',
             'occasion' => 'nullable|string|max:255',
+            'michel_number' => 'nullable|string|max:255',
+            'date_of_issue' => 'nullable|string|max:255',
+            'front_image' => 'nullable|string',
+            'special_features' => 'nullable|string',
+            'stamp_text' => 'nullable|string|max:255',
+            'stamp_date' => 'nullable|string|max:255',
+            'stamp_location' => 'nullable|string|max:255',
             'unstamped' => 'nullable|boolean',
             'stamped' => 'nullable|boolean',
             'special_stamp' => 'nullable|boolean',
+            'perforation' => 'nullable|boolean',
             'for_sale' => 'nullable|boolean',
             'selling_price' => 'nullable|numeric|min:0',
             'purchase_date' => 'nullable|date',
             'purchasing_price' => 'nullable|numeric|min:0',
             'current_value' => 'nullable|numeric|min:0',
+            'width' => 'nullable|numeric|min:0',
+            'height' => 'nullable|numeric|min:0',
+            'print_run' => 'nullable|integer|min:0',
             'location_id' => 'nullable|exists:locations,id',
+            'location_detail' => 'nullable|string|max:255',
             'personal_remarks' => 'nullable|string',
         ]);
 
@@ -122,6 +170,7 @@ class PostcardController extends Controller
         $validated['unstamped'] = $request->boolean('unstamped');
         $validated['stamped'] = $request->boolean('stamped');
         $validated['special_stamp'] = $request->boolean('special_stamp');
+        $validated['perforation'] = $request->boolean('perforation');
 
         $postcard->update($validated);
 

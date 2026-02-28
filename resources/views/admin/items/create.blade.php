@@ -1,7 +1,8 @@
-{{-- resources/views/items/create.blade.php --}}
+{{-- resources/views/admin/items/create.blade.php --}}
 
-<x-layout>
-    <x-form-layout>
+@extends('layouts.admin')
+
+@section('admin-content')
         @php
         $val = function (string $key, $fallback = '') {
             return old($key, $fallback);
@@ -24,7 +25,7 @@
                     <p class="mt-1 text-sm text-white/60">Add a new item to the collection.</p>
                 </div>
 
-                <a href="{{ route('admin.items.index') }}"
+                <a href="{{ route('admin.dashboard') }}"
                     class="rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/15">
                     Back
                 </a>
@@ -215,7 +216,7 @@
 
                 {{-- Actions --}}
                 <div class="flex items-center justify-end gap-3 pt-2">
-                    <a href="{{ route('admin.items.index') }}"
+                    <a href="{{ route('admin.dashboard') }}"
                         class="rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/15">
                         Cancel
                     </a>
@@ -226,5 +227,4 @@
                 </div>
             </div>
         </form>
-    </x-form-layout>
-</x-layout>
+@endsection

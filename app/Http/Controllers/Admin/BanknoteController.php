@@ -11,6 +11,7 @@ use App\Models\Currency;
 use App\Models\Location;
 use App\Models\NominalValue;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class BanknoteController extends Controller
@@ -54,6 +55,10 @@ class BanknoteController extends Controller
             'seriesList' => BanknoteSeries::orderBy('name')->get(),
             'timePeriods' => BanknoteTimePeriod::orderBy('name')->get(),
             'locations' => Location::orderBy('name')->get(),
+            'headsOfState' => DB::table('heads_of_state')->orderBy('name')->get(),
+            'colours' => DB::table('colours')->orderBy('name')->get(),
+            'designers' => DB::table('banknote_designers')->orderBy('name')->get(),
+            'watermarks' => DB::table('banknote_watermarks')->orderBy('name')->get(),
         ]);
     }
 
@@ -67,13 +72,30 @@ class BanknoteController extends Controller
             'nominal_value_id' => 'nullable|exists:nominal_values,id',
             'series_id' => 'nullable|exists:banknote_series,id',
             'time_period_id' => 'nullable|exists:banknote_time_periods,id',
+            'head_of_state_id' => 'nullable|exists:heads_of_state,id',
+            'colour_id' => 'nullable|exists:colours,id',
+            'designer_id' => 'nullable|exists:banknote_designers,id',
+            'watermark_id' => 'nullable|exists:banknote_watermarks,id',
             'year' => 'nullable|integer|min:1800|max:'.(date('Y') + 1),
             'variation' => 'nullable|string|max:255',
+            'number_on_note' => 'nullable|string|max:255',
+            'special_features' => 'nullable|string',
+            'number_jaeger' => 'nullable|string|max:255',
+            'date_of_issue' => 'nullable|date',
+            'front_image' => 'nullable|string',
+            'front_text' => 'nullable|string',
+            'reverse_image' => 'nullable|string',
+            'reverse_text' => 'nullable|string',
+            'width' => 'nullable|integer|min:0',
+            'height' => 'nullable|integer|min:0',
+            'print_run' => 'nullable|integer|min:0',
             'for_sale' => 'nullable|boolean',
             'selling_price' => 'nullable|numeric|min:0',
             'purchase_date' => 'nullable|date',
             'purchasing_price' => 'nullable|numeric|min:0',
+            'current_value' => 'nullable|numeric|min:0',
             'location_id' => 'nullable|exists:locations,id',
+            'location_detail' => 'nullable|string|max:255',
             'personal_remarks' => 'nullable|string',
         ]);
 
@@ -99,6 +121,10 @@ class BanknoteController extends Controller
             'seriesList' => BanknoteSeries::orderBy('name')->get(),
             'timePeriods' => BanknoteTimePeriod::orderBy('name')->get(),
             'locations' => Location::orderBy('name')->get(),
+            'headsOfState' => DB::table('heads_of_state')->orderBy('name')->get(),
+            'colours' => DB::table('colours')->orderBy('name')->get(),
+            'designers' => DB::table('banknote_designers')->orderBy('name')->get(),
+            'watermarks' => DB::table('banknote_watermarks')->orderBy('name')->get(),
         ]);
     }
 
@@ -112,13 +138,30 @@ class BanknoteController extends Controller
             'nominal_value_id' => 'nullable|exists:nominal_values,id',
             'series_id' => 'nullable|exists:banknote_series,id',
             'time_period_id' => 'nullable|exists:banknote_time_periods,id',
+            'head_of_state_id' => 'nullable|exists:heads_of_state,id',
+            'colour_id' => 'nullable|exists:colours,id',
+            'designer_id' => 'nullable|exists:banknote_designers,id',
+            'watermark_id' => 'nullable|exists:banknote_watermarks,id',
             'year' => 'nullable|integer|min:1800|max:'.(date('Y') + 1),
             'variation' => 'nullable|string|max:255',
+            'number_on_note' => 'nullable|string|max:255',
+            'special_features' => 'nullable|string',
+            'number_jaeger' => 'nullable|string|max:255',
+            'date_of_issue' => 'nullable|date',
+            'front_image' => 'nullable|string',
+            'front_text' => 'nullable|string',
+            'reverse_image' => 'nullable|string',
+            'reverse_text' => 'nullable|string',
+            'width' => 'nullable|integer|min:0',
+            'height' => 'nullable|integer|min:0',
+            'print_run' => 'nullable|integer|min:0',
             'for_sale' => 'nullable|boolean',
             'selling_price' => 'nullable|numeric|min:0',
             'purchase_date' => 'nullable|date',
             'purchasing_price' => 'nullable|numeric|min:0',
+            'current_value' => 'nullable|numeric|min:0',
             'location_id' => 'nullable|exists:locations,id',
+            'location_detail' => 'nullable|string|max:255',
             'personal_remarks' => 'nullable|string',
         ]);
 
