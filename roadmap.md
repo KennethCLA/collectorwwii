@@ -1,6 +1,6 @@
 # CollectorWWII — Roadmap
 
-Last updated: 2026-03-01
+Last updated: 2026-03-01 (session 2)
 
 ---
 
@@ -54,11 +54,19 @@ Military design language: Wehrmacht field manuals, Heer stencil markings, Kriegs
 ### UX polish — Phase 3 (March 2026)
 - **Show page field layout** — compact table-row definition list (3× information density)
 - **Mobile menu auto-close** — event delegation closes drawer on any link tap
-- **Home page** — Dutch subtitle, "Lees meer →" blog link, all hardcoded hex removed
+- **Home page** — subtitle "Artefakte · Dokumente · Geschichte", "Read more →" blog link, all hardcoded hex removed
 - **[x-cloak] CSS rule** — prevents Alpine.js flash-of-unstyled-content
 - **Nested form bug fix** — all 8 edit pages: HTML5 `form="id"` attribute pattern
 - **Top spacing** — map / for-sale / profile: `pt-6` on inner container
 - **Color palette** — all hex colors replaced with Tailwind aliases: `sage-650` (#636c65), `sage-950` (#2c3335) added
+- **Language audit** — all Dutch UI text purged; site is now consistently English + German only (blog excluded)
+
+### Feature additions — Phase 4 (March 2026)
+- **Condition grading** — `condition` field (varchar 50, nullable) added to all 8 tables. Select: Mint / Extremely Fine / Very Fine / Fine / Very Good / Good / Poor. Visible on public show pages, displayed as badge on index cards, editable in admin.
+- **Sold tracking** — `sold_at` (date) + `sold_price` (decimal) added to all 8 tables. When sold_at is set, `for_sale` is auto-cleared. Admin toggle with date + price inputs (Alpine.js). Sold badge on show page.
+- **Dashboard value stats** — four new widgets on BEFEHLSZENTRALE: Investiert (total purchase cost), Angebotswert (active for-sale value), Realisiert (sold revenue), Verkauft (sold item count). Accounts for the split `purchase_price` vs `purchasing_price` column naming across sections.
+- **Media partial WWII redesign** — `partials/show-media.blade.php` restyled: stencil header bar "Fotodokumentation · Bildmaterial", dark `bg-sage-900` image well, noise-texture + double inset border, khaki-ringed thumbnails. PDF cards with "Felddokument · Schriftakte" header.
+- **Media frame sizing** — `--media-frame-h` reduced 540px → 380px, `--media-img-max` 520px → 360px, grid column 560px → 460px. Less dominant, more proportional to the info panel.
 
 ---
 
@@ -68,9 +76,9 @@ Military design language: Wehrmacht field manuals, Heer stencil markings, Kriegs
 | Feature | Notes |
 |---|---|
 | **Global search** | Cross-section search bar in NAV BAR 1. Single `SearchController` querying all 8 models, results page grouped by section. |
-| **Condition grading** | Add `condition` field to all models (Mint / Near Mint / VG / Good / Fair / Poor). Visible on show pages, filterable on index. |
-| **Collection value** | Dashboard widget: total purchase value, total for-sale value, unrealised margin. |
-| **Sold tracking** | Add `sold_at` date + `sold_price` to all models. Mark items as sold (not for sale, with history). Show sold badge. |
+| ~~**Condition grading**~~ | ✅ Done — Phase 4 |
+| ~~**Collection value**~~ | ✅ Done — Phase 4 |
+| ~~**Sold tracking**~~ | ✅ Done — Phase 4 |
 
 ### Medium impact
 | Feature | Notes |
