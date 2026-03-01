@@ -138,6 +138,10 @@ class BookController extends Controller
             'height' => ['nullable', 'integer', 'min:0'],
             'thickness' => ['nullable', 'integer', 'min:0'],
 
+            'condition' => ['nullable', 'string', 'max:50'],
+            'sold_at' => ['nullable', 'date'],
+            'sold_price' => ['nullable', 'numeric', 'min:0'],
+
             'authors' => ['required', 'string', 'max:500'],
 
             'images' => ['nullable', 'array'],
@@ -158,6 +162,11 @@ class BookController extends Controller
 
         $validated['for_sale'] = (bool) $request->boolean('for_sale');
         if (! $validated['for_sale']) {
+            $validated['selling_price'] = null;
+        }
+
+        if (! empty($validated['sold_at'])) {
+            $validated['for_sale'] = false;
             $validated['selling_price'] = null;
         }
 

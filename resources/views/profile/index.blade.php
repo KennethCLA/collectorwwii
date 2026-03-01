@@ -1,123 +1,85 @@
-<!-- resources/views/profile/index.blade.php -->
-<x-layout>
-    <div class="container">
-        <div class="container flex justify-between">
-            <div class="breadcrumbs flex items-center pl-4 space-x-2 my-auto">
-                <a href="{{ route('home') }}" class="pr-2">Home</a> /
-                <a href="{{ route('profile.index') }}">Profile</a>
-            </div>
+{{-- resources/views/profile/index.blade.php --}}
+<x-layout :mainClass="'w-full px-4 py-6 sm:px-6 lg:px-8'">
+    <div class="mx-auto w-full max-w-5xl space-y-6 pt-6">
+
+        {{-- Soldbuch header --}}
+        <div class="rounded-2xl bg-black/20 p-5 ring-1 ring-black/30 noise-texture">
+            <p class="font-stencil text-xs tracking-[0.4em] text-khaki/60 uppercase mb-1">Personalakte</p>
+            <h1 class="font-stencil text-3xl font-black tracking-[0.2em] text-white uppercase">SOLDBUCH</h1>
+            <p class="font-mono text-[10px] tracking-[0.25em] text-white/40 mt-1 uppercase">
+                Inhaber: {{ $user->name }} &nbsp;·&nbsp; WK II Sammlung
+            </p>
         </div>
-    </div>
 
-    <div class="container mx-auto px-4 py-6">
-        <div class="flex gap-4">
-            <!-- aside met flex-shrink-0 voor automatische hoogte -->
-            <aside class="flex-shrink-0 bg-[#697367] text-white p-4 rounded-md w-full md:w-auto h-full">
-                <ul>
-                    <h3 class="text-lg font-bold mb-2">Creation</h3>
-                    <ul class="pl-4 pb-4">
-                        <li>
-                            <a href="{{ route('books.create') }}" class="text-white hover:text-gray-300">Create
-                                Book</a>
-                        </li>
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-[220px_1fr]">
 
-                        <li>
-                            <a href="{{ route('items.create') }}" class="text-white hover:text-gray-300">Create
-                                Item</a>
-                        </li>
+            {{-- Sidebar: service record sections --}}
+            <aside class="rounded-2xl bg-black/20 ring-1 ring-black/30 p-5 text-white noise-texture lg:sticky lg:top-20 lg:self-start">
+                <p class="font-stencil text-[10px] uppercase tracking-[0.2em] text-white/40 mb-3">Dienstakte</p>
 
-                        <li>
-                            <a href="{{ route('newspapers.create') }}" class="text-white hover:text-gray-300">Create
-                                Newspaper</a>
-                        </li>
+                <div class="space-y-4">
+                    <div>
+                        <p class="font-stencil text-[10px] uppercase tracking-[0.18em] text-khaki/60 mb-1.5 border-b border-khaki/20 pb-1">Erfassung</p>
+                        <ul class="space-y-1">
+                            @foreach([
+                                ['label' => 'Buch', 'route' => 'books.create'],
+                                ['label' => 'Gegenstand', 'route' => 'items.create'],
+                                ['label' => 'Zeitung', 'route' => 'newspapers.create'],
+                                ['label' => 'Zeitschrift', 'route' => 'magazines.create'],
+                                ['label' => 'Banknote', 'route' => 'banknotes.create'],
+                                ['label' => 'Münze', 'route' => 'coins.create'],
+                                ['label' => 'Postkarte', 'route' => 'postcards.create'],
+                                ['label' => 'Briefmarke', 'route' => 'stamps.create'],
+                            ] as $link)
+                            <li>
+                                <a href="{{ route($link['route']) }}"
+                                   class="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-white/80 hover:bg-white/10 hover:text-white transition">
+                                    <span class="font-mono text-[9px] text-khaki/50">+</span>
+                                    {{ $link['label'] }}
+                                </a>
+                            </li>
+                            @endforeach
+                        </ul>
+                    </div>
 
-                        <li>
-                            <a href="{{ route('magazines.create') }}" class="text-white hover:text-gray-300">Create
-                                Magazine</a>
-                        </li>
-
-                        <li>
-                            <a href="{{ route('banknotes.create') }}" class="text-white hover:text-gray-300">Create
-                                Banknote</a>
-                        </li>
-
-                        <li>
-                            <a href="{{ route('coins.create') }}" class="text-white hover:text-gray-300">Create
-                                Coin</a>
-                        </li>
-
-                        <li>
-                            <a href="{{ route('postcards.create') }}" class="text-white hover:text-gray-300">Create
-                                Postcard</a>
-                        </li>
-
-                        <li>
-                            <a href="{{ route('stamps.create') }}" class="text-white hover:text-gray-300">Create
-                                Stamp</a>
-                        </li>
-                    </ul>
-
-                    <h3 class="text-lg font-bold mb-2">Editing</h3>
-                    <ul class="pl-4">
-                        <li>
-                            <a href="{{ route('books.edit', $book->id) }}"
-                                class="text-white hover:text-gray-300">Edit
-                                Book</a>
-                        </li>
-
-                        <li>
-                            <a href="{{ route('items.edit', $item->id) }}"
-                                class="text-white hover:text-gray-300">Edit
-                                Item</a>
-                        </li>
-
-                        <li>
-                            <a href="{{ route('newspapers.edit', $newspaper->id) }}"
-                                class="text-white hover:text-gray-300">Edit
-                                Newspaper</a>
-                        </li>
-
-                        <li>
-                            <a href="{{ route('magazines.edit', $magazine->id) }}"
-                                class="text-white hover:text-gray-300">Edit
-                                Magazine</a>
-                        </li>
-
-                        <li>
-                            <a href="{{ route('banknotes.edit', $banknote->id) }}"
-                                class="text-white hover:text-gray-300">Edit
-                                Banknote</a>
-                        </li>
-
-                        <li>
-                            <a href="{{ route('coins.edit', $coin->id) }}"
-                                class="text-white hover:text-gray-300">Edit
-                                Coin</a>
-                        </li>
-
-                        <li>
-                            <a href="{{ route('postcards.edit', $postcard->id) }}"
-                                class="text-white hover:text-gray-300">Edit
-                                Postcard</a>
-                        </li>
-
-                        <li>
-                            <a href="{{ route('stamps.edit', $stamp->id) }}"
-                                class="text-white hover:text-gray-300">Edit
-                                Stamp</a>
-                        </li>
-                    </ul>
-                </ul>
+                    <div>
+                        <p class="font-stencil text-[10px] uppercase tracking-[0.18em] text-khaki/60 mb-1.5 border-b border-khaki/20 pb-1">Bearbeitung</p>
+                        <ul class="space-y-1">
+                            @foreach([
+                                ['label' => 'Buch', 'route' => 'books.edit', 'id' => $book->id],
+                                ['label' => 'Gegenstand', 'route' => 'items.edit', 'id' => $item->id],
+                                ['label' => 'Zeitung', 'route' => 'newspapers.edit', 'id' => $newspaper->id],
+                                ['label' => 'Zeitschrift', 'route' => 'magazines.edit', 'id' => $magazine->id],
+                                ['label' => 'Banknote', 'route' => 'banknotes.edit', 'id' => $banknote->id],
+                                ['label' => 'Münze', 'route' => 'coins.edit', 'id' => $coin->id],
+                                ['label' => 'Postkarte', 'route' => 'postcards.edit', 'id' => $postcard->id],
+                                ['label' => 'Briefmarke', 'route' => 'stamps.edit', 'id' => $stamp->id],
+                            ] as $link)
+                            <li>
+                                <a href="{{ route($link['route'], $link['id']) }}"
+                                   class="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-white/80 hover:bg-white/10 hover:text-white transition">
+                                    <span class="font-mono text-[9px] text-khaki/50">›</span>
+                                    {{ $link['label'] }}
+                                </a>
+                            </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
             </aside>
 
-            <main class="flex-grow mx-auto">
-                <h1 class="text-xl w-full mx-auto text-center font-bold mb-4 text-white">Hello {{ $user->name }}
-                </h1>
-
-                <div class="mb-4">
-                    <img src="{{ asset('storage/images/hitlers-gustav-gun.jpg') }}" alt="Hitler's Gustav Gun"
-                        class="w-full h-[460px] object-cover rounded-md">
+            {{-- Main content --}}
+            <main class="space-y-6">
+                <div class="rounded-2xl bg-black/20 ring-1 ring-black/30 overflow-hidden">
+                    <img src="{{ asset('storage/images/hitlers-gustav-gun.jpg') }}" alt="Gustav Kanone"
+                        class="w-full h-[460px] object-cover">
+                    <div class="px-5 py-3 border-t border-black/30">
+                        <p class="font-mono text-[10px] tracking-[0.2em] text-white/35 uppercase">
+                            Dok. Nr. WKII-PF-001 &nbsp;·&nbsp; Schwere Artillerie &nbsp;·&nbsp; Dora / Gustav
+                        </p>
+                    </div>
                 </div>
+            </main>
         </div>
     </div>
 </x-layout>

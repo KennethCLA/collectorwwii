@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const card = document.createElement("div");
             card.className =
-                "rounded-md bg-[#343933] border border-white/10 overflow-hidden";
+                "rounded-md bg-sage-900 border border-white/10 overflow-hidden";
 
             const preview = document.createElement("div");
             preview.className =

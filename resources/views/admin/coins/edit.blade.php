@@ -9,7 +9,7 @@
         $forSaleJs = filter_var($forSaleOld, FILTER_VALIDATE_BOOLEAN) ? 'true' : 'false';
         @endphp
 
-        <form action="{{ route('admin.coins.update', $coin) }}" method="POST"
+        <form id="coin-form" action="{{ route('admin.coins.update', $coin) }}" method="POST"
             class="w-full mx-auto max-w-7xl">
             @csrf
             @method('PUT')
@@ -257,6 +257,16 @@
                         <textarea name="special_features" rows="3"
                             class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">{{ old('special_features', $coin->special_features) }}</textarea>
                     </div>
+
+                    <div class="mt-6 space-y-2">
+                        <label class="text-sm font-medium text-white/80">Condition</label>
+                        <select name="condition" class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                            <option value="">— Not graded —</option>
+                            @foreach(['Mint','Extremely Fine','Very Fine','Fine','Very Good','Good','Poor'] as $grade)
+                            <option value="{{ $grade }}" @selected(old('condition', $coin->condition ?? '') === $grade)>{{ $grade }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </section>
 
                 <section class="rounded-xl border border-white/10 bg-black/20 p-6">
@@ -315,6 +325,31 @@
                                     class="mt-2 w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
                             </div>
                         </div>
+
+                        {{-- Sold --}}
+                        <div x-data="{ sold: {{ old('sold_at', $coin->sold_at ?? null) ? 'true' : 'false' }} }" class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Sold</label>
+                            <div class="flex items-center gap-3">
+                                <input type="hidden" name="sold" value="0">
+                                <input type="checkbox" value="1" x-model="sold"
+                                    class="h-5 w-5 rounded border-white/20 bg-white/10">
+                                <span class="text-sm text-white/70">Mark as sold</span>
+                            </div>
+                            <div x-show="sold" x-cloak class="grid grid-cols-2 gap-3 pt-2">
+                                <div>
+                                    <label class="text-sm font-medium text-white/80">Sold on</label>
+                                    <input type="date" name="sold_at"
+                                        value="{{ old('sold_at', $coin->sold_at?->format('Y-m-d') ?? '') }}"
+                                        class="mt-1 w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium text-white/80">Sold price €</label>
+                                    <input type="number" step="0.01" name="sold_price"
+                                        value="{{ old('sold_price', $coin->sold_price ?? '') }}"
+                                        class="mt-1 w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="mt-6 space-y-2">
@@ -324,12 +359,14 @@
                     </div>
                 </section>
 
+        </form>
+
                 {{-- MEDIA --}}
                 <section class="rounded-xl border border-black/20 bg-black/10 p-6 space-y-6">
                     <h2 class="text-base font-semibold text-white">Media</h2>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="rounded-md bg-[#343933] p-4 border border-white/10">
+                        <div class="rounded-md bg-sage-900 p-4 border border-white/10">
                             <div class="text-white font-semibold mb-2">Upload images</div>
                             <form action="{{ route('admin.media.store', ['type' => 'coins', 'id' => $coin->id]) }}"
                                 method="POST" enctype="multipart/form-data" class="flex flex-col gap-3">
@@ -340,7 +377,7 @@
                                 <button type="submit" class="rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/15">Upload images</button>
                             </form>
                         </div>
-                        <div class="rounded-md bg-[#343933] p-4 border border-white/10">
+                        <div class="rounded-md bg-sage-900 p-4 border border-white/10">
                             <div class="text-white font-semibold mb-2">Upload PDFs</div>
                             <form action="{{ route('admin.media.store', ['type' => 'coins', 'id' => $coin->id]) }}"
                                 method="POST" enctype="multipart/form-data" class="flex flex-col gap-3">
@@ -361,7 +398,7 @@
                     @endphp
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <div class="bg-[#697367] rounded-md p-4 border border-black/20">
+                        <div class="bg-sage rounded-md p-4 border border-black/20">
                             <h3 class="text-lg font-semibold text-white mb-3">Images ({{ $mediaImages->count() }})</h3>
                             @if($mediaImages->isEmpty())
                             <p class="text-white/80 text-sm">No images uploaded yet.</p>
@@ -373,7 +410,7 @@
                             </div>
                             @endif
                         </div>
-                        <div class="bg-[#697367] rounded-md p-4 border border-black/20">
+                        <div class="bg-sage rounded-md p-4 border border-black/20">
                             <h3 class="text-lg font-semibold text-white mb-3">PDFs ({{ $mediaPdfs->count() }})</h3>
                             @if($mediaPdfs->isEmpty())
                             <p class="text-white/80 text-sm">No PDFs uploaded yet.</p>
@@ -391,9 +428,8 @@
                 <div class="flex items-center justify-end gap-3 pt-2">
                     <a href="{{ route('admin.dashboard') }}"
                         class="rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/15">Cancel</a>
-                    <button type="submit"
+                    <button type="submit" form="coin-form"
                         class="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500">Save changes</button>
                 </div>
             </div>
-        </form>
 @endsection

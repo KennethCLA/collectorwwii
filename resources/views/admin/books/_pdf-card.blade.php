@@ -7,7 +7,7 @@ $title = $pdf->original_name
 : 'PDF';
 @endphp
 
-<div class="max-w-xl rounded-md bg-[#343933] border border-white/10 overflow-hidden">
+<div class="max-w-xl rounded-md bg-sage-900 border border-white/10 overflow-hidden">
     {{-- PREVIEW --}}
     <div class="w-full h-48 bg-black/20 overflow-hidden">
         @if($url)

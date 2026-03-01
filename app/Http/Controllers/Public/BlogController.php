@@ -3,6 +3,14 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Models\Banknote;
+use App\Models\Book;
+use App\Models\Coin;
+use App\Models\Item;
+use App\Models\Magazine;
+use App\Models\Newspaper;
+use App\Models\Postcard;
+use App\Models\Stamp;
 use Illuminate\Support\Facades\File;
 
 class BlogController extends Controller
@@ -29,7 +37,26 @@ class BlogController extends Controller
         $latestBlog = $blogs[0] ?? null;
         $season = $this->currentSeason();
 
-        return view('home', compact('blogs', 'latestBlog', 'language', 'season'));
+        $sections = collect(config('collector.enabled_sections'))
+            ->filter()
+            ->keys()
+            ->mapWithKeys(function ($key) {
+                $model = match ($key) {
+                    'books' => Book::class,
+                    'items' => Item::class,
+                    'banknotes' => Banknote::class,
+                    'coins' => Coin::class,
+                    'magazines' => Magazine::class,
+                    'newspapers' => Newspaper::class,
+                    'postcards' => Postcard::class,
+                    'stamps' => Stamp::class,
+                    default => null,
+                };
+
+                return [$key => $model ? $model::count() : 0];
+            });
+
+        return view('home', compact('blogs', 'latestBlog', 'language', 'season', 'sections'));
     }
 
     public function showAllPosts()

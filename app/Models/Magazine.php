@@ -23,6 +23,9 @@ class Magazine extends Model
         'for_sale',
         'selling_price',
         'notes',
+        'condition',
+        'sold_at',
+        'sold_price',
     ];
 
     protected $casts = [
@@ -30,6 +33,8 @@ class Magazine extends Model
         'purchase_date' => 'date',
         'selling_price' => 'decimal:2',
         'purchase_price' => 'decimal:2',
+        'sold_at' => 'date',
+        'sold_price' => 'decimal:2',
     ];
 
     public function media(): MorphMany

@@ -1,14 +1,25 @@
 {{-- resources/views/for-sale/index.blade.php --}}
 <x-layout :mainClass="'w-full px-2 sm:px-4 py-6'">
-    <div class="w-full px-4 pt-6">
-        <div class="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-4 items-center">
-            {{-- Left column: breadcrumb --}}
-            <nav class="breadcrumbs flex items-center pl-1 space-x-2 text-sm text-white">
-                <a href="{{ route('home') }}" class="pr-2">Home</a> >
-                <span class="text-gray-800">For Sale</span>
+
+    {{-- Page header --}}
+    <div class="w-full px-4 pt-6 pb-5">
+        <div class="rounded-2xl bg-black/20 p-4 ring-1 ring-black/30 sm:p-6 noise-texture">
+            <p class="font-stencil text-xs tracking-[0.4em] text-khaki/60 uppercase mb-1">Feldpost-Auktion · Nr. ——</p>
+            <h1 class="font-stencil text-3xl font-black tracking-[0.2em] text-white uppercase">ZU VERKAUFEN</h1>
+            <p class="font-mono text-[10px] tracking-[0.25em] text-white/40 mt-1 uppercase">Verfügbare Sammlungsstücke · WK II</p>
+        </div>
+    </div>
+
+    <div class="w-full px-4 pt-0">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            {{-- Breadcrumb --}}
+            <nav class="flex items-center pl-1 space-x-2 font-mono text-[11px] tracking-[0.15em] text-white/60 uppercase">
+                <a href="{{ route('home') }}" class="hover:text-white transition">Home</a>
+                <span class="text-white/30">·</span>
+                <span class="text-khaki/70">Zu Verkaufen</span>
             </nav>
 
-            {{-- Right column: type + sort + search --}}
+            {{-- Controls: type + sort + search --}}
             <div class="flex flex-col sm:flex-row gap-3 sm:justify-end">
                 {{-- type filter --}}
                 <form method="GET" action="{{ route('for-sale.index') }}" class="flex">
@@ -16,7 +27,7 @@
                     @if(request()->filled('sort')) <input type="hidden" name="sort" value="{{ request('sort') }}"> @endif
 
                     <select name="type"
-                        class="p-2 rounded-md border text-white border-gray-300 bg-[#565e55] min-w-[150px]"
+                        class="rounded-md border border-black/30 bg-black/25 text-white px-3 py-2 font-mono text-sm min-w-[150px] focus:outline-none focus:ring-2 focus:ring-white/20"
                         onchange="this.form.submit()">
                         <option value="all" {{ request('type','all') == 'all' ? 'selected' : '' }}>All</option>
                         <option value="books" {{ request('type') == 'books' ? 'selected' : '' }}>Books</option>
@@ -36,7 +47,7 @@
                     @if(request()->filled('type')) <input type="hidden" name="type" value="{{ request('type') }}"> @endif
 
                     <select name="sort"
-                        class="p-2 rounded-md border text-white border-gray-300 bg-[#565e55] min-w-[170px]"
+                        class="rounded-md border border-black/30 bg-black/25 text-white px-3 py-2 font-mono text-sm min-w-[170px] focus:outline-none focus:ring-2 focus:ring-white/20"
                         onchange="this.form.submit()">
                         <option value="" disabled {{ request()->filled('sort') ? '' : 'selected' }}>Sort by</option>
                         <option value="title_asc" {{ request('sort') == 'title_asc' ? 'selected' : '' }}>Title (A-Z)</option>
@@ -56,9 +67,9 @@
                     <div class="relative w-full sm:w-[320px]">
                         <input type="text"
                             name="q"
-                            placeholder="Search for sale..."
+                            placeholder="Search..."
                             value="{{ request('q') }}"
-                            class="p-2 pr-10 rounded-md border bg-[#565e55] text-white border-gray-300 w-full"
+                            class="rounded-md border border-black/30 bg-black/25 text-white placeholder-white/40 font-mono text-sm px-3 py-2 pr-10 w-full focus:outline-none focus:ring-2 focus:ring-white/20"
                             id="searchInput"
                             autocomplete="off" />
 
@@ -75,50 +86,6 @@
     </div>
 
     <div class="w-full px-4 py-6">
-        <div class="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-4 items-start">
-
-            {{-- Sidebar (optioneel: later uitbreiden met categorieën/filters) --}}
-            <aside class="lg:sticky lg:top-4 lg:h-[calc(100vh-2rem)]">
-                <div class="bg-[#697367] text-white p-4 rounded-md h-full overflow-y-auto">
-                    <h2 class="text-lg font-bold">For Sale</h2>
-
-                    <p class="text-sm text-white/90 mt-2">
-                        Browse all collection entries currently marked as <span class="font-semibold">for sale</span>.
-                    </p>
-                    {{--
-                    <div class="mt-4 space-y-2 text-sm">
-                        <div class="flex items-center justify-between rounded bg-white/10 px-3 py-2">
-                            <span>Type</span>
-                            <span class="font-semibold">
-                                {{ ucfirst(request('type','all')) }}
-                    </span>
-                </div>
-
-                @if(request()->filled('q'))
-                <div class="rounded bg-white/10 px-3 py-2">
-                    <div class="text-white/80 text-xs">Search</div>
-                    <div class="font-semibold break-words">“{{ request('q') }}”</div>
-                </div>
-                @endif
-
-                @if(request()->filled('sort'))
-                <div class="rounded bg-white/10 px-3 py-2">
-                    <div class="text-white/80 text-xs">Sort</div>
-                    <div class="font-semibold">{{ request('sort') }}</div>
-                </div>
-                @endif
-
-                <a href="{{ route('for-sale.index') }}"
-                    class="inline-flex w-full items-center justify-center bg-[#565e55] hover:bg-[#5a6452] text-white px-4 py-2 rounded-md text-sm mt-2">
-                    Clear all
-                </a>
-        </div>
-        --}}
-    </div>
-    </aside>
-
-    {{-- Grid --}}
-    <div class="min-w-0">
         @php
         $total = $forSale->total();
         $from = $forSale->firstItem();
@@ -130,42 +97,39 @@
         @endphp
 
         <div class="mb-3 flex items-center justify-between">
-            <p class="text-sm text-white/90">
+            <p class="font-mono text-[11px] tracking-[0.15em] text-white/60 uppercase">
                 @if($total > 0)
-                Showing <span class="font-semibold text-white">{{ $from }}</span>–<span class="font-semibold text-white">{{ $to }}</span>
-                of <span class="font-semibold text-white">{{ $total }}</span> results
+                [ <span class="text-white">{{ $from }}</span>–<span class="text-white">{{ $to }}</span>
+                &nbsp;of&nbsp; <span class="text-khaki">{{ $total }}</span> ]
                 @else
-                <span class="font-semibold text-white">0</span> results found
+                [ <span class="text-white">0</span> results ]
                 @endif
             </p>
 
             @if($hasAnyFilter)
             <a href="{{ route('for-sale.index') }}"
-                class="text-sm underline text-white/90 hover:text-white">
-                Clear all filters
+                class="font-mono text-[10px] tracking-[0.15em] text-khaki/70 hover:text-khaki uppercase">
+                Clear filters
             </a>
             @endif
         </div>
 
         @if($forSale->count() === 0)
-        <div class="bg-[#697367] text-white rounded-md p-6">
-            <h3 class="text-lg font-bold">No results found</h3>
-            <p class="text-sm text-white/90 mt-2">
-                Try adjusting your search or removing filters.
-            </p>
-
+        <div class="rounded-xl bg-black/20 ring-1 ring-black/30 p-6 text-center noise-texture">
+            <p class="font-mono text-white/60 text-sm tracking-widest">[ NO RESULTS FOUND ]</p>
+            <p class="font-mono text-xs text-white/40 mt-2 tracking-wide">Adjust search or remove filters.</p>
             <div class="mt-4">
                 <a href="{{ route('for-sale.index') }}"
-                    class="bg-[#565e55] hover:bg-[#5a6452] text-white px-4 py-2 rounded-md text-sm">
+                    class="inline-block rounded-xl bg-black/30 hover:bg-black/40 ring-1 ring-khaki/30 px-4 py-2 font-stencil tracking-[0.15em] text-sm text-white uppercase transition">
                     Clear filters
                 </a>
             </div>
         </div>
         @else
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 h-full">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 h-full">
             @foreach ($forSale as $row)
             <a href="{{ $row['url'] }}" target="_blank"
-                class="bg-[#697367] text-white p-4 rounded-md shadow-md flex flex-col h-full hover:bg-[#5a6452]">
+                class="collection-card bg-sage text-white p-4 rounded-md shadow-md flex flex-col h-full overflow-hidden">
                 <div class="mb-2 flex items-start justify-between gap-2">
                     <span class="text-xs bg-white/15 rounded-full px-3 py-1">
                         {{ $row['type_label'] ?? ucfirst(rtrim((string) ($row['type'] ?? 'item'), 's')) }}
@@ -213,8 +177,6 @@
             {{ $forSale->appends(request()->query())->links('pagination::tailwind') }}
         </div>
         @endif
-    </div>
-    </div>
     </div>
 
     <script>

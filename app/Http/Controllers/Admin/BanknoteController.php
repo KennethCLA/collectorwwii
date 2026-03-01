@@ -97,9 +97,16 @@ class BanknoteController extends Controller
             'location_id' => 'nullable|exists:locations,id',
             'location_detail' => 'nullable|string|max:255',
             'personal_remarks' => 'nullable|string',
+            'condition' => 'nullable|string|max:50',
+            'sold_at' => 'nullable|date',
+            'sold_price' => 'nullable|numeric|min:0',
         ]);
 
         $validated['for_sale'] = $request->boolean('for_sale');
+        if (! empty($validated['sold_at'])) {
+            $validated['for_sale'] = false;
+            $validated['selling_price'] = null;
+        }
 
         $banknote = Banknote::create($validated);
 
@@ -163,9 +170,16 @@ class BanknoteController extends Controller
             'location_id' => 'nullable|exists:locations,id',
             'location_detail' => 'nullable|string|max:255',
             'personal_remarks' => 'nullable|string',
+            'condition' => 'nullable|string|max:50',
+            'sold_at' => 'nullable|date',
+            'sold_price' => 'nullable|numeric|min:0',
         ]);
 
         $validated['for_sale'] = $request->boolean('for_sale');
+        if (! empty($validated['sold_at'])) {
+            $validated['for_sale'] = false;
+            $validated['selling_price'] = null;
+        }
 
         $banknote->update($validated);
 

@@ -9,9 +9,9 @@
     <div class="mx-auto w-full max-w-[1600px] px-4 py-6 lg:px-6">
     <div class="flex flex-col gap-4 lg:flex-row lg:gap-6">
         <aside class="order-2 w-full lg:order-1 lg:w-64 lg:shrink-0">
-            <div class="rounded-2xl bg-[#283129]/65 p-3.5 text-white ring-1 ring-black/35 backdrop-blur-sm lg:sticky lg:top-4">
+            <div class="rounded-2xl bg-feldgrau/70 p-3.5 text-white ring-1 ring-black/35 backdrop-blur-sm lg:sticky lg:top-4 noise-texture">
                 <div class="mb-3 px-2">
-                    <p class="text-[11px] uppercase tracking-[0.18em] text-white/55">Admin navigation</p>
+                    <p class="font-stencil text-[11px] uppercase tracking-[0.18em] text-white/55">Befehlsstelle</p>
                 </div>
                 @include('admin.partials.sidebar')
             </div>

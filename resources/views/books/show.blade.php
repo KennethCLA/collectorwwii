@@ -10,36 +10,11 @@
     $pdfs = $files->filter(fn($f) => $f->isPdf())->values();
     @endphp
 
-    <style>
-        .book-layout {
-            display: grid;
-            grid-template-columns: 560px minmax(0, 1fr);
-            gap: 3.5rem;
-            align-items: start;
-            margin-top: 10px;
-        }
-
-        /* 1 bron van waarheid voor cover + pdf hoogte */
-        :root {
-            --media-frame-h: 540px;
-            --media-img-max: 520px;
-        }
-
-        @media (max-width: 1100px) {
-            .book-layout {
-                grid-template-columns: 1fr;
-            }
-
-            .book-sticky {
-                position: static !important;
-            }
-        }
-    </style>
 
     {{-- PAGE WRAPPER (écht breed) --}}
     <div class="w-full max-w-[2200px] mx-auto px-4 sm:px-8 lg:px-16 2xl:px-24">
         {{-- Breadcrumbs --}}
-        <nav class="flex items-center gap-2 text-sm text-white/70 mb-10">
+        <nav class="font-mono flex items-center gap-2 text-sm text-white/70 mb-10">
             <a href="{{ route('home') }}" class="hover:text-white hover:underline">Home</a>
             <span class="opacity-50">›</span>
             <a href="{{ route('books.index') }}" class="hover:text-white hover:underline">Books</a>
@@ -51,280 +26,239 @@
         <div class="book-layout">
             {{-- LEFT: MEDIA --}}
             <aside class="book-sticky sticky top-8 space-y-10">
-                {{-- COVER + THUMBS --}}
-                <section class="rounded-2xl shadow-lg p-7 space-y-6 bg-[#697367] border border-black/20 p-4 mb-4">
-                    <header class="space-y-3 mb-4 text-center">
-                        <h1 class="text-2xl sm:text-3xl font-bold text-white leading-tight">
-                            {{ $book->title }}
-                        </h1>
-
-                        @if (!empty($book->subtitle))
-                        {{-- divider tussen titel en subtitel --}}
-                        <div class="h-px bg-white/20"></div>
-                        <p class="text-white/80 italic">
-                            {{ $book->subtitle }}
-                        </p>
-                        @endif
-                    </header>
-
-                    {{-- divider tussen titelblok en cover --}}
-                    <div class="h-px bg-white/15"></div>
-
-                    {{-- COVER FRAME (achtergrond duidelijk) --}}
-                    <div class="rounded-2xl p-4">
-                        <div class="flex items-center justify-center" style="height: var(--media-frame-h);">
-                            @if ($mainUrl)
-                            <a href="{{ $mainUrl }}" data-fancybox="gallery" class="block">
-                                <img
-                                    src="{{ $mainUrl }}"
-                                    alt="{{ $book->title }}"
-                                    class="w-auto max-w-full object-contain rounded-xl"
-                                    style="max-height: var(--media-img-max);"
-                                    loading="lazy">
-                            </a>
-                            @else
-                            <img
-                                src="{{ asset('images/error-image-not-found.png') }}"
-                                alt="Image not found"
-                                class="w-auto max-w-full object-contain rounded-xl"
-                                style="max-height: var(--media-img-max);"
-                                loading="lazy">
-                            @endif
-                        </div>
-                    </div>
-
-                    {{-- Thumbnails --}}
-                    @php
-                    $mainId = $main?->id;
-                    $thumbs = $images->filter(fn ($img) => $img->id !== $mainId)->values();
-
-                    $thumbCount = $thumbs->count();
-                    $enableScroll = $thumbCount >= 7; // tweak: vanaf 7 ga je scrollen
-                    @endphp
-
-                    @if ($thumbCount > 0)
-                    <div class="pt-2">
-                        <div class="{{ $enableScroll ? 'overflow-x-auto snap-x snap-mandatory scroll-px-2' : 'overflow-x-hidden' }}">
-                            <div class="flex gap-3 pb-1 {{ $enableScroll ? 'justify-start px-1' : 'justify-center' }}"> @foreach ($thumbs as $img)
-                                @php $url = $img->url(); @endphp
-                                @if ($url)
-                                <a href="{{ $url }}"
-                                    data-fancybox="gallery"
-                                    class="shrink-0 snap-start rounded-lg overflow-hidden bg-[#343933] ring-1 ring-white/10 hover:ring-white/30 transition">
-                                    <img src="{{ $url }}"
-                                        alt=""
-                                        class="w-16 h-16 sm:w-20 sm:h-20 object-cover">
-                                </a>
-                                @endif
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-                    @endif
-                </section>
-
-                {{-- PDF PREVIEW (altijd zichtbaar, cover-size feeling) --}}
-                @if ($pdfs->count() > 0)
-                @foreach ($pdfs as $i => $pdf)
-                @php
-                $pdfUrl = $pdf->url();
-                $pdfTitle = $pdf->original_name
-                ? pathinfo($pdf->original_name, PATHINFO_FILENAME)
-                : ('PDF ' . ($i + 1));
-                @endphp
-
-                @if ($pdfUrl)
-                <section class="rounded-2xl shadow-lg p-7 space-y-5 bg-[#697367] border border-black/20 p-4">
-                    <div class="flex items-start justify-between gap-4">
-                        <div class="min-w-0">
-                            <h2 class="text-lg sm:text-xl font-bold text-white truncate">
-                                {{ $pdfTitle }}
-                            </h2>
-                        </div>
-                        <a
-                            href="{{ $pdfUrl }}"
-                            target="_blank"
-                            rel="noopener"
-                            class="shrink-0 text-sm px-3 py-2 rounded-md bg-white/10 text-white hover:bg-white/15 transition">
-                            Open
-                        </a>
-                    </div>
-
-                    {{-- PDF FRAME (zelfde “blok” als cover) --}}
-                    <div class="rounded-2xl p-4 bg-[#343933] border border-white/10">
-                        <div class="overflow-hidden rounded-xl bg-black/20" style="height: var(--media-frame-h);">
-                            <iframe
-                                src="{{ $pdfUrl }}#toolbar=0&navpanes=0&scrollbar=1"
-                                class="w-full h-full"
-                                loading="lazy"></iframe>
-                        </div>
-                    </div>
-                </section>
-                @endif
-                @endforeach
-                @endif
+                @include('partials.show-media', [
+                    'title' => $book->title,
+                    'subtitle' => $book->subtitle ?? null,
+                    'images' => $images,
+                    'main' => $main,
+                    'mainUrl' => $mainUrl,
+                    'pdfs' => $pdfs,
+                ])
             </aside>
 
             {{-- RIGHT: INFO (2 aparte containers) --}}
             <div class="space-y-10">
                 {{-- Publieke INFO card --}}
-                <section class="bg-[#697367] text-white rounded-2xl shadow-lg border border-black/20 p-8 lg:p-10 mb-4">
+                <section class="bg-sage text-white rounded-2xl shadow-lg border border-black/20 overflow-hidden">
+                    <div class="px-6 py-3 border-b border-black/25 bg-black/15">
+                        <p class="font-stencil text-[10px] uppercase tracking-[0.25em] text-khaki/60">Feldbericht · Objektakte</p>
+                    </div>
+                    <div class="px-6 py-4">
+                        <dl>
+                            @if($book->condition)
+                            <div class="flex items-baseline gap-4 py-2.5 border-t border-white/8 first:border-0">
+                                <dt class="font-mono text-[11px] uppercase tracking-wider text-white/50 w-36 shrink-0">Condition</dt>
+                                <dd class="text-sm text-white/90">{{ $book->condition }}</dd>
+                            </div>
+                            @endif
+                            @if($book->authors->count())
+                            <div class="flex items-baseline gap-4 py-2.5 border-t border-white/8 first:border-0">
+                                <dt class="font-mono text-[11px] uppercase tracking-wider text-white/50 w-36 shrink-0">Author(s)</dt>
+                                <dd class="text-sm text-white/90">{{ $book->authors->pluck('name')->implode(', ') }}</dd>
+                            </div>
+                            @endif
 
-                    <dl class="space-y-6">
-                        <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-sm text-white/70 font-semibold">Author(s)</dt>
-                            <dd class="text-white">
-                                {{ $book->authors->pluck('name')->implode(', ') ?: '—' }}
-                            </dd>
-                        </div>
+                            @if($book->isbn)
+                            <div class="flex items-baseline gap-4 py-2.5 border-t border-white/8 first:border-0">
+                                <dt class="font-mono text-[11px] uppercase tracking-wider text-white/50 w-36 shrink-0">ISBN</dt>
+                                <dd class="text-sm text-white/90">{{ $book->isbn }}</dd>
+                            </div>
+                            @endif
 
-                        <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-sm text-white/70 font-semibold">ISBN</dt>
-                            <dd class="text-white">{{ $book->isbn ?: '—' }}</dd>
-                        </div>
+                            @if($book->topic)
+                            <div class="flex items-baseline gap-4 py-2.5 border-t border-white/8 first:border-0">
+                                <dt class="font-mono text-[11px] uppercase tracking-wider text-white/50 w-36 shrink-0">Topic</dt>
+                                <dd class="text-sm text-white/90">{{ $book->topic->name }}</dd>
+                            </div>
+                            @endif
 
-                        <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-sm text-white/70 font-semibold">Topic</dt>
-                            <dd class="text-white">{{ $book->topic?->name ?: '—' }}</dd>
-                        </div>
+                            @if($book->publisher_name)
+                            <div class="flex items-baseline gap-4 py-2.5 border-t border-white/8 first:border-0">
+                                <dt class="font-mono text-[11px] uppercase tracking-wider text-white/50 w-36 shrink-0">Publisher</dt>
+                                <dd class="text-sm text-white/90">{{ $book->publisher_name }}</dd>
+                            </div>
+                            @endif
 
-                        <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-sm text-white/70 font-semibold">Publisher</dt>
-                            <dd class="text-white">{{ $book->publisher_name ?: '—' }}</dd>
-                        </div>
+                            @if($book->copyright_year)
+                            <div class="flex items-baseline gap-4 py-2.5 border-t border-white/8 first:border-0">
+                                <dt class="font-mono text-[11px] uppercase tracking-wider text-white/50 w-36 shrink-0">Year</dt>
+                                <dd class="text-sm text-white/90">{{ $book->copyright_year }}</dd>
+                            </div>
+                            @endif
 
-                        <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-sm text-white/70 font-semibold">Year</dt>
-                            <dd class="text-white">{{ $book->copyright_year ?: '—' }}</dd>
-                        </div>
+                            @if($book->translator)
+                            <div class="flex items-baseline gap-4 py-2.5 border-t border-white/8 first:border-0">
+                                <dt class="font-mono text-[11px] uppercase tracking-wider text-white/50 w-36 shrink-0">Translator</dt>
+                                <dd class="text-sm text-white/90">{{ $book->translator }}</dd>
+                            </div>
+                            @endif
 
-                        <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-sm text-white/70 font-semibold">Translator</dt>
-                            <dd class="text-white">{{ $book->translator ?: '—' }}</dd>
-                        </div>
+                            @if($book->issue_number)
+                            <div class="flex items-baseline gap-4 py-2.5 border-t border-white/8 first:border-0">
+                                <dt class="font-mono text-[11px] uppercase tracking-wider text-white/50 w-36 shrink-0">Issue Number</dt>
+                                <dd class="text-sm text-white/90">{{ $book->issue_number }}</dd>
+                            </div>
+                            @endif
 
-                        <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-sm text-white/70 font-semibold">Issue Number</dt>
-                            <dd class="text-white">{{ $book->issue_number ?: '—' }}</dd>
-                        </div>
+                            @if($book->issue_year)
+                            <div class="flex items-baseline gap-4 py-2.5 border-t border-white/8 first:border-0">
+                                <dt class="font-mono text-[11px] uppercase tracking-wider text-white/50 w-36 shrink-0">Issue Year</dt>
+                                <dd class="text-sm text-white/90">{{ $book->issue_year }}</dd>
+                            </div>
+                            @endif
 
-                        <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-sm text-white/70 font-semibold">Issue Year</dt>
-                            <dd class="text-white">{{ $book->issue_year ?: '—' }}</dd>
-                        </div>
+                            @if($book->series)
+                            <div class="flex items-baseline gap-4 py-2.5 border-t border-white/8 first:border-0">
+                                <dt class="font-mono text-[11px] uppercase tracking-wider text-white/50 w-36 shrink-0">Series</dt>
+                                <dd class="text-sm text-white/90">
+                                    {{ $book->series->name }}
+                                    @if($book->series_number)
+                                    <span class="text-white/70">#{{ $book->series_number }}</span>
+                                    @endif
+                                </dd>
+                            </div>
+                            @endif
 
-                        <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-sm text-white/70 font-semibold">Series</dt>
-                            <dd class="text-white">
-                                {{ $book->series?->name ?: '—' }}
-                                @if($book->series_number)
-                                <span class="text-white/70">#{{ $book->series_number }}</span>
-                                @endif
-                            </dd>
-                        </div>
+                            @if($book->cover)
+                            <div class="flex items-baseline gap-4 py-2.5 border-t border-white/8 first:border-0">
+                                <dt class="font-mono text-[11px] uppercase tracking-wider text-white/50 w-36 shrink-0">Cover</dt>
+                                <dd class="text-sm text-white/90">{{ $book->cover->name }}</dd>
+                            </div>
+                            @endif
 
-                        <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-sm text-white/70 font-semibold">Cover</dt>
-                            <dd class="text-white">{{ $book->cover?->name ?: '—' }}</dd>
-                        </div>
+                            @if($book->pages)
+                            <div class="flex items-baseline gap-4 py-2.5 border-t border-white/8 first:border-0">
+                                <dt class="font-mono text-[11px] uppercase tracking-wider text-white/50 w-36 shrink-0">Pages</dt>
+                                <dd class="text-sm text-white/90">{{ $book->pages }}</dd>
+                            </div>
+                            @endif
 
-                        <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-sm text-white/70 font-semibold">Pages</dt>
-                            <dd class="text-white">{{ $book->pages ?: '—' }}</dd>
-                        </div>
+                            @if($book->title_first_edition)
+                            <div class="flex items-baseline gap-4 py-2.5 border-t border-white/8 first:border-0">
+                                <dt class="font-mono text-[11px] uppercase tracking-wider text-white/50 w-36 shrink-0">Title (First Edition)</dt>
+                                <dd class="text-sm text-white/90">{{ $book->title_first_edition }}</dd>
+                            </div>
+                            @endif
 
-                        <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-sm text-white/70 font-semibold">Title (First Edition)</dt>
-                            <dd class="text-white">{{ $book->title_first_edition ?: '—' }}</dd>
-                        </div>
+                            @if($book->subtitle_first_edition)
+                            <div class="flex items-baseline gap-4 py-2.5 border-t border-white/8 first:border-0">
+                                <dt class="font-mono text-[11px] uppercase tracking-wider text-white/50 w-36 shrink-0">Subtitle (First Ed.)</dt>
+                                <dd class="text-sm text-white/90">{{ $book->subtitle_first_edition }}</dd>
+                            </div>
+                            @endif
 
-                        <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-sm text-white/70 font-semibold">Subtitle (First Edition)</dt>
-                            <dd class="text-white">{{ $book->subtitle_first_edition ?: '—' }}</dd>
-                        </div>
+                            @if($book->publisher_first_issue)
+                            <div class="flex items-baseline gap-4 py-2.5 border-t border-white/8 first:border-0">
+                                <dt class="font-mono text-[11px] uppercase tracking-wider text-white/50 w-36 shrink-0">Publisher (First Ed.)</dt>
+                                <dd class="text-sm text-white/90">{{ $book->publisher_first_issue }}</dd>
+                            </div>
+                            @endif
 
-                        <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-sm text-white/70 font-semibold">Publisher (First Edition)</dt>
-                            <dd class="text-white">{{ $book->publisher_first_issue ?: '—' }}</dd>
-                        </div>
+                            @if($book->copyright_year_first_issue)
+                            <div class="flex items-baseline gap-4 py-2.5 border-t border-white/8 first:border-0">
+                                <dt class="font-mono text-[11px] uppercase tracking-wider text-white/50 w-36 shrink-0">Copyright (First Ed.)</dt>
+                                <dd class="text-sm text-white/90">{{ $book->copyright_year_first_issue }}</dd>
+                            </div>
+                            @endif
 
-                        <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-sm text-white/70 font-semibold">Copyright Year (First Edition)</dt>
-                            <dd class="text-white">{{ $book->copyright_year_first_issue ?: '—' }}</dd>
-                        </div>
+                            @if($book->for_sale)
+                            <div class="flex items-baseline gap-4 py-2.5 border-t border-white/8 first:border-0">
+                                <dt class="font-mono text-[11px] uppercase tracking-wider text-white/50 w-36 shrink-0">For sale</dt>
+                                <dd class="text-sm text-white/90"><span class="inline-block bg-khaki/20 text-khaki px-2 py-0.5 rounded text-xs font-mono">Ja</span></dd>
+                            </div>
+                            @endif
 
-                        <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-sm text-white/70 font-semibold">For sale</dt>
-                            <dd class="text-white">{{ $book->for_sale ? 'Yes' : 'No' }}</dd>
-                        </div>
+                            @if($book->selling_price !== null && $book->for_sale)
+                            <div class="flex items-baseline gap-4 py-2.5 border-t border-white/8 first:border-0">
+                                <dt class="font-mono text-[11px] uppercase tracking-wider text-white/50 w-36 shrink-0">Selling price</dt>
+                                <dd class="text-sm text-white/90">€ {{ number_format($book->selling_price, 2, ',', '.') }}</dd>
+                            </div>
+                            @endif
 
-                        @if(!empty($book->description))
-                        <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-sm text-white/70 font-semibold">Description</dt>
-                            <dd class="text-white/90 whitespace-pre-line">{{ $book->description }}</dd>
-                        </div>
-                        @endif
-                    </dl>
+                            @if(!empty($book->description))
+                            <div class="flex items-baseline gap-4 py-2.5 border-t border-white/8 first:border-0">
+                                <dt class="font-mono text-[11px] uppercase tracking-wider text-white/50 w-36 shrink-0">Description</dt>
+                                <dd class="text-sm text-white/90 whitespace-pre-line">{{ $book->description }}</dd>
+                            </div>
+                            @endif
+                        </dl>
+                    </div>
                 </section>
 
                 {{-- Admin INFO card (aparte container) --}}
                 @canany(['update','delete'], $book)
-                <section class="bg-[#697367] text-white rounded-2xl shadow-lg border border-black/20 p-8 lg:p-10">
-                    <div class="flex items-center justify-between gap-4 mb-6">
-                        <h2 class="text-xl font-extrabold">Admin info</h2>
+                <section class="relative bg-sage text-white rounded-2xl shadow-lg border border-black/20 overflow-hidden">
+                    <div class="pointer-events-none select-none absolute inset-0 flex items-center justify-center overflow-hidden rounded-2xl">
+                        <span class="font-stencil text-[96px] font-black text-red-900/[0.07] tracking-[0.2em] rotate-[-20deg]">GEHEIM</span>
                     </div>
+                    <div class="px-6 py-3 border-b border-black/25 bg-black/15">
+                        <p class="font-stencil text-[10px] uppercase tracking-[0.25em] text-khaki/60">Geheimakte · Verwaltung</p>
+                    </div>
+                    <div class="px-6 py-4">
+                        <dl>
+                            @if($book->purchase_date)
+                            <div class="flex items-baseline gap-4 py-2.5 border-t border-white/8 first:border-0">
+                                <dt class="font-mono text-[11px] uppercase tracking-wider text-white/50 w-36 shrink-0">Purchase date</dt>
+                                <dd class="text-sm text-white/90">{{ $book->purchase_date->format('d/m/Y') }}</dd>
+                            </div>
+                            @endif
 
-                    <dl class="space-y-6">
-                        <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-sm text-white/70 font-semibold">Purchase date</dt>
-                            <dd class="text-white">
-                                {{ $book->purchase_date ? $book->purchase_date->format('d/m/Y') : '—' }}
-                            </dd>
-                        </div>
+                            @if($book->purchase_price !== null)
+                            <div class="flex items-baseline gap-4 py-2.5 border-t border-white/8 first:border-0">
+                                <dt class="font-mono text-[11px] uppercase tracking-wider text-white/50 w-36 shrink-0">Purchase price</dt>
+                                <dd class="text-sm text-white/90">{{ number_format($book->purchase_price, 2, ',', '.') }}</dd>
+                            </div>
+                            @endif
 
-                        <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-sm text-white/70 font-semibold">Purchase price</dt>
-                            <dd class="text-white">
-                                {{ $book->purchase_price !== null ? number_format($book->purchase_price, 2, ',', '.') : '—' }}
-                            </dd>
-                        </div>
+                            @if($book->origin)
+                            <div class="flex items-baseline gap-4 py-2.5 border-t border-white/8 first:border-0">
+                                <dt class="font-mono text-[11px] uppercase tracking-wider text-white/50 w-36 shrink-0">Purchase origin</dt>
+                                <dd class="text-sm text-white/90">{{ $book->origin->name }}</dd>
+                            </div>
+                            @endif
 
-                        <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-sm text-white/70 font-semibold">Purchase origin</dt>
-                            <dd class="text-white">
-                                {{ $book->origin?->name ?: '—' }}
-                            </dd>
-                        </div>
+                            @if($book->weight)
+                            <div class="flex items-baseline gap-4 py-2.5 border-t border-white/8 first:border-0">
+                                <dt class="font-mono text-[11px] uppercase tracking-wider text-white/50 w-36 shrink-0">Weight (grams)</dt>
+                                <dd class="text-sm text-white/90">{{ $book->weight }}</dd>
+                            </div>
+                            @endif
 
-                        <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-sm text-white/70 font-semibold">Weight (grams)</dt>
-                            <dd class="text-white">
-                                {{ $book->weight ?: '—' }}
-                            </dd>
-                        </div>
+                            @if($book->width || $book->height || $book->thickness)
+                            <div class="flex items-baseline gap-4 py-2.5 border-t border-white/8 first:border-0">
+                                <dt class="font-mono text-[11px] uppercase tracking-wider text-white/50 w-36 shrink-0">Dimensions (W×H×T)</dt>
+                                <dd class="text-sm text-white/90">{{ $book->width ?: '—' }} x {{ $book->height ?: '—' }} x {{ $book->thickness ?: '—' }}</dd>
+                            </div>
+                            @endif
 
-                        <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-sm text-white/70 font-semibold">Dimensions (W x H x T)</dt>
-                            <dd class="text-white">
-                                {{ $book->width ?: '—' }} x {{ $book->height ?: '—' }} x {{ $book->thickness ?: '—' }}
-                            </dd>
-                        </div>
+                            @if($book->location)
+                            <div class="flex items-baseline gap-4 py-2.5 border-t border-white/8 first:border-0">
+                                <dt class="font-mono text-[11px] uppercase tracking-wider text-white/50 w-36 shrink-0">Location</dt>
+                                <dd class="text-sm text-white/90">{{ $book->location->name }}</dd>
+                            </div>
+                            @endif
 
-                        <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-sm text-white/70 font-semibold">Location</dt>
-                            <dd class="text-white">
-                                {{ $book->location?->name ?: '—' }}
-                            </dd>
-                        </div>
+                            @if($book->notes)
+                            <div class="flex items-baseline gap-4 py-2.5 border-t border-white/8 first:border-0">
+                                <dt class="font-mono text-[11px] uppercase tracking-wider text-white/50 w-36 shrink-0">Notes</dt>
+                                <dd class="text-sm text-white/90 whitespace-pre-line">{{ $book->notes }}</dd>
+                            </div>
+                            @endif
+                            @if($book->sold_at)
+                            <div class="flex items-baseline gap-4 py-2.5 border-t border-white/8 first:border-0">
+                                <dt class="font-mono text-[11px] uppercase tracking-wider text-white/50 w-36 shrink-0">Sold on</dt>
+                                <dd class="text-sm text-white/90">{{ $book->sold_at->format('d/m/Y') }}</dd>
+                            </div>
+                            @endif
+                            @if($book->sold_price !== null)
+                            <div class="flex items-baseline gap-4 py-2.5 border-t border-white/8 first:border-0">
+                                <dt class="font-mono text-[11px] uppercase tracking-wider text-white/50 w-36 shrink-0">Sold price</dt>
+                                <dd class="text-sm text-white/90">€ {{ number_format($book->sold_price, 2, ',', '.') }}</dd>
+                            </div>
+                            @endif
+                        </dl>
 
-                        <div class="rounded-xl border border-white/10 bg-black/20 px-6 py-2 mb-4">
-                            <dt class="text-sm text-white/70 font-semibold">Notes</dt>
-                            <dd class="text-white/90 whitespace-pre-line">
-                                {{ $book->notes ?: '—' }}
-                            </dd>
-                        </div>
-
-                        <div class="mt-8 pt-6 border-t border-white/15 flex flex-wrap items-center justify-end gap-3">
+                        <div class="mt-6 pt-4 border-t border-khaki/20 flex flex-wrap items-center justify-end gap-3">
                             @can('update', $book)
                             <a href="{{ route('admin.books.edit', $book) }}"
                                 class="inline-flex items-center gap-2 rounded-md border border-white/20 bg-white/10 px-4 py-2 text-sm text-white hover:bg-white/15 transition">
@@ -345,7 +279,7 @@
                             </form>
                             @endcan
                         </div>
-                    </dl>
+                    </div>
                 </section>
                 @endcanany
             </div>

@@ -44,6 +44,9 @@ class Book extends Model
         'width',
         'height',
         'thickness',
+        'condition',
+        'sold_at',
+        'sold_price',
     ];
 
     protected $casts = [
@@ -54,6 +57,8 @@ class Book extends Model
         'location_id' => 'integer',
         'selling_price' => 'decimal:2',
         'purchase_price' => 'decimal:2',
+        'sold_at' => 'date',
+        'sold_price' => 'decimal:2',
     ];
 
     public function location()

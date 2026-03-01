@@ -137,7 +137,7 @@
             <section class="space-y-1.5">
                 <button type="button"
                     @click="open['{{ $groupKey }}'] = !(open['{{ $groupKey }}'] ?? true)"
-                    class="flex w-full items-center justify-between px-2 text-left text-[11px] font-semibold uppercase tracking-[0.15em] text-white/45 hover:text-white/80">
+                    class="flex w-full items-center justify-between px-2 text-left font-stencil text-[11px] font-semibold uppercase tracking-[0.15em] text-white/45 hover:text-white/80">
                     <span>{{ $group['title'] }}</span>
                     <span class="text-xs" x-text="(open['{{ $groupKey }}'] ?? true) ? '−' : '+'"></span>
                 </button>

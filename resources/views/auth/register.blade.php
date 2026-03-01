@@ -1,53 +1,65 @@
-<x-layout>
-    <x-slot:title>Register</x-slot:title>
-    <x-form-layout>
-        <form method="POST" action="{{ route('register') }}">
-            @csrf
+<x-layout :mainClass="'flex items-center justify-center'" :bodyClass="'bg-sage-500'">
+    <x-slot:title>Registrierung</x-slot:title>
 
-            <div class="mb-4">
-                <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-                <input id="name" type="text"
-                    class="mt-1 p-2 w-full border rounded-md bg-[#565e55] 
-                        @error('name') border-red-500 @else border-gray-900 @enderror"
-                    name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
-                @error('name')
-                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
+    <div class="w-full max-w-md">
 
-            <div class="mb-4">
-                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                <input id="email" type="email"
-                    class="mt-1 p-2 w-full border rounded-md bg-[#565e55] 
-                        @error('email') border-red-500 @else border-gray-900 @enderror"
-                    name="email" value="{{ old('email') }}" required autocomplete="email">
-                @error('email')
-                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
+        {{-- REGISTRIERUNG header --}}
+        <div class="text-center mb-5">
+            <p class="font-stencil text-xs tracking-[0.4em] text-khaki/60 uppercase mb-1">Neue Zugangsberechtigung</p>
+            <h1 class="font-stencil text-3xl font-black tracking-[0.2em] text-white uppercase">REGISTRIERUNG</h1>
+            <p class="font-mono text-[10px] tracking-[0.25em] text-white/35 mt-1 uppercase">Personalstammbuch · WK II Sammlung</p>
+        </div>
 
-            <div class="mb-4">
-                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                <input id="password" type="password"
-                    class="mt-1 p-2 w-full border rounded-md bg-[#565e55] 
-                        @error('password') border-red-500 @else border-gray-900 @enderror"
-                    name="password" required autocomplete="new-password">
-                @error('password')
-                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
+        <div class="rounded-2xl bg-[#2c3335]/75 ring-1 ring-black/40 p-6 text-white noise-texture">
+            <div class="h-px bg-khaki/30 mb-5"></div>
 
-            <div class="mb-4">
-                <label for="password-confirm" class="block text-sm font-medium text-gray-700">Confirm
-                    Password</label>
-                <input id="password-confirm" type="password" class="mt-1 p-2 w-full border rounded-md bg-[#565e55]"
-                    name="password_confirmation" required autocomplete="new-password">
-            </div>
+            <form method="POST" action="{{ route('register') }}" class="space-y-4">
+                @csrf
 
-            <button type="submit"
-                class="bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-700 hover:text-gray-300">
-                Register
-            </button>
-        </form>
-    </x-form-layout>
+                <div>
+                    <label for="name" class="font-mono block text-[10px] tracking-[0.25em] text-khaki/70 uppercase mb-1">DIENSTGRAD / NAME</label>
+                    <input id="name" type="text" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus
+                        class="w-full rounded-xl bg-black/25 ring-1 ring-black/40 px-3 py-2 text-white placeholder-white/40 font-mono text-sm
+                               focus:outline-none focus:ring-2 focus:ring-white/30 @error('name') ring-red-400/60 @enderror">
+                    @error('name')
+                    <p class="text-red-200 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="email" class="font-mono block text-[10px] tracking-[0.25em] text-khaki/70 uppercase mb-1">FERNSCHREIBADRESSE / EMAIL</label>
+                    <input id="email" type="email" name="email" value="{{ old('email') }}" required autocomplete="email"
+                        class="w-full rounded-xl bg-black/25 ring-1 ring-black/40 px-3 py-2 text-white placeholder-white/40 font-mono text-sm
+                               focus:outline-none focus:ring-2 focus:ring-white/30 @error('email') ring-red-400/60 @enderror">
+                    @error('email')
+                    <p class="text-red-200 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="password" class="font-mono block text-[10px] tracking-[0.25em] text-khaki/70 uppercase mb-1">LOSUNGSWORT / PASSWORT</label>
+                    <input id="password" type="password" name="password" required autocomplete="new-password"
+                        class="w-full rounded-xl bg-black/25 ring-1 ring-black/40 px-3 py-2 text-white placeholder-white/40 font-mono text-sm
+                               focus:outline-none focus:ring-2 focus:ring-white/30 @error('password') ring-red-400/60 @enderror">
+                    @error('password')
+                    <p class="text-red-200 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="password-confirm" class="font-mono block text-[10px] tracking-[0.25em] text-khaki/70 uppercase mb-1">BESTÄTIGUNG / WIEDERHOLEN</label>
+                    <input id="password-confirm" type="password" name="password_confirmation" required autocomplete="new-password"
+                        class="w-full rounded-xl bg-black/25 ring-1 ring-black/40 px-3 py-2 text-white placeholder-white/40 font-mono text-sm
+                               focus:outline-none focus:ring-2 focus:ring-white/30">
+                </div>
+
+                <div class="h-px bg-khaki/20"></div>
+
+                <button type="submit"
+                    class="w-full rounded-xl bg-black/30 hover:bg-black/40 ring-1 ring-khaki/30 px-4 py-2.5 font-stencil tracking-[0.2em] text-sm text-white uppercase transition">
+                    EINTRAGEN &#8212; Register
+                </button>
+            </form>
+        </div>
+    </div>
 </x-layout>

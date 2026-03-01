@@ -1,7 +1,7 @@
    {{-- resources/views/components/nav-bar.blade.php --}}
    <div class="transition-shadow" x-data="{ open: false }">
        {{-- BAR 1 --}}
-       <div class="bg-[#4f5750]/95 backdrop-blur-sm">
+       <div class="bg-sage-600/95 backdrop-blur-sm">
            <div class="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
 
                {{-- LEFT: Logo --}}
@@ -46,7 +46,7 @@
                        class="md:hidden inline-flex items-center justify-center rounded-md bg-black/20 p-2 text-white/80 hover:bg-black/30 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/30"
                        aria-controls="mobile-menu">
                        <span class="sr-only">Open main menu</span>
-                       <svg class="block size-6" fill="none" viewBox="0 0 24 24" stroke="1.5" stroke="currentColor">
+                       <svg class="block size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                        </svg>
                    </button>
@@ -55,12 +55,21 @@
            </div>
        </div>
 
-       <div class="h-px bg-black"></div>
+       <div class="relative h-px bg-black/70">
+           <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-sage-600/95 px-3">
+               <svg class="h-3 w-3 text-white/30" viewBox="0 0 20 20" fill="currentColor">
+                   <path d="M7 0h6v7h7v6h-7v7H7v-7H0V7h7V0z"/>
+               </svg>
+           </div>
+       </div>
 
        {{-- BAR 2 (desktop only) --}}
-       <div class="bg-[#636c65]/95 hidden md:block backdrop-blur-sm">
+       <div class="bg-sage-650/95 hidden md:block backdrop-blur-sm">
            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-               <div class="h-12 flex items-center justify-center gap-2">
+               @php
+                   $navSep = '<span class="flex items-center px-0.5"><svg class="h-2 w-2 text-white/20" viewBox="0 0 20 20" fill="currentColor"><path d="M7 0h6v7h7v6h-7v7H7v-7H0V7h7V0z"/></svg></span>';
+               @endphp
+               <div class="h-12 flex items-center justify-center gap-0">
 
                    @if(config('collector.enabled_sections.books'))
                    <x-nav-link href="{{ route('books.index') }}"
@@ -68,6 +77,7 @@
                        class="tracking-wide">
                        Books
                    </x-nav-link>
+                   {!! $navSep !!}
                    @endif
 
                    @if(config('collector.enabled_sections.items'))
@@ -76,36 +86,42 @@
                        class="tracking-wide">
                        Items
                    </x-nav-link>
+                   {!! $navSep !!}
                    @endif
 
                    @if(config('collector.enabled_sections.magazines'))
                    <x-nav-link href="{{ route('magazines.index') }}" :active="request()->routeIs('magazines.*')" class="tracking-wide">
                        Magazines
                    </x-nav-link>
+                   {!! $navSep !!}
                    @endif
 
                    @if(config('collector.enabled_sections.newspapers'))
                    <x-nav-link href="{{ route('newspapers.index') }}" :active="request()->routeIs('newspapers.*')" class="tracking-wide">
                        Newspapers
                    </x-nav-link>
+                   {!! $navSep !!}
                    @endif
 
                    @if(config('collector.enabled_sections.banknotes'))
                    <x-nav-link href="{{ route('banknotes.index') }}" :active="request()->routeIs('banknotes.*')" class="tracking-wide">
                        Banknotes
                    </x-nav-link>
+                   {!! $navSep !!}
                    @endif
 
                    @if(config('collector.enabled_sections.coins'))
                    <x-nav-link href="{{ route('coins.index') }}" :active="request()->routeIs('coins.*')" class="tracking-wide">
                        Coins
                    </x-nav-link>
+                   {!! $navSep !!}
                    @endif
 
                    @if(config('collector.enabled_sections.postcards'))
                    <x-nav-link href="{{ route('postcards.index') }}" :active="request()->routeIs('postcards.*')" class="tracking-wide">
                        Postcards
                    </x-nav-link>
+                   @if(config('collector.enabled_sections.stamps')) {!! $navSep !!} @endif
                    @endif
 
                    @if(config('collector.enabled_sections.stamps'))
@@ -119,12 +135,13 @@
        </div>
 
        {{-- Mobile menu (outside desktop-only bar, toggled by Alpine) --}}
-       <div x-show="open" x-cloak id="mobile-menu">
-           <div class="bg-[#636c65] border-t border-black/30">
+       <div x-show="open" x-collapse x-cloak id="mobile-menu"
+           @click="if ($event.target.closest('a[href]')) open = false">
+           <div class="bg-sage-650 border-t border-black/30">
                <div class="px-4 py-4 space-y-4">
 
                    <div class="rounded-xl bg-black/20 ring-1 ring-black/30 p-3">
-                        <div class="text-xs tracking-[0.2em] text-white/70 mb-2">MAIN</div>
+                        <div class="font-stencil text-xs tracking-[0.2em] text-white/70 mb-2">MAIN</div>
                         <div class="flex flex-col gap-2">
                             <x-nav-link href="/blog" :active="request()->is('blog')">Blog</x-nav-link>
                             <x-nav-link href="{{ route('map.index') }}" :active="request()->routeIs('map.*')">Map</x-nav-link>
@@ -134,7 +151,7 @@
                    </div>
 
                    <div class="rounded-xl bg-black/20 ring-1 ring-black/30 p-3">
-                       <div class="text-xs tracking-[0.2em] text-white/70 mb-2">COLLECTION</div>
+                       <div class="font-stencil text-xs tracking-[0.2em] text-white/70 mb-2">COLLECTION</div>
                        <div class="flex flex-col gap-2">
                            @if(config('collector.enabled_sections.books'))
                            <x-nav-link href="{{ route('books.index') }}" :active="request()->routeIs('books.*')">Books</x-nav-link>
@@ -164,7 +181,7 @@
                    </div>
 
                    <div class="rounded-xl bg-black/20 ring-1 ring-black/30 p-3">
-                       <div class="text-xs tracking-[0.2em] text-white/70 mb-2">ACCOUNT</div>
+                       <div class="font-stencil text-xs tracking-[0.2em] text-white/70 mb-2">ACCOUNT</div>
 
                        @guest
                        <a href="{{ route('login') }}"

@@ -217,6 +217,8 @@
                     </div>
                 </section>
 
+        </form>
+
                 {{-- MEDIA --}}
                 <section class="rounded-xl border border-black/20 bg-black/10 p-6 space-y-6">
                     <div class="flex items-center justify-between gap-4">
@@ -226,7 +228,7 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {{-- Upload images --}}
-                        <div class="rounded-md bg-[#343933] p-4 border border-white/10">
+                        <div class="rounded-md bg-sage-900 p-4 border border-white/10">
                             <div class="text-white font-semibold mb-2">Upload images</div>
 
                             <form action="{{ route('admin.media.store', ['type' => 'items', 'id' => $item->id]) }}"
@@ -246,7 +248,7 @@
                         </div>
 
                         {{-- Upload PDFs --}}
-                        <div class="rounded-md bg-[#343933] p-4 border border-white/10">
+                        <div class="rounded-md bg-sage-900 p-4 border border-white/10">
                             <div class="text-white font-semibold mb-2">Upload PDFs</div>
 
                             <form action="{{ route('admin.media.store', ['type' => 'items', 'id' => $item->id]) }}"
@@ -270,7 +272,7 @@
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         {{-- Existing images --}}
-                        <div class="bg-[#697367] rounded-md p-4 border border-black/20">
+                        <div class="bg-sage rounded-md p-4 border border-black/20">
                             <h3 class="text-lg font-semibold text-white mb-3">Images ({{ $mediaImages->count() }})</h3>
 
                             @if($mediaImages->isEmpty())
@@ -285,7 +287,7 @@
                         </div>
 
                         {{-- Existing PDFs --}}
-                        <div class="bg-[#697367] rounded-md p-4 border border-black/20">
+                        <div class="bg-sage rounded-md p-4 border border-black/20">
                             <h3 class="text-lg font-semibold text-white mb-3">PDFs ({{ $mediaPdfs->count() }})</h3>
 
                             @if($mediaPdfs->isEmpty())
@@ -307,12 +309,11 @@
                         class="rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/15">
                         Cancel
                     </a>
-                    <button type="submit"
+                    <button type="submit" form="item-form"
                         class="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500">
                         Save changes
                     </button>
                 </div>
             </div>
-        </form>
     </x-form-layout>
 </x-layout>

@@ -4,6 +4,8 @@
 @tailwind utilities;
 
 @layer base {
+    [x-cloak] { display: none !important; }
+
     html {
         scroll-behavior: smooth;
     }
@@ -26,4 +28,74 @@
     a {
         @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-0;
     }
+}
+
+/* ─── Show-page grid layout (books, items, and all collection sections) ─── */
+:root {
+    --media-frame-h: 380px;
+    --media-img-max: 360px;
+}
+
+.show-layout {
+    display: grid;
+    grid-template-columns: 460px minmax(0, 1fr);
+    gap: 3.5rem;
+    align-items: start;
+    margin-top: 10px;
+}
+
+@media (max-width: 1100px) {
+    .show-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .show-sticky {
+        position: static !important;
+    }
+}
+
+/* Legacy class aliases — keeps existing views working until migrated */
+.book-layout, .item-layout { display: grid; grid-template-columns: 460px minmax(0, 1fr); gap: 3.5rem; align-items: start; margin-top: 10px; }
+@media (max-width: 1100px) {
+    .book-layout, .item-layout { grid-template-columns: 1fr; }
+    .book-sticky, .item-sticky { position: static !important; }
+}
+
+/* ─── WWII noise texture overlay ─── */
+.noise-texture {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+    background-blend-mode: overlay;
+    background-size: 180px 180px;
+}
+
+/* ─── Collection card hover effects ─── */
+.collection-card {
+    @apply transition-all duration-200 ease-out;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+    background-blend-mode: overlay;
+    background-size: 180px 180px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(255,255,255,0.06), inset 0 0 0 4px rgba(0,0,0,0.18);
+}
+
+.collection-card:hover {
+    @apply -translate-y-1 shadow-lg shadow-black/20;
+}
+
+.collection-card img {
+    @apply transition-transform duration-300 ease-out;
+}
+
+.collection-card:hover img {
+    @apply scale-[1.03];
+}
+
+/* ─── Show-page field values: monospace classified-document styling ─── */
+section.bg-sage dl dd {
+    font-family: "Share Tech Mono", ui-monospace, monospace;
+    font-size: 0.9em;
+}
+
+/* ─── Sepia tint on placeholder images ─── */
+img[src*="error-image-not-found"] {
+    filter: sepia(35%) saturate(70%);
 }

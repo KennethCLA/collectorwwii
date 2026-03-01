@@ -45,6 +45,9 @@ class Coin extends Model
         'location_id',
         'location_detail',
         'personal_remarks',
+        'condition',
+        'sold_at',
+        'sold_price',
     ];
 
     protected $casts = [
@@ -58,6 +61,8 @@ class Coin extends Model
         'weight' => 'decimal:2',
         'diameter' => 'decimal:2',
         'thickness' => 'decimal:2',
+        'sold_at' => 'date',
+        'sold_price' => 'decimal:2',
     ];
 
     public function country()

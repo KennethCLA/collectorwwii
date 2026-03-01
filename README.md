@@ -1,66 +1,319 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# CollectorWWII
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A personal catalogue and display site for a World War II collection. Built with Laravel 11, Tailwind CSS, and Alpine.js.
 
-## About Laravel
+## What it is
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+CollectorWWII is a full-stack web application with two distinct panels:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Public site** — a read-only display of the collection, accessible to anyone
+- **Admin panel** — full CRUD management of all items, media, blog posts, and lookups (role-gated)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Eight collection sections are supported: **Books, Items, Banknotes, Coins, Magazines, Newspapers, Postcards, Stamps.**
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Requirements
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+| Dependency | Version |
+|---|---|
+| PHP | ≥ 8.2 |
+| Composer | ≥ 2.x |
+| Node.js | ≥ 20.x |
+| npm | ≥ 10.x |
+| MySQL | ≥ 8.0 (production) |
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+PHP extensions: `pdo_mysql`, `pdo_sqlite` (testing), `gd` or `imagick`, `fileinfo`, `mbstring`, `openssl`, `bcmath`, `xml`, `curl`.
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Installation
 
-### Premium Partners
+```bash
+# 1. Clone
+git clone <repo-url> collectorwwii
+cd collectorwwii
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+# 2. PHP dependencies
+composer install
 
-## Contributing
+# 3. Node dependencies
+npm install
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# 4. Environment
+cp .env.example .env
+php artisan key:generate
+```
 
-## Code of Conduct
+### Key environment variables
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```dotenv
+# Application
+APP_URL=https://collectorwwii.eu
 
-## Security Vulnerabilities
+# Database
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_DATABASE=collectorwwii
+DB_USERNAME=root
+DB_PASSWORD=secret
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# Backblaze B2 (media storage)
+B2_KEY=your-key-id
+B2_SECRET=your-application-key
+B2_REGION=eu-central-003
+B2_BUCKET=your-bucket-name
+B2_URL=https://your-bucket.s3.eu-central-003.backblazeb2.com
+
+# Mail (contact form, queued)
+MAIL_MAILER=smtp
+MAIL_HOST=your-smtp-host
+MAIL_PORT=587
+MAIL_USERNAME=your-username
+MAIL_PASSWORD=your-password
+MAIL_FROM_ADDRESS=noreply@collectorwwii.eu
+MAIL_FROM_NAME="CollectorWWII"
+
+# Google Books API (optional — enables ISBN lookup in book admin)
+GOOGLE_BOOKS_API_KEY=your-api-key
+```
+
+### Database setup
+
+```bash
+php artisan migrate
+# Optional: seed with test data
+php artisan migrate:fresh --seed
+```
+
+---
+
+## Running locally
+
+Start all services in one command:
+
+```bash
+composer run dev
+```
+
+Or individually:
+
+```bash
+php artisan serve                     # Laravel development server
+npm run dev                           # Vite asset watcher
+php artisan queue:listen --tries=1    # Queue worker (contact form mail)
+```
+
+---
+
+## Building for production
+
+```bash
+npm run build
+php artisan optimize
+```
+
+---
+
+## Testing
+
+Tests run against an in-memory SQLite database — no database setup needed.
+
+```bash
+# All tests
+php artisan test
+
+# Specific file
+php artisan test tests/Feature/AdminBookStoreUpdateTest.php
+
+# Filter by name
+php artisan test --filter="stores a book"
+```
+
+---
+
+## Code style
+
+```bash
+./vendor/bin/pint
+```
+
+---
+
+## Deployment
+
+```bash
+ssh ploi@116.203.104.195 "cd /home/ploi/collectorwwii.eu && git pull && php artisan migrate --force && php artisan optimize"
+```
+
+---
+
+## Architecture
+
+### Directory structure
+
+```
+app/
+  Http/Controllers/
+    Admin/          — Admin CRUD controllers (one per section + blog + map + lookups)
+    Public/         — Public read-only controllers
+    Ajax/           — AJAX-only endpoints (inline lookup creation)
+  Models/           — Eloquent models
+  Policies/         — Authorization policies (one per model + AdminOnlyPolicy)
+
+config/
+  collector.php     — Feature flags (enabled_sections)
+
+resources/
+  css/
+    app.css         — Tailwind entry point + show-page CSS custom properties
+    components.css  — Third-party overrides (Choices.js dropdown style)
+  js/
+    app.js          — Alpine.js, Fancybox, Choices.js init
+    bootstrap.js    — Axios setup
+  views/
+    admin/          — Admin panel views (one subfolder per section)
+    layouts/        — app.blade.php, admin.blade.php
+    components/     — Blade components (nav-bar, admin-header, form/*)
+    partials/       — Shared partials (show-media.blade.php)
+    {section}/      — Public views per section (index.blade.php, show.blade.php)
+
+routes/
+  web.php           — Public routes
+  admin.php         — Admin routes (prefix: /admin, auth middleware)
+
+storage/
+  app/public/
+    blog.json       — Blog content (multi-language JSON array)
+```
+
+### Routing
+
+| Route group | File | Prefix | Auth |
+|---|---|---|---|
+| Public | `routes/web.php` | `/` | None |
+| Admin | `routes/admin.php` | `/admin` | `auth` + role policy |
+
+Admin routes are registered as a group in `AppServiceProvider`. Authorization within admin is enforced by Laravel Policies (`role_id === 1` = admin).
+
+### Two-layout system
+
+- **`layouts/app.blade.php`** — Base layout. Automatically detects admin vs public routes and renders the correct nav. Contains the sticky header, footer, and header-height CSS variable logic.
+- **`layouts/admin.blade.php`** — Extends `app`. Adds the 264px sidebar. Admin views use `@yield('admin-content')` instead of `@yield('content')`.
+
+### Media system
+
+All uploads go to **Backblaze B2** (S3-compatible) via the `b2` filesystem disk.
+
+| Detail | Value |
+|---|---|
+| Storage path | `{type}/{id}/{uuid}.{ext}` |
+| Max file size | 50 MB |
+| Collections | `images`, `files` (PDFs) |
+| Main image | `is_main = 1`, enforced — exactly one per record |
+| On main delete | Next available image auto-promoted |
+
+Media routes (shared across all sections):
+
+```
+POST   /admin/{type}/{id}/media          — upload
+DELETE /admin/{type}/media/{file}        — delete
+PATCH  /admin/{type}/media/{file}/main   — set as main
+```
+
+### Frontend stack
+
+| Library | Version | Purpose |
+|---|---|---|
+| Tailwind CSS | 3.x | All styling |
+| Alpine.js | 3.x | Mobile menu, filter drawer, thumbnail state, collapse |
+| `@alpinejs/collapse` | — | Animated collapse on mobile menu |
+| Fancybox | v5 | Image lightbox / gallery |
+| Choices.js | — | Enhanced `<select>` dropdowns |
+| Leaflet.js | CDN | Interactive map page |
+
+**Tailwind theme palette:**
+
+| Alias | Hex | Usage |
+|---|---|---|
+| `sage` (DEFAULT) | `#697367` | Primary backgrounds, nav, info cards |
+| `sage-500` | `#565e55` | Sidebar, deeper card backgrounds |
+| `sage-600` | `#4f5750` | Nav primary bar (BAR 1) |
+| `sage-650` | `#636c65` | Nav collection bar (BAR 2), mobile menu bg |
+| `sage-900` | `#343933` | Darkest elements, PDF viewer, thumbnail bg |
+| `sage-950` | `#2c3335` | Home page hero cards, deepest dark |
+| `khaki` | `#c2b280` | Accent colour, dividers, stencil highlights |
+| `maroon` | `#6c2114` | Site title, destructive action buttons |
+| `feldgrau` | `#4d5d53` | Wehrmacht field grey — error pages, reserved |
+
+### Blog
+
+Stored as `storage/app/public/blog.json` — an array of posts with `title`, `content`, `date`, and optional `author`. Multi-language via a `lang` session key (EN / NL / DE / FR). Managed via the admin blog CRUD.
+
+### Feature flags
+
+`config/collector.php` controls which sections are active:
+
+```php
+'enabled_sections' => [
+    'books'      => true,
+    'items'      => true,
+    'magazines'  => true,
+    'newspapers' => true,
+    'banknotes'  => true,
+    'coins'      => true,
+    'postcards'  => true,
+    'stamps'     => true,
+],
+```
+
+Set any section to `false` to remove it from the nav and disable its routes without touching data.
+
+---
+
+## Models & database
+
+### Collection models
+
+All eight collection models share: `for_sale` boolean, `selling_price`, `purchase_price`, `purchase_date`, polymorphic `media` relation, `mainImage` morphOne, `card_title` accessor, `image_url` accessor.
+
+| Model | Key relations |
+|---|---|
+| `Book` | `Author` (many-via-pivot), `BookSeries`, `BookCover`, `BookTopic`, `Location`, `Origin`. Soft deletes. |
+| `Item` | `ItemCategory`, `ItemNationality`, `ItemOrganization`, `Origin`. Soft deletes. |
+| `Banknote` | `Country`, `Currency`, `NominalValue`, `BanknoteSeries`, `BanknoteTimePeriod` |
+| `Coin` | `Country`, `CoinShape`, `CoinMaterial`, `CoinOccasion` |
+| `Magazine` | `title`, `issue_number`, `publication_date` |
+| `Newspaper` | `title`, `publication_date` |
+| `Postcard` | `Country`, `PostcardType` |
+| `Stamp` | `Country`, `StampType` |
+
+### Shared lookup models
+
+All lookups follow the pattern `{ id, name }` with `$fillable = ['name']`:
+
+`Country`, `Currency`, `NominalValue`, `BanknoteSeries`, `BanknoteTimePeriod`, `CoinShape`, `CoinMaterial`, `CoinOccasion`, `PostcardType`, `StampType`
+
+---
+
+## Admin panel overview
+
+Access at `/admin` — requires `role_id = 1`.
+
+| Section | Key features |
+|---|---|
+| **Dashboard** | BEFEHLSZENTRALE — live collection counts, weekly adds, quick-access links |
+| **Books** | Full CRUD, ISBN lookup via Google Books API, comma-separated author management, image + PDF uploads |
+| **Items** | Full CRUD, category / nationality / organization relations, image uploads |
+| **Banknotes / Coins / Magazines / Newspapers / Postcards / Stamps** | Full CRUD, image uploads, for-sale toggle + selling price |
+| **Blog** | Create / edit / delete posts in four languages (EN, NL, DE, FR) |
+| **Map** | Add / edit / delete map markers with coordinates, descriptions, and photos |
+| **Lookups** | Manage all dropdown reference values; inline AJAX modal for adding new values without leaving a form |
+| **For Sale** | Aggregated read-only view of all for-sale items across all sections |
+| **Profile** | Change display name / password |
+
+---
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Private project — all rights reserved.

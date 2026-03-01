@@ -1,52 +1,71 @@
-<x-layout :mainClass="'flex items-center justify-center'" :bodyClass="'bg-[#565e55]'">
-    <div class="w-full max-w-md rounded-2xl bg-[#2c3335]/75 ring-1 ring-black/40 p-6 text-white">
-        <h1 class="text-2xl font-semibold tracking-wide">Admin login</h1>
-        <p class="mt-1 text-sm text-white/70">Toegang voor beheer.</p>
+<x-layout :mainClass="'flex items-center justify-center'" :bodyClass="'bg-sage-500'">
+    <div class="w-full max-w-md">
 
-        <div class="mt-4 h-px bg-[#c2b280]/30"></div>
+        {{-- ZUGANG header --}}
+        <div class="text-center mb-5">
+            <p class="font-stencil text-xs tracking-[0.4em] text-khaki/60 uppercase mb-1">Zugangsberechtigungsausweis</p>
+            <h1 class="font-stencil text-3xl font-black tracking-[0.2em] text-white uppercase">ZUGANG</h1>
+            <p class="font-mono text-[10px] tracking-[0.25em] text-white/35 mt-1 uppercase">Nur autorisiertes Personal · Befehlsstelle</p>
+        </div>
 
-        <form method="POST" action="{{ route('login') }}" class="mt-5 space-y-4">
-            @csrf
+        <div class="rounded-2xl bg-[#2c3335]/75 ring-1 ring-black/40 p-6 text-white noise-texture">
+            <div class="h-px bg-khaki/30 mb-5"></div>
 
-            <div>
-                <label for="email" class="block text-sm text-white/80 mb-1">Email</label>
-                <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus
-                    class="w-full rounded-xl bg-black/25 ring-1 ring-black/40 px-3 py-2 text-white placeholder-white/40
-                                   focus:outline-none focus:ring-2 focus:ring-white/30 @error('email') ring-red-400/60 @enderror" />
-                @error('email')
-                <p class="mt-1 text-sm text-red-200">{{ $message }}</p>
-                @enderror
-            </div>
+            @if ($errors->any())
+                <div class="mb-4 rounded-xl bg-red-800/50 ring-1 ring-red-500/30 p-3 text-sm text-red-200">
+                    <ul class="list-disc list-inside">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-            <div>
-                <label for="password" class="block text-sm text-white/80 mb-1">Password</label>
-                <input id="password" type="password" name="password" required
-                    class="w-full rounded-xl bg-black/25 ring-1 ring-black/40 px-3 py-2 text-white placeholder-white/40
-                                   focus:outline-none focus:ring-2 focus:ring-white/30 @error('password') ring-red-400/60 @enderror" />
-                @error('password')
-                <p class="mt-1 text-sm text-red-200">{{ $message }}</p>
-                @enderror
-            </div>
+            <form method="POST" action="{{ route('login') }}" class="space-y-4">
+                @csrf
 
-            <div class="flex items-center justify-between">
-                <label class="inline-flex items-center gap-2 text-sm text-white/80">
-                    <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}
-                        class="rounded border-black/40 bg-black/25 text-white focus:ring-white/30" />
-                    Remember me
-                </label>
+                <div>
+                    <label for="email" class="font-mono block text-[10px] tracking-[0.25em] text-khaki/70 uppercase mb-1">KENNZEICHEN / EMAIL</label>
+                    <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus
+                        class="w-full rounded-xl bg-black/25 ring-1 ring-black/40 px-3 py-2 text-white placeholder-white/40 font-mono text-sm
+                               focus:outline-none focus:ring-2 focus:ring-white/30 @error('email') ring-red-400/60 @enderror" />
+                    @error('email')
+                    <p class="mt-1 text-sm text-red-200">{{ $message }}</p>
+                    @enderror
+                </div>
 
-                @if (Route::has('password.request'))
-                <a class="text-sm text-white/70 hover:text-white underline-offset-4 hover:underline"
-                    href="{{ route('password.request') }}">
-                    Forgot?
-                </a>
-                @endif
-            </div>
+                <div>
+                    <label for="password" class="font-mono block text-[10px] tracking-[0.25em] text-khaki/70 uppercase mb-1">LOSUNGSWORT / PASSWORT</label>
+                    <input id="password" type="password" name="password" required
+                        class="w-full rounded-xl bg-black/25 ring-1 ring-black/40 px-3 py-2 text-white placeholder-white/40 font-mono text-sm
+                               focus:outline-none focus:ring-2 focus:ring-white/30 @error('password') ring-red-400/60 @enderror" />
+                    @error('password')
+                    <p class="mt-1 text-sm text-red-200">{{ $message }}</p>
+                    @enderror
+                </div>
 
-            <button type="submit"
-                class="w-full rounded-xl bg-black/30 hover:bg-black/40 ring-1 ring-black/40 px-4 py-2 font-medium transition">
-                Login
-            </button>
-        </form>
+                <div class="flex items-center justify-between">
+                    <label class="inline-flex items-center gap-2">
+                        <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}
+                            class="rounded border-black/40 bg-black/25 text-white focus:ring-white/30" />
+                        <span class="font-mono text-[10px] tracking-[0.15em] text-white/70 uppercase">Eingeloggt bleiben</span>
+                    </label>
+
+                    @if (Route::has('password.request'))
+                    <a class="font-mono text-[10px] tracking-[0.15em] text-khaki/70 hover:text-khaki uppercase"
+                        href="{{ route('password.request') }}">
+                        Vergessen?
+                    </a>
+                    @endif
+                </div>
+
+                <div class="h-px bg-khaki/20"></div>
+
+                <button type="submit"
+                    class="w-full rounded-xl bg-black/30 hover:bg-black/40 ring-1 ring-khaki/30 px-4 py-2.5 font-stencil tracking-[0.2em] text-sm text-white uppercase transition">
+                    EINTRETEN &#8212; Enter
+                </button>
+            </form>
+        </div>
     </div>
 </x-layout>

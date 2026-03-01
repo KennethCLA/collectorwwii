@@ -31,7 +31,7 @@
 
 .choices__list--dropdown,
 .choices__list[aria-expanded="true"] {
-  background: #343933 !important;
+  background: theme('colors.sage.900') !important;
   border: 1px solid rgba(255,255,255,0.10) !important;
   border-radius: 0.5rem !important;
   z-index: 9999 !important; /* avoid header overlap */

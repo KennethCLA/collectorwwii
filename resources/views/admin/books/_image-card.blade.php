@@ -4,7 +4,7 @@
 $url = $img->url();
 @endphp
 
-<div class="group w-32 shrink-0 rounded-md bg-[#343933] border border-white/10 overflow-hidden">
+<div class="group w-32 shrink-0 rounded-md bg-sage-900 border border-white/10 overflow-hidden">
     {{-- Preview --}}
     @if($url)
     <a href="{{ $url }}" target="_blank" rel="noopener" class="block">

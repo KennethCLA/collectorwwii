@@ -29,6 +29,9 @@ class Item extends Model
         'current_price',
         'for_sale',
         'selling_price',
+        'condition',
+        'sold_at',
+        'sold_price',
     ];
 
     protected $casts = [
@@ -36,6 +39,8 @@ class Item extends Model
         'purchase_date' => 'date',
         'selling_price' => 'decimal:2',
         'purchase_price' => 'decimal:2',
+        'sold_at' => 'date',
+        'sold_price' => 'decimal:2',
     ];
 
     public function category()

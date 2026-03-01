@@ -16,7 +16,7 @@ $isEdit = isset($book) && $book?->exists;
                 name="isbn"
                 value="{{ old('isbn', $book->isbn ?? '') }}"
                 required
-                class="w-full rounded-md bg-[#565e55] text-white border border-black/40 px-3 py-2" />
+                class="w-full rounded-md bg-sage-500 text-white border border-black/40 px-3 py-2" />
         </div>
 
         {{-- Actie rechts (zoals create) --}}
@@ -36,7 +36,7 @@ $isEdit = isset($book) && $book?->exists;
                 name="title"
                 value="{{ old('title', $book->title ?? '') }}"
                 required
-                class="w-full rounded-md bg-[#565e55] text-white border border-black/40 px-3 py-2" />
+                class="w-full rounded-md bg-sage-500 text-white border border-black/40 px-3 py-2" />
         </div>
         <div></div>
     </div>
@@ -47,7 +47,7 @@ $isEdit = isset($book) && $book?->exists;
             <input
                 name="subtitle"
                 value="{{ old('subtitle', $book->subtitle ?? '') }}"
-                class="w-full rounded-md bg-[#565e55] text-white border border-black/40 px-3 py-2" />
+                class="w-full rounded-md bg-sage-500 text-white border border-black/40 px-3 py-2" />
         </div>
         <div></div>
     </div>
@@ -58,7 +58,7 @@ $isEdit = isset($book) && $book?->exists;
             <input
                 name="authors"
                 value="{{ old('authors', isset($book) ? $book->authors->implode(', ') : '') }}"
-                class="w-full rounded-md bg-[#565e55] text-white border border-black/40 px-3 py-2" />
+                class="w-full rounded-md bg-sage-500 text-white border border-black/40 px-3 py-2" />
         </div>
         <div></div>
     </div>
@@ -69,7 +69,7 @@ $isEdit = isset($book) && $book?->exists;
         <div>
             <select
                 name="topic_id"
-                class="w-full rounded-md bg-[#565e55] text-white border border-black/40 px-3 py-2">
+                class="w-full rounded-md bg-sage-500 text-white border border-black/40 px-3 py-2">
                 <option value="">Select a topic</option>
                 @foreach($topics as $t)
                 <option value="{{ $t->id }}"
@@ -102,7 +102,7 @@ $isEdit = isset($book) && $book?->exists;
                 type="number"
                 step="0.01"
                 value="{{ old('purchase_price', $book->purchase_price ?? '') }}"
-                class="w-full rounded-md bg-[#565e55] text-white border border-black/40 px-3 py-2" />
+                class="w-full rounded-md bg-sage-500 text-white border border-black/40 px-3 py-2" />
         </div>
         <div></div>
     </div>
@@ -113,7 +113,7 @@ $isEdit = isset($book) && $book?->exists;
             <input
                 name="storage_location"
                 value="{{ old('storage_location', $book->storage_location ?? '') }}"
-                class="w-full rounded-md bg-[#565e55] text-white border border-black/40 px-3 py-2" />
+                class="w-full rounded-md bg-sage-500 text-white border border-black/40 px-3 py-2" />
         </div>
         <div></div>
     </div>

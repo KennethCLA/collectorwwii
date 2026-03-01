@@ -43,6 +43,9 @@ class Postcard extends Model
         'location_id',
         'location_detail',
         'personal_remarks',
+        'condition',
+        'sold_at',
+        'sold_price',
     ];
 
     protected $casts = [
@@ -55,6 +58,8 @@ class Postcard extends Model
         'selling_price' => 'decimal:2',
         'purchasing_price' => 'decimal:2',
         'current_value' => 'decimal:2',
+        'sold_at' => 'date',
+        'sold_price' => 'decimal:2',
     ];
 
     public function country()

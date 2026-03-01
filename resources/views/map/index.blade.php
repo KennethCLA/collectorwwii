@@ -2,19 +2,26 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
-    <div class="mx-auto w-full max-w-7xl space-y-4">
-        <div class="rounded-2xl bg-black/20 p-4 ring-1 ring-black/30 sm:p-6">
-            <h1 class="text-2xl font-semibold text-white">Visited Locations Map</h1>
-            <p class="mt-2 text-white/75">Click a marker to open details and browse photos.</p>
+    <div class="mx-auto w-full max-w-7xl space-y-4 pt-6">
+        <div class="rounded-2xl bg-black/20 p-4 ring-1 ring-black/30 sm:p-6 noise-texture">
+            <p class="font-stencil text-xs tracking-[0.4em] text-khaki/60 uppercase mb-1">Kriegsschauplatz · Operationskarte</p>
+            <h1 class="font-stencil text-3xl font-black tracking-[0.2em] text-white uppercase">LAGEBERICHT</h1>
+            <p class="font-mono text-[10px] tracking-[0.25em] text-white/40 mt-1 uppercase">Feldkarte · WK II Standorte · Klicken für Details</p>
         </div>
 
         <div class="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
-            <div class="rounded-2xl bg-black/20 p-3 ring-1 ring-black/30 sm:p-4">
+            <div class="relative rounded-2xl bg-black/20 p-3 ring-1 ring-black/30 sm:p-4">
                 <div id="visit-map" class="h-[65vh] min-h-[420px] w-full rounded-xl"></div>
+                <div class="pointer-events-none absolute inset-3 sm:inset-4 rounded-xl"
+                     style="background-image:
+                         repeating-linear-gradient(0deg, rgba(194,178,128,0.06) 0px, transparent 1px, transparent 60px, rgba(194,178,128,0.06) 60px),
+                         repeating-linear-gradient(90deg, rgba(194,178,128,0.06) 0px, transparent 1px, transparent 60px, rgba(194,178,128,0.06) 60px);
+                     background-size: 60px 60px;">
+                </div>
             </div>
 
             <aside class="rounded-2xl bg-black/20 p-4 ring-1 ring-black/30">
-                <h2 class="text-sm font-semibold uppercase tracking-[0.15em] text-white/60">Locations</h2>
+                <h2 class="font-stencil text-[11px] uppercase tracking-[0.25em] text-khaki/70">STANDORTE</h2>
                 <div class="mt-3 space-y-2 max-h-[65vh] overflow-y-auto pr-1">
                     @forelse($locations as $loc)
                     <button

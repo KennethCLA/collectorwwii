@@ -1,14 +1,27 @@
 <!-- resources/views/books/index.blade.php -->
 <x-layout :mainClass="'w-full px-0 py-0'">
     <div class="w-full">
-        <div class="grid grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-4 items-start">
+        <div x-data="{ filtersOpen: false }" class="grid grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-4 items-start">
+
+            {{-- Mobile backdrop --}}
+            <div x-show="filtersOpen" x-transition.opacity @click="filtersOpen = false"
+                 class="fixed inset-0 bg-black/50 z-40 lg:hidden" x-cloak></div>
 
             {{-- TODO: refactor sidebar filter sections into reusable component once layout is final --}}
-            <aside class="hidden lg:block sticky self-start
-             top-[var(--header-h,113px)]
-             h-[calc(100vh_-_var(--header-h,113px))]
-             bg-[#697367] border-r border-black/20 text-white">
-                <div class="h-full overflow-y-auto px-4 pb-4">
+            <aside :class="filtersOpen ? 'translate-x-0' : '-translate-x-full'"
+                   class="fixed inset-y-0 left-0 w-[280px] z-50 flex flex-col
+                          lg:relative lg:w-auto lg:translate-x-0 lg:z-auto
+                          lg:sticky lg:self-start lg:top-[var(--header-h,113px)] lg:h-[calc(100vh_-_var(--header-h,113px))]
+                          transition-transform duration-300 ease-in-out
+                          bg-sage border-r border-black/20 text-white">
+                {{-- Mobile drawer header --}}
+                <div class="lg:hidden flex items-center justify-between px-4 py-3 border-b border-black/20">
+                    <h2 class="font-stencil text-[11px] uppercase tracking-[0.2em] text-white/60">Filters</h2>
+                    <button @click="filtersOpen = false" class="text-white/80 hover:text-white">
+                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+                <div class="flex-1 min-h-0 overflow-y-auto px-4 pb-4">
                     {{-- TOPICS --}}
                     @php
                     $topicsLimit = 5;
@@ -20,15 +33,15 @@
 
                     <div x-data="{ topicsOpen: {{ $topicsOpenByDefault ? 'true' : 'false' }} }" class="mt-0">
                         {{-- Sticky section header (blijft zichtbaar tijdens scrollen) --}}
-                        <div class="sticky top-0 z-10 -mx-4 px-4 py-2 bg-[#697367] border-b border-black/20 shadow-sm">
+                        <div class="sticky top-0 z-10 -mx-4 px-4 py-2 bg-sage border-b border-black/20 shadow-sm">
                             <div class="flex items-center justify-between">
-                                <h2 class="text-lg font-bold">Topics</h2>
+                                <h2 class="font-stencil text-[11px] uppercase tracking-[0.2em] text-white/60">Topics</h2>
 
                                 @if($hasMoreTopics)
                                 <button type="button"
                                     @click="topicsOpen = !topicsOpen"
-                                    class="text-blue-300 text-sm hover:underline">
-                                    <span x-text="topicsOpen ? 'Show Less' : 'Show More'"></span>
+                                    class="font-mono text-[10px] tracking-[0.1em] text-khaki/70 hover:text-khaki uppercase">
+                                    <span x-text="topicsOpen ? 'Less' : 'More'"></span>
                                 </button>
                                 @endif
                             </div>
@@ -89,15 +102,15 @@
                     @endphp
 
                     <div x-data="{ seriesOpen: {{ $seriesOpenByDefault ? 'true' : 'false' }} }" class="mt-6">
-                        <div class="sticky top-0 z-10 -mx-4 px-4 py-2 bg-[#697367] border-b border-black/20 shadow-sm">
+                        <div class="sticky top-0 z-10 -mx-4 px-4 py-2 bg-sage border-b border-black/20 shadow-sm">
                             <div class="flex items-center justify-between">
-                                <h2 class="text-lg font-bold">Series</h2>
+                                <h2 class="font-stencil text-[11px] uppercase tracking-[0.2em] text-white/60">Series</h2>
 
                                 @if($hasMoreSeries)
                                 <button type="button"
                                     @click="seriesOpen = !seriesOpen"
-                                    class="text-blue-300 text-sm hover:underline">
-                                    <span x-text="seriesOpen ? 'Show Less' : 'Show More'"></span>
+                                    class="font-mono text-[10px] tracking-[0.1em] text-khaki/70 hover:text-khaki uppercase">
+                                    <span x-text="seriesOpen ? 'Less' : 'More'"></span>
                                 </button>
                                 @endif
                             </div>
@@ -151,15 +164,15 @@
                     @endphp
 
                     <div x-data="{ coversOpen: {{ $coversOpenByDefault ? 'true' : 'false' }} }" class="mt-6">
-                        <div class="sticky top-0 z-10 -mx-4 px-4 py-2 bg-[#697367] border-b border-black/20 shadow-sm">
+                        <div class="sticky top-0 z-10 -mx-4 px-4 py-2 bg-sage border-b border-black/20 shadow-sm">
                             <div class="flex items-center justify-between">
-                                <h2 class="text-lg font-bold">Covers</h2>
+                                <h2 class="font-stencil text-[11px] uppercase tracking-[0.2em] text-white/60">Covers</h2>
 
                                 @if($hasMoreCovers)
                                 <button type="button"
                                     @click="coversOpen = !coversOpen"
-                                    class="text-blue-300 text-sm hover:underline">
-                                    <span x-text="coversOpen ? 'Show Less' : 'Show More'"></span>
+                                    class="font-mono text-[10px] tracking-[0.1em] text-khaki/70 hover:text-khaki uppercase">
+                                    <span x-text="coversOpen ? 'Less' : 'More'"></span>
                                 </button>
                                 @endif
                             </div>
@@ -206,8 +219,8 @@
                     @php $forSale = request('for_sale', null); @endphp
 
                     <div class="mt-6">
-                        <div class="sticky top-0 z-10 -mx-4 px-4 py-2 bg-[#697367] border-b border-black/20 shadow-sm">
-                            <h2 class="text-lg font-bold">Status</h2>
+                        <div class="sticky top-0 z-10 -mx-4 px-4 py-2 bg-sage border-b border-black/20 shadow-sm">
+                            <h2 class="font-stencil text-[11px] uppercase tracking-[0.2em] text-white/60">Status</h2>
                         </div>
                         <ul class="mt-2 text-sm space-y-1">
                             <li class="relative after:block after:mx-3 after:border-b after:border-white/10">
@@ -242,11 +255,18 @@
                 {{-- Header row (breadcrumb + sort/search) --}}
                 <div class="pt-2">
                     <div class="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-4 items-center">
-                        {{-- Left column: breadcrumb --}}
-                        <nav class="breadcrumbs flex items-center pl-1 space-x-2 text-sm text-white">
-                            <a href="{{ route('home') }}" class="pr-2">Home</a> >
-                            <span class="text-gray-800">Books</span>
-                        </nav>
+                        {{-- Left column: breadcrumb + mobile filter button --}}
+                        <div class="flex items-center justify-between">
+                            <nav class="flex items-center pl-1 space-x-2 font-mono text-[11px] tracking-[0.15em] text-white/60 uppercase">
+                                <a href="{{ route('home') }}" class="pr-2">Home</a> >
+                                <span class="text-khaki/70 font-mono text-[11px] tracking-[0.1em] uppercase">Books</span>
+                            </nav>
+                            <button @click="filtersOpen = true"
+                                    class="lg:hidden inline-flex items-center gap-2 rounded-md bg-white/10 px-3 py-2 text-sm text-white hover:bg-white/20">
+                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>
+                                FILTER
+                            </button>
+                        </div>
 
                         {{-- Right column: sort + search --}}
                         <div class="flex flex-col sm:flex-row gap-3 sm:justify-end">
@@ -259,7 +279,7 @@
                                 @if(request()->filled('for_sale')) <input type="hidden" name="for_sale" value="{{ request('for_sale') }}"> @endif
 
                                 <select name="sort"
-                                    class="p-2 rounded-md border text-white border-gray-300 bg-[#565e55] min-w-[150px]"
+                                    class="rounded-md border border-black/30 bg-black/25 text-white px-3 py-2 font-mono text-sm min-w-[150px] focus:outline-none focus:ring-2 focus:ring-white/20"
                                     onchange="this.form.submit()">
                                     <option value="" disabled selected>Sort by</option>
                                     <option value="title_asc" {{ request('sort') == 'title_asc' ? 'selected' : '' }}>Title (A-Z)</option>
@@ -284,7 +304,7 @@
                                         name="search"
                                         placeholder="Search books..."
                                         value="{{ request('search') }}"
-                                        class="p-2 pr-10 rounded-md border bg-[#565e55] text-white border-gray-300 w-full"
+                                        class="rounded-md border border-black/30 bg-black/25 text-white placeholder-white/40 font-mono text-sm px-3 py-2 pr-10 w-full focus:outline-none focus:ring-2 focus:ring-white/20"
                                         id="searchInput"
                                         autocomplete="off" />
 
@@ -296,7 +316,7 @@
                                 </div>
 
                                 <button type="submit"
-                                    class="p-2 rounded-md border border-gray-300 bg-[#565e55] text-white">
+                                    class="rounded-md border border-black/30 bg-black/25 hover:bg-black/40 text-white font-stencil tracking-[0.15em] text-sm px-3 py-2 uppercase transition">
                                     Search
                                 </button>
                             </form>
@@ -337,12 +357,12 @@
                 @endphp
 
                 @if($hasFilters)
-                <div class="mb-4 flex flex-wrap items-center gap-2 bg-[#565e55] text-white rounded-md px-3 py-2">
+                <div class="mb-4 flex flex-wrap items-center gap-2 bg-black/20 ring-1 ring-black/30 text-white rounded-xl px-3 py-2">
                     <span class="text-sm opacity-90 mr-1">Active filters:</span>
 
                     @if(request()->filled('search'))
                     <a href="{{ $remove('search') }}"
-                        class="inline-flex items-center gap-2 text-sm bg-[#697367] hover:bg-[#5a6452] rounded-full px-3 py-1">
+                        class="inline-flex items-center gap-2 text-sm bg-sage hover:bg-[#5a6452] rounded-full px-3 py-1">
                         <span>Search: “{{ request('search') }}”</span>
                         <span class="text-white/80">×</span>
                     </a>
@@ -350,7 +370,7 @@
 
                     @if(request()->filled('sort'))
                     <a href="{{ $remove('sort') }}"
-                        class="inline-flex items-center gap-2 text-sm bg-[#697367] hover:bg-[#5a6452] rounded-full px-3 py-1">
+                        class="inline-flex items-center gap-2 text-sm bg-sage hover:bg-[#5a6452] rounded-full px-3 py-1">
                         <span>Sort: {{ $sortLabel }}</span>
                         <span class="text-white/80">×</span>
                     </a>
@@ -358,7 +378,7 @@
 
                     @if(request()->filled('topic'))
                     <a href="{{ $remove('topic') }}"
-                        class="inline-flex items-center gap-2 text-sm bg-[#697367] hover:bg-[#5a6452] rounded-full px-3 py-1">
+                        class="inline-flex items-center gap-2 text-sm bg-sage hover:bg-[#5a6452] rounded-full px-3 py-1">
                         <span>Topic: {{ $topicName ?? 'Unknown' }}</span>
                         <span class="text-white/80">×</span>
                     </a>
@@ -366,7 +386,7 @@
 
                     @if(request()->filled('series'))
                     <a href="{{ $remove('series') }}"
-                        class="inline-flex items-center gap-2 text-sm bg-[#697367] hover:bg-[#5a6452] rounded-full px-3 py-1">
+                        class="inline-flex items-center gap-2 text-sm bg-sage hover:bg-[#5a6452] rounded-full px-3 py-1">
                         <span>Series: {{ $seriesName ?? 'Unknown' }}</span>
                         <span class="text-white/80">×</span>
                     </a>
@@ -374,7 +394,7 @@
 
                     @if(request()->filled('cover'))
                     <a href="{{ $remove('cover') }}"
-                        class="inline-flex items-center gap-2 text-sm bg-[#697367] hover:bg-[#5a6452] rounded-full px-3 py-1">
+                        class="inline-flex items-center gap-2 text-sm bg-sage hover:bg-[#5a6452] rounded-full px-3 py-1">
                         <span>Cover: {{ $coverName ?? 'Unknown' }}</span>
                         <span class="text-white/80">×</span>
                     </a>
@@ -382,7 +402,7 @@
 
                     @if(request()->filled('for_sale'))
                     <a href="{{ $remove('for_sale') }}"
-                        class="inline-flex items-center gap-2 text-sm bg-[#697367] hover:bg-[#5a6452] rounded-full px-3 py-1">
+                        class="inline-flex items-center gap-2 text-sm bg-sage hover:bg-[#5a6452] rounded-full px-3 py-1">
                         <span>Status: {{ $forSaleName ?? 'Unknown' }}</span>
                         <span class="text-white/80">×</span>
                     </a>
@@ -420,15 +440,15 @@
                 </div>
 
                 @if($books->count() === 0)
-                <div class="bg-[#697367] text-white rounded-md p-6">
-                    <h3 class="text-lg font-bold">No results found</h3>
+                <div class="bg-sage text-white rounded-md p-6">
+                    <h3 class="font-stencil text-lg uppercase tracking-[0.15em] text-white/70">No Results</h3>
                     <p class="text-sm text-white/90 mt-2">
                         Try adjusting your search or removing some filters.
                     </p>
 
                     <div class="mt-4">
                         <a href="{{ route('books.index') }}"
-                            class="bg-[#565e55] hover:bg-[#5a6452] text-white px-4 py-2 rounded-md text-sm">
+                            class="inline-block rounded-xl bg-black/30 hover:bg-black/40 ring-1 ring-khaki/30 px-4 py-2 font-stencil tracking-[0.15em] text-sm text-white uppercase transition">
                             Clear filters
                         </a>
                     </div>
@@ -437,20 +457,29 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 h-full">
                     @foreach ($books as $book)
                     <a href="{{ route('books.show', $book) }}" target="_blank"
-                        class="bg-[#697367] text-white p-4 rounded-md shadow-md flex flex-col h-full hover:bg-[#5a6452]">
+                        class="collection-card bg-sage text-white p-4 rounded-md shadow-md flex flex-col h-full overflow-hidden">
                         <div class="mb-1 flex-grow h-auto">
+                            <p class="font-mono text-[9px] tracking-widest text-white/30 text-right mb-1">#{{ str_pad($book->id, 4, '0', STR_PAD_LEFT) }}</p>
                             <h3 class="text-lg font-bold text-center">{{ $book->title }}</h3>
+                            @if($book->condition)
+                            <p class="font-mono text-[9px] text-khaki/60 text-center mt-0.5 tracking-wider">{{ $book->condition }}</p>
+                            @endif
                             @if ($book->subtitle)
-                            <h5 class="text-sm italic text-center text-gray-300">{{ $book->subtitle }}</h5>
+                            <h5 class="text-sm italic text-center text-white/60">{{ $book->subtitle }}</h5>
                             @endif
                             @if ($book->issue_number)
-                            <h5 class="text-xs italic text-center text-gray-300 pt-4">
+                            <h5 class="text-xs italic text-center text-white/60 pt-4">
                                 {{ $book->issue_number }}
                             </h5>
                             @endif
+                            @if ($book->for_sale)
+                            <div class="flex justify-center mt-2">
+                                <span class="font-stencil text-[9px] tracking-[0.15em] text-khaki/65 border border-khaki/35 px-2 py-0.5 rotate-[-6deg] inline-block">ZU VERKAUFEN</span>
+                            </div>
+                            @endif
                         </div>
 
-                        <p class="text-sm text-center text-gray-300 border-t border-gray-400 py-1 h-20">
+                        <p class="text-sm text-center text-white/60 border-t border-white/15 py-1 h-20">
                             @foreach ($book->authors as $author)
                             {{ $author->name }}@if (!$loop->last), @endif
                             @endforeach
@@ -508,23 +537,5 @@
             toggleClearButton();
         })();
     </script>
-    <script>
-        (() => {
-            const nav = document.getElementById('main-navbar');
-            if (!nav) return;
 
-            const setHeaderH = () => {
-                const h = nav.getBoundingClientRect().height || 0;
-                document.documentElement.style.setProperty('--header-h', `${h}px`);
-            };
-
-            // init + updates
-            setHeaderH();
-            window.addEventListener('resize', setHeaderH);
-
-            // als je mobile menu de headerhoogte wijzigt
-            const btn = document.querySelector('[aria-controls="mobile-menu"]');
-            if (btn) btn.addEventListener('click', () => setTimeout(setHeaderH, 50));
-        })();
-    </script>
 </x-layout>

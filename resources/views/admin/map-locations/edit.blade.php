@@ -81,7 +81,7 @@
                 <span class="text-xs text-white/50">Upload one or more images</span>
             </div>
 
-            <div class="rounded-md bg-[#343933] p-4 border border-white/10">
+            <div class="rounded-md bg-sage-900 p-4 border border-white/10">
                 <div class="text-white font-semibold mb-2">Upload images</div>
                 <form action="{{ route('admin.media.store', ['type' => 'map-locations', 'id' => $location->id]) }}"
                     method="POST" enctype="multipart/form-data" class="flex flex-col gap-3">
@@ -94,7 +94,7 @@
                 </form>
             </div>
 
-            <div class="bg-[#697367] rounded-md p-4 border border-black/20">
+            <div class="bg-sage rounded-md p-4 border border-black/20">
                 <h3 class="text-lg font-semibold text-white mb-3">Images ({{ $location->images->count() }})</h3>
                 @if($location->images->isEmpty())
                 <p class="text-white/80 text-sm">No images uploaded yet.</p>

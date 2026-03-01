@@ -137,6 +137,17 @@
                                               focus:outline-none focus:ring-2 focus:ring-white/20">
                             </div>
                         </div>
+
+                        {{-- Condition --}}
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Condition</label>
+                            <select name="condition" class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                <option value="">— Not graded —</option>
+                                @foreach(['Mint','Extremely Fine','Very Fine','Fine','Very Good','Good','Poor'] as $grade)
+                                <option value="{{ $grade }}" @selected(old('condition', $item->condition ?? '') === $grade)>{{ $grade }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                 </section>
 
@@ -214,6 +225,31 @@
                                 class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40
                                              focus:outline-none focus:ring-2 focus:ring-white/20">{{ old('notes', $item->notes) }}</textarea>
                         </div>
+
+                        {{-- Sold --}}
+                        <div x-data="{ sold: {{ old('sold_at', $item->sold_at ?? null) ? 'true' : 'false' }} }" class="space-y-2">
+                            <label class="text-sm font-medium text-white/80">Sold</label>
+                            <div class="flex items-center gap-3">
+                                <input type="hidden" name="sold" value="0">
+                                <input type="checkbox" value="1" x-model="sold"
+                                    class="h-5 w-5 rounded border-white/20 bg-white/10">
+                                <span class="text-sm text-white/70">Mark as sold</span>
+                            </div>
+                            <div x-show="sold" x-cloak class="grid grid-cols-2 gap-3 pt-2">
+                                <div>
+                                    <label class="text-sm font-medium text-white/80">Sold on</label>
+                                    <input type="date" name="sold_at"
+                                        value="{{ old('sold_at', $item->sold_at?->format('Y-m-d') ?? '') }}"
+                                        class="mt-1 w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium text-white/80">Sold price €</label>
+                                    <input type="number" step="0.01" name="sold_price"
+                                        value="{{ old('sold_price', $item->sold_price ?? '') }}"
+                                        class="mt-1 w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/20">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
@@ -226,7 +262,7 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {{-- Upload images --}}
-                        <div class="rounded-md bg-[#343933] p-4 border border-white/10">
+                        <div class="rounded-md bg-sage-900 p-4 border border-white/10">
                             <div class="text-white font-semibold mb-2">Upload images</div>
 
                             <form action="{{ route('admin.media.store', ['type' => 'items', 'id' => $item->id]) }}"
@@ -246,7 +282,7 @@
                         </div>
 
                         {{-- Upload PDFs --}}
-                        <div class="rounded-md bg-[#343933] p-4 border border-white/10">
+                        <div class="rounded-md bg-sage-900 p-4 border border-white/10">
                             <div class="text-white font-semibold mb-2">Upload PDFs</div>
 
                             <form action="{{ route('admin.media.store', ['type' => 'items', 'id' => $item->id]) }}"
@@ -270,7 +306,7 @@
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         {{-- Existing images --}}
-                        <div class="bg-[#697367] rounded-md p-4 border border-black/20">
+                        <div class="bg-sage rounded-md p-4 border border-black/20">
                             <h3 class="text-lg font-semibold text-white mb-3">Images ({{ $mediaImages->count() }})</h3>
 
                             @if($mediaImages->isEmpty())
@@ -285,7 +321,7 @@
                         </div>
 
                         {{-- Existing PDFs --}}
-                        <div class="bg-[#697367] rounded-md p-4 border border-black/20">
+                        <div class="bg-sage rounded-md p-4 border border-black/20">
                             <h3 class="text-lg font-semibold text-white mb-3">PDFs ({{ $mediaPdfs->count() }})</h3>
 
                             @if($mediaPdfs->isEmpty())

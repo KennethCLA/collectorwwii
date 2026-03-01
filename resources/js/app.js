@@ -1,6 +1,5 @@
 // resources/js/app.js
 
-import "./bootstrap";
 import "./books-attachments-preview";
 
 import { Fancybox } from "@fancyapps/ui";

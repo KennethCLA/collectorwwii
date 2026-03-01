@@ -475,13 +475,13 @@
                     <input type="hidden" name="main_image_index" id="main_image_index" value="0">
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="rounded-md bg-[#343933] p-4 border border-white/10">
+                        <div class="rounded-md bg-sage-900 p-4 border border-white/10">
                             <div class="text-white font-semibold mb-2">Images</div>
                             <input type="file" id="images_input" name="images[]" multiple accept="image/*"
                                 class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white file:mr-3 file:rounded-md file:border-0 file:bg-white/10 file:px-3 file:py-2 file:text-white hover:file:bg-white/15">
                             <p class="mt-2 text-xs text-white/60">First image becomes <span class="text-white/80 font-semibold">Main</span> by default.</p>
                         </div>
-                        <div class="rounded-md bg-[#343933] p-4 border border-white/10">
+                        <div class="rounded-md bg-sage-900 p-4 border border-white/10">
                             <div class="text-white font-semibold mb-2">PDFs</div>
                             <input type="file" id="pdfs_input" name="pdfs[]" multiple accept="application/pdf"
                                 class="w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white file:mr-3 file:rounded-md file:border-0 file:bg-white/10 file:px-3 file:py-2 file:text-white hover:file:bg-white/15">
@@ -490,7 +490,7 @@
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <div class="bg-[#697367] rounded-md p-4 border border-black/20">
+                        <div class="bg-sage rounded-md p-4 border border-black/20">
                             <div class="flex items-center justify-between mb-3">
                                 <h3 class="text-lg font-semibold text-white">Selected images</h3>
                                 <span id="images_count" class="text-xs text-white/60">0</span>
@@ -499,7 +499,7 @@
                                 <p class="text-white/80 text-sm" id="images_empty">No images selected.</p>
                             </div>
                         </div>
-                        <div class="bg-[#697367] rounded-md p-4 border border-black/20">
+                        <div class="bg-sage rounded-md p-4 border border-black/20">
                             <div class="flex items-center justify-between mb-3">
                                 <h3 class="text-lg font-semibold text-white">Selected PDFs</h3>
                                 <span id="pdfs_count" class="text-xs text-white/60">0</span>
@@ -600,7 +600,7 @@
 
                 imageFiles.forEach((file, idx) => {
                     const card = document.createElement('div');
-                    card.className = 'group w-32 shrink-0 rounded-md bg-[#343933] border border-white/10 overflow-hidden';
+                    card.className = 'group w-32 shrink-0 rounded-md bg-sage-900 border border-white/10 overflow-hidden';
                     const url = URL.createObjectURL(file);
 
                     const preview = document.createElement('div');
@@ -678,7 +678,7 @@
 
                 pdfFiles.forEach((file, idx) => {
                     const row = document.createElement('div');
-                    row.className = 'rounded-md bg-[#343933] border border-white/10 p-3 flex items-center justify-between gap-4';
+                    row.className = 'rounded-md bg-sage-900 border border-white/10 p-3 flex items-center justify-between gap-4';
 
                     const left = document.createElement('div');
                     left.className = 'min-w-0';

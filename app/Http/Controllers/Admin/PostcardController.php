@@ -95,6 +95,9 @@ class PostcardController extends Controller
             'location_id' => 'nullable|exists:locations,id',
             'location_detail' => 'nullable|string|max:255',
             'personal_remarks' => 'nullable|string',
+            'condition' => 'nullable|string|max:50',
+            'sold_at' => 'nullable|date',
+            'sold_price' => 'nullable|numeric|min:0',
         ]);
 
         $validated['for_sale'] = $request->boolean('for_sale');
@@ -102,6 +105,10 @@ class PostcardController extends Controller
         $validated['stamped'] = $request->boolean('stamped');
         $validated['special_stamp'] = $request->boolean('special_stamp');
         $validated['perforation'] = $request->boolean('perforation');
+        if (! empty($validated['sold_at'])) {
+            $validated['for_sale'] = false;
+            $validated['selling_price'] = null;
+        }
 
         $postcard = Postcard::create($validated);
 
@@ -164,6 +171,9 @@ class PostcardController extends Controller
             'location_id' => 'nullable|exists:locations,id',
             'location_detail' => 'nullable|string|max:255',
             'personal_remarks' => 'nullable|string',
+            'condition' => 'nullable|string|max:50',
+            'sold_at' => 'nullable|date',
+            'sold_price' => 'nullable|numeric|min:0',
         ]);
 
         $validated['for_sale'] = $request->boolean('for_sale');
@@ -171,6 +181,10 @@ class PostcardController extends Controller
         $validated['stamped'] = $request->boolean('stamped');
         $validated['special_stamp'] = $request->boolean('special_stamp');
         $validated['perforation'] = $request->boolean('perforation');
+        if (! empty($validated['sold_at'])) {
+            $validated['for_sale'] = false;
+            $validated['selling_price'] = null;
+        }
 
         $postcard->update($validated);
 

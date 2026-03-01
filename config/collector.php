@@ -7,6 +7,7 @@ return [
         'books' => true,
         'items' => true,
         'magazines' => true,
+        'newspapers' => true,
         'banknotes' => true,
         'coins' => true,
         'postcards' => true,

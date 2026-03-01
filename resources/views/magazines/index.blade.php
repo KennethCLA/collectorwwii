@@ -1,21 +1,34 @@
 {{-- resources/views/magazines/index.blade.php --}}
 <x-layout :mainClass="'w-full px-0 py-0'">
     <div class="w-full">
-        <div class="grid grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-4 items-start">
+        <div x-data="{ filtersOpen: false }" class="grid grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-4 items-start">
+
+            {{-- Mobile backdrop --}}
+            <div x-show="filtersOpen" x-transition.opacity @click="filtersOpen = false"
+                 class="fixed inset-0 bg-black/50 z-40 lg:hidden" x-cloak></div>
 
             {{-- Sidebar --}}
-            <aside class="hidden lg:block sticky self-start
-                top-[var(--header-h,113px)]
-                h-[calc(100vh_-_var(--header-h,113px))]
-                bg-[#697367] border-r border-black/20 text-white">
-                <div class="h-full overflow-y-auto px-4 pb-4">
+            <aside :class="filtersOpen ? 'translate-x-0' : '-translate-x-full'"
+                   class="fixed inset-y-0 left-0 w-[280px] z-50 flex flex-col
+                          lg:relative lg:w-auto lg:translate-x-0 lg:z-auto
+                          lg:sticky lg:self-start lg:top-[var(--header-h,113px)] lg:h-[calc(100vh_-_var(--header-h,113px))]
+                          transition-transform duration-300 ease-in-out
+                          bg-sage border-r border-black/20 text-white">
+                {{-- Mobile drawer header --}}
+                <div class="lg:hidden flex items-center justify-between px-4 py-3 border-b border-black/20">
+                    <h2 class="font-stencil text-[11px] uppercase tracking-[0.2em] text-white/60">Filters</h2>
+                    <button @click="filtersOpen = false" class="text-white/80 hover:text-white">
+                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+                <div class="flex-1 min-h-0 overflow-y-auto px-4 pb-4">
 
                     {{-- FOR SALE --}}
                     @php $forSale = request('for_sale', null); @endphp
 
                     <div class="mt-0">
-                        <div class="sticky top-0 z-10 -mx-4 px-4 py-2 bg-[#697367] border-b border-black/20 shadow-sm">
-                            <h2 class="text-lg font-bold">Status</h2>
+                        <div class="sticky top-0 z-10 -mx-4 px-4 py-2 bg-sage border-b border-black/20 shadow-sm">
+                            <h2 class="font-stencil text-[11px] uppercase tracking-[0.2em] text-white/60">Status</h2>
                         </div>
                         <ul class="mt-2 text-sm space-y-1">
                             <li class="relative after:block after:mx-3 after:border-b after:border-white/10">
@@ -49,17 +62,24 @@
             <div class="min-w-0 pr-4 pl-0">
                 <div class="pt-2">
                     <div class="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-4 items-center">
-                        <nav class="breadcrumbs flex items-center pl-1 space-x-2 text-sm text-white">
-                            <a href="{{ route('home') }}" class="pr-2">Home</a> >
-                            <span class="text-gray-800">Magazines</span>
-                        </nav>
+                        <div class="flex items-center justify-between">
+                            <nav class="flex items-center pl-1 space-x-2 font-mono text-[11px] tracking-[0.15em] text-white/60 uppercase">
+                                <a href="{{ route('home') }}" class="pr-2">Home</a> >
+                                <span class="text-khaki/70 font-mono text-[11px] tracking-[0.1em] uppercase">Magazines</span>
+                            </nav>
+                            <button @click="filtersOpen = true"
+                                    class="lg:hidden inline-flex items-center gap-2 rounded-md bg-white/10 px-3 py-2 text-sm text-white hover:bg-white/20">
+                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>
+                                FILTER
+                            </button>
+                        </div>
 
                         <div class="flex flex-col sm:flex-row gap-3 sm:justify-end">
                             <form method="GET" action="{{ route('magazines.index') }}" class="flex">
                                 @if(request()->filled('search')) <input type="hidden" name="search" value="{{ request('search') }}"> @endif
                                 @if(request()->filled('for_sale')) <input type="hidden" name="for_sale" value="{{ request('for_sale') }}"> @endif
                                 <select name="sort"
-                                    class="p-2 rounded-md border text-white border-gray-300 bg-[#565e55] min-w-[150px]"
+                                    class="rounded-md border border-black/30 bg-black/25 text-white px-3 py-2 font-mono text-sm min-w-[150px] focus:outline-none focus:ring-2 focus:ring-white/20"
                                     onchange="this.form.submit()">
                                     <option value="" disabled selected>Sort by</option>
                                     <option value="title_asc" {{ request('sort') == 'title_asc' ? 'selected' : '' }}>Title (A-Z)</option>
@@ -75,7 +95,7 @@
                                 <div class="relative w-full sm:w-[320px]">
                                     <input type="text" name="search" placeholder="Search magazines..."
                                         value="{{ request('search') }}"
-                                        class="p-2 pr-10 rounded-md border bg-[#565e55] text-white border-gray-300 w-full"
+                                        class="rounded-md border border-black/30 bg-black/25 text-white placeholder-white/40 font-mono text-sm px-3 py-2 pr-10 w-full focus:outline-none focus:ring-2 focus:ring-white/20"
                                         id="searchInput" autocomplete="off" />
                                     <button type="button" id="clearSearchBtn"
                                         class="absolute right-2 top-1/2 -translate-y-1/2 text-white/70 hover:text-white
@@ -99,20 +119,20 @@
                 @endphp
 
                 @if($hasFilters)
-                <div class="mb-4 flex flex-wrap items-center gap-2 bg-[#565e55] text-white rounded-md px-3 py-2">
+                <div class="mb-4 flex flex-wrap items-center gap-2 bg-black/20 ring-1 ring-black/30 text-white rounded-xl px-3 py-2">
                     <span class="text-sm opacity-90 mr-1">Active filters:</span>
                     @if(request()->filled('search'))
-                    <a href="{{ $remove('search') }}" class="inline-flex items-center gap-2 text-sm bg-[#697367] hover:bg-[#5a6452] rounded-full px-3 py-1">
+                    <a href="{{ $remove('search') }}" class="inline-flex items-center gap-2 text-sm bg-sage hover:bg-[#5a6452] rounded-full px-3 py-1">
                         <span>Search: "{{ request('search') }}"</span><span class="text-white/80">×</span>
                     </a>
                     @endif
                     @if(request()->filled('sort'))
-                    <a href="{{ $remove('sort') }}" class="inline-flex items-center gap-2 text-sm bg-[#697367] hover:bg-[#5a6452] rounded-full px-3 py-1">
+                    <a href="{{ $remove('sort') }}" class="inline-flex items-center gap-2 text-sm bg-sage hover:bg-[#5a6452] rounded-full px-3 py-1">
                         <span>Sort: {{ $sortLabel }}</span><span class="text-white/80">×</span>
                     </a>
                     @endif
                     @if(request()->filled('for_sale'))
-                    <a href="{{ $remove('for_sale') }}" class="inline-flex items-center gap-2 text-sm bg-[#697367] hover:bg-[#5a6452] rounded-full px-3 py-1">
+                    <a href="{{ $remove('for_sale') }}" class="inline-flex items-center gap-2 text-sm bg-sage hover:bg-[#5a6452] rounded-full px-3 py-1">
                         <span>Status: {{ $forSaleName }}</span><span class="text-white/80">×</span>
                     </a>
                     @endif
@@ -133,27 +153,31 @@
                 </div>
 
                 @if($magazines->count() === 0)
-                <div class="bg-[#697367] text-white rounded-md p-6">
-                    <h3 class="text-lg font-bold">No results found</h3>
+                <div class="bg-sage text-white rounded-md p-6">
+                    <h3 class="font-stencil text-lg uppercase tracking-[0.15em] text-white/70">No Results</h3>
                     <p class="text-sm text-white/90 mt-2">Try adjusting your search or removing some filters.</p>
                     <div class="mt-4">
-                        <a href="{{ route('magazines.index') }}" class="bg-[#565e55] hover:bg-[#5a6452] text-white px-4 py-2 rounded-md text-sm">Clear filters</a>
+                        <a href="{{ route('magazines.index') }}" class="inline-block rounded-xl bg-black/30 hover:bg-black/40 ring-1 ring-khaki/30 px-4 py-2 font-stencil tracking-[0.15em] text-sm text-white uppercase transition">Clear filters</a>
                     </div>
                 </div>
                 @else
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 h-full">
                     @foreach ($magazines as $magazine)
                     <a href="{{ route('magazines.show', $magazine) }}" target="_blank"
-                        class="bg-[#697367] text-white p-4 rounded-md shadow-md flex flex-col h-full hover:bg-[#5a6452]">
+                        class="collection-card bg-sage text-white p-4 rounded-md shadow-md flex flex-col h-full overflow-hidden">
                         <div class="mb-1 flex-grow h-auto">
+                            <p class="font-mono text-[9px] tracking-widest text-white/30 text-right mb-1">#{{ str_pad($magazine->id, 4, '0', STR_PAD_LEFT) }}</p>
                             <h3 class="text-lg font-bold text-center">{{ $magazine->title }}</h3>
+                            @if($magazine->condition)
+                            <p class="font-mono text-[9px] text-khaki/60 text-center mt-0.5 tracking-wider">{{ $magazine->condition }}</p>
+                            @endif
                             @if($magazine->for_sale)
-                            <h5 class="text-xs italic text-center text-gray-300 pt-4">For sale</h5>
+                            <div class="flex justify-center mt-2"><span class="font-stencil text-[9px] tracking-[0.15em] text-khaki/65 border border-khaki/35 px-2 py-0.5 rotate-[-6deg] inline-block">ZU VERKAUFEN</span></div>
                             @endif
                         </div>
-                        <p class="text-sm text-center text-gray-300 border-t border-gray-400 py-1 h-20 flex flex-col justify-center">
+                        <p class="text-sm text-center text-white/60 border-t border-white/15 py-1 h-20 flex flex-col justify-center">
                             <span class="block">{{ $magazine->publisher ?? '—' }}</span>
-                            <span class="block text-xs text-gray-300/90">{{ $magazine->issue_year ?? '—' }}</span>
+                            <span class="block text-xs text-white/60/90">{{ $magazine->issue_year ?? '—' }}</span>
                         </p>
                         <div class="flex-1 flex justify-center items-center h-80">
                             <img src="{{ $magazine->image_url ?? asset('images/error-image-not-found.png') }}"
