@@ -21,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'is_admin' => \App\Http\Middleware\IsAdmin::class,
         ]);
+        $middleware->remove(\Illuminate\Http\Middleware\FrameGuard::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
