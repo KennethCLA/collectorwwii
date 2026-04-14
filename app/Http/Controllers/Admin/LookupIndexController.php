@@ -7,6 +7,7 @@ use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Validation\Rule;
 
 class LookupIndexController extends Controller
 {
@@ -15,12 +16,41 @@ class LookupIndexController extends Controller
         $config = $this->config($type);
         abort_unless(Schema::hasTable($config['table']), 404);
         $search = trim((string) $request->query('q', ''));
+        $isTree = $config['tree'] ?? false;
+        $sort = $request->query('sort', 'name_asc');
+
+        if ($isTree) {
+            $treeRows = $this->buildFlatTree($config['table'], null, 0, $search);
+            $treeRows = $treeRows->map(function ($row) use ($config) {
+                $row['usage_total'] = $this->recursiveUsageTotal($config['references'], $config['table'], (int) $row['id']);
+
+                return $row;
+            });
+
+            return view('admin.lookups.index', [
+                'rows' => null,
+                'tree_rows' => $treeRows,
+                'is_tree' => true,
+                'sort' => $sort,
+                'type' => $type,
+                'search' => $search,
+                'label' => $config['label'],
+                'description' => $config['description'],
+            ]);
+        }
+
+        [$sortColumn, $sortDirection] = match ($sort) {
+            'name_desc'    => ['name', 'desc'],
+            'created_asc'  => ['created_at', 'asc'],
+            'created_desc' => ['created_at', 'desc'],
+            default        => ['name', 'asc'],
+        };
 
         $rows = DB::table($config['table'])
             ->select(['id', 'name', 'created_at'])
             ->when($this->hasSoftDeletes($config['table']), fn ($query) => $query->whereNull('deleted_at'))
             ->when($search !== '', fn ($query) => $query->where('name', 'like', "%{$search}%"))
-            ->orderBy('name')
+            ->orderBy($sortColumn, $sortDirection)
             ->paginate(100)
             ->withQueryString();
 
@@ -31,8 +61,19 @@ class LookupIndexController extends Controller
             return $row;
         });
 
+        if ($sort === 'usage_asc') {
+            $sorted = $rows->getCollection()->sortBy('usage_total')->values();
+            $rows->setCollection($sorted);
+        } elseif ($sort === 'usage_desc') {
+            $sorted = $rows->getCollection()->sortByDesc('usage_total')->values();
+            $rows->setCollection($sorted);
+        }
+
         return view('admin.lookups.index', [
             'rows' => $rows,
+            'tree_rows' => collect(),
+            'is_tree' => false,
+            'sort' => $sort,
             'type' => $type,
             'search' => $search,
             'label' => $config['label'],
@@ -45,14 +86,24 @@ class LookupIndexController extends Controller
         $config = $this->config($type);
         abort_unless(Schema::hasTable($config['table']), 404);
 
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-        ]);
+        if ($config['tree'] ?? false) {
+            $validated = $request->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'parent_id' => ['nullable', 'integer', Rule::exists($config['table'], 'id')],
+            ]);
+        } else {
+            $validated = $request->validate([
+                'name' => ['required', 'string', 'max:255'],
+            ]);
+        }
 
         $name = trim((string) $validated['name']);
 
         try {
             $payload = ['name' => $name];
+            if (($config['tree'] ?? false) && isset($validated['parent_id'])) {
+                $payload['parent_id'] = $validated['parent_id'];
+            }
             if (Schema::hasColumn($config['table'], 'created_at')) {
                 $payload['created_at'] = now();
             }
@@ -86,6 +137,12 @@ class LookupIndexController extends Controller
         $row = $query->first();
         abort_if(! $row, 404);
 
+        if (($config['tree'] ?? false) && DB::table($table)->where('parent_id', $id)->when($this->hasSoftDeletes($table), fn ($q) => $q->whereNull('deleted_at'))->exists()) {
+            return redirect()
+                ->route('admin.lookups.index', ['type' => $type])
+                ->with('error', "Cannot delete '{$row->name}': it has child entries. Remove or reassign them first.");
+        }
+
         $usage = $this->usageTotal($config['references'], $id);
         if ($usage > 0) {
             return redirect()
@@ -111,9 +168,113 @@ class LookupIndexController extends Controller
             ->with('success', "Deleted '{$row->name}'.");
     }
 
+    private function buildFlatTree(string $table, ?int $parentId, int $depth, string $search): \Illuminate\Support\Collection
+    {
+        $query = DB::table($table)
+            ->select(['id', 'name', 'parent_id', 'created_at'])
+            ->where('parent_id', $parentId)
+            ->when($this->hasSoftDeletes($table), fn ($q) => $q->whereNull('deleted_at'))
+            ->when($search !== '' && $depth === 0, fn ($q) => $q->where('name', 'like', "%{$search}%"))
+            ->orderBy('name');
+
+        return $query->get()->flatMap(function ($row) use ($table, $depth, $search) {
+            $item = [
+                'id' => $row->id,
+                'name' => $row->name,
+                'parent_id' => $row->parent_id,
+                'depth' => $depth,
+                'created_at' => $row->created_at,
+            ];
+
+            return collect([$item])->concat($this->buildFlatTree($table, $row->id, $depth + 1, ''));
+        });
+    }
+
     private function hasSoftDeletes(string $table): bool
     {
         return Schema::hasColumn($table, 'deleted_at');
+    }
+
+    public function update(Request $request, string $type, int $id)
+    {
+        $config = $this->config($type);
+        $table  = $config['table'];
+        $isTree = $config['tree'] ?? false;
+        abort_unless(Schema::hasTable($table), 404);
+
+        $rules = ['name' => ['required', 'string', 'max:255']];
+        if ($isTree) {
+            $rules['parent_id'] = ['nullable', 'integer', Rule::exists($table, 'id')];
+        }
+        $validated = $request->validate($rules);
+
+        $query = DB::table($table)->where('id', $id);
+        if ($this->hasSoftDeletes($table)) {
+            $query->whereNull('deleted_at');
+        }
+        abort_if(! $query->exists(), 404);
+
+        if ($isTree && ! empty($validated['parent_id'])) {
+            $newParent = (int) $validated['parent_id'];
+            if ($newParent === $id) {
+                return back()->withInput()->withErrors(['parent_id' => 'A node cannot be its own parent.']);
+            }
+            if ($this->isDescendant($table, $id, $newParent)) {
+                return back()->withInput()->withErrors(['parent_id' => 'Cannot move a node into one of its own descendants.']);
+            }
+        }
+
+        $payload = ['name' => trim($validated['name'])];
+        if ($isTree) {
+            $payload['parent_id'] = ! empty($validated['parent_id']) ? (int) $validated['parent_id'] : null;
+        }
+        if (Schema::hasColumn($table, 'updated_at')) {
+            $payload['updated_at'] = now();
+        }
+
+        DB::table($table)->where('id', $id)->update($payload);
+
+        return redirect()
+            ->route('admin.lookups.index', ['type' => $type])
+            ->with('success', "Option updated successfully.");
+    }
+
+    /**
+     * Returns true if $candidateId is a descendant of $ancestorId in the given tree table.
+     */
+    private function isDescendant(string $table, int $ancestorId, int $candidateId): bool
+    {
+        $current = $candidateId;
+        $seen    = [];
+        while ($current !== null) {
+            if (isset($seen[$current])) {
+                break; // cycle guard
+            }
+            $seen[$current] = true;
+            $row = DB::table($table)->select('parent_id')->where('id', $current)->first();
+            if (! $row) {
+                break;
+            }
+            $current = $row->parent_id !== null ? (int) $row->parent_id : null;
+            if ($current === $ancestorId) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function recursiveUsageTotal(array $references, string $table, int $id): int
+    {
+        $own = $this->usageTotal($references, $id);
+
+        $children = DB::table($table)
+            ->select('id')
+            ->where('parent_id', $id)
+            ->when($this->hasSoftDeletes($table), fn ($q) => $q->whereNull('deleted_at'))
+            ->get();
+
+        return $own + $children->sum(fn ($child) => $this->recursiveUsageTotal($references, $table, (int) $child->id));
     }
 
     private function usageTotal(array $references, int $id): int
@@ -140,6 +301,7 @@ class LookupIndexController extends Controller
                 'label' => 'Book Topics',
                 'description' => 'Options used in book topic fields.',
                 'table' => 'book_topics',
+                'tree' => true,
                 'references' => [
                     ['table' => 'books', 'column' => 'topic_id'],
                 ],
@@ -148,6 +310,7 @@ class LookupIndexController extends Controller
                 'label' => 'Origins',
                 'description' => 'Shared options used by books and items.',
                 'table' => 'origins',
+                'tree' => true,
                 'references' => [
                     ['table' => 'books', 'column' => 'origin_id'],
                     ['table' => 'items', 'column' => 'origin_id'],
@@ -173,6 +336,7 @@ class LookupIndexController extends Controller
                 'label' => 'Locations',
                 'description' => 'Storage locations used by collection entries.',
                 'table' => 'locations',
+                'tree' => true,
                 'references' => [
                     ['table' => 'books', 'column' => 'location_id'],
                     ['table' => 'banknotes', 'column' => 'location_id'],
@@ -185,6 +349,7 @@ class LookupIndexController extends Controller
                 'label' => 'Item Categories',
                 'description' => 'Options used in item category fields.',
                 'table' => 'item_categories',
+                'tree' => true,
                 'references' => [
                     ['table' => 'items', 'column' => 'category_id'],
                 ],
@@ -201,9 +366,24 @@ class LookupIndexController extends Controller
                 'label' => 'Item Organizations',
                 'description' => 'Options used in item organization fields.',
                 'table' => 'item_organizations',
+                'tree' => true,
                 'references' => [
                     ['table' => 'items', 'column' => 'organization_id'],
                 ],
+            ],
+            'magazine-series' => [
+                'label' => 'Magazine Series',
+                'description' => 'Hierarchical series tree for magazines.',
+                'table' => 'magazine_series',
+                'tree' => true,
+                'references' => [['table' => 'magazines', 'column' => 'series_id']],
+            ],
+            'newspaper-series' => [
+                'label' => 'Newspaper Series',
+                'description' => 'Hierarchical series tree for newspapers.',
+                'table' => 'newspaper_series',
+                'tree' => true,
+                'references' => [['table' => 'newspapers', 'column' => 'series_id']],
             ],
             'countries' => [
                 'label' => 'Countries',

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -12,6 +13,7 @@ class Magazine extends Model
     use SoftDeletes;
 
     protected $fillable = [
+        'series_id',
         'title',
         'subtitle',
         'publisher',
@@ -36,6 +38,11 @@ class Magazine extends Model
         'sold_at' => 'date',
         'sold_price' => 'decimal:2',
     ];
+
+    public function series(): BelongsTo
+    {
+        return $this->belongsTo(MagazineSeries::class);
+    }
 
     public function media(): MorphMany
     {

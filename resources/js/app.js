@@ -19,6 +19,8 @@ Alpine.plugin(collapse);
 window.Alpine = Alpine;
 Alpine.start();
 
+window.Fancybox = Fancybox;
+
 Fancybox.bind("[data-fancybox]", {
     Toolbar: true,
     infinite: true,

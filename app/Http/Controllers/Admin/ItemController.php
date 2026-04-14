@@ -77,20 +77,20 @@ class ItemController extends Controller
         // 6. Retourneer de view met de resultaten en de benodigde filters
         return view('admin.items.index', [
             'items' => $items,
-            'categories' => ItemCategory::all(),
-            'origins' => Origin::orderBy('name')->get(),
-            'nationalities' => ItemNationality::all(),
-            'organizations' => ItemOrganization::all(),
+            'categories' => ItemCategory::flatTree(),
+            'origins' => Origin::flatTree(),
+            'nationalities' => ItemNationality::orderBy('name')->get(),
+            'organizations' => ItemOrganization::flatTree(),
         ]);
     }
 
     public function create()
     {
         return view('admin.items.create', [
-            'categories' => ItemCategory::orderBy('name')->get(),
-            'origins' => Origin::orderBy('name')->get(),
+            'categories' => ItemCategory::flatTree(),
+            'origins' => Origin::flatTree(),
             'nationalities' => ItemNationality::orderBy('name')->get(),
-            'organizations' => ItemOrganization::orderBy('name')->get(),
+            'organizations' => ItemOrganization::flatTree(),
         ]);
     }
 
@@ -137,10 +137,10 @@ class ItemController extends Controller
 
         return view('admin.items.edit', [
             'item' => $item,
-            'categories' => ItemCategory::orderBy('name')->get(),
-            'origins' => Origin::orderBy('name')->get(),
+            'categories' => ItemCategory::flatTree(),
+            'origins' => Origin::flatTree(),
             'nationalities' => ItemNationality::orderBy('name')->get(),
-            'organizations' => ItemOrganization::orderBy('name')->get(),
+            'organizations' => ItemOrganization::flatTree(),
         ]);
     }
 

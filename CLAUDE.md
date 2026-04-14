@@ -77,7 +77,59 @@ php artisan migrate:fresh --seed
 
 - `Book` — has many `Author` (via `book_authors` pivot, synced by comma-separated name input), belongs to `BookSeries`, `BookCover`, `BookTopic`, `Location`, `Origin`. Uses soft deletes.
 - `Item` — belongs to `ItemCategory`, `ItemNationality`, `ItemOrganization`, `Origin`. Uses soft deletes.
+- `Magazine` — belongs to `MagazineSeries` (nullable). `series_id` FK on `magazines`.
+- `Newspaper` — belongs to `NewspaperSeries` (nullable). `series_id` FK on `newspapers`.
 - `MediaFile` — polymorphic (`attachable_type` / `attachable_id`). Used for both `books` and `items`. Has `collection` field (`images` or `files`), `is_main` flag, and `sort_order`. All files stored on Backblaze B2 (`disk = 'b2'`).
+
+### Tree-structured lookup tables
+
+Five existing lookup tables and two new ones support a self-referential `parent_id` hierarchy:
+
+| Table | Used by | Model |
+|---|---|---|
+| `book_topics` | `books.topic_id` | `BookTopic` |
+| `item_categories` | `items.category_id` | `ItemCategory` |
+| `item_organizations` | `items.organization_id` | `ItemOrganization` |
+| `locations` | books, banknotes, coins, postcards, stamps | `Location` |
+| `origins` | `books.origin_id`, `items.origin_id` | `Origin` |
+| `magazine_series` | `magazines.series_id` | `MagazineSeries` |
+| `newspaper_series` | `newspapers.series_id` | `NewspaperSeries` |
+
+All seven models share the same pattern:
+```php
+$fillable = ['name', 'parent_id'];
+
+public function parent(): BelongsTo  // self-referential
+public function children(): HasMany  // ordered by name
+
+// Returns flat Collection of stdClass {id, name} with depth-prefixed names
+// e.g. "— — Auschwitz". Used to populate <select> dropdowns.
+public static function flatTree(?int $parentId = null, int $depth = 0): Collection
+```
+
+**Unique constraint**: `UNIQUE(name, parent_id)` — same name is allowed under different parents, but siblings must be unique. (MySQL treats NULL `parent_id` values as distinct, so root-level duplicates are theoretically possible but guarded at the UI level.)
+
+### Lookup admin (`LookupIndexController`)
+
+- **Routes**: `GET/POST admin/lookups/{type}`, `PATCH/DELETE admin/lookups/{type}/{id}`
+- **Tree types** render as indented rows with recursive usage total (node + all descendants).
+- **Flat types** support sortable columns: name, in-use count, created date.
+- **Sidebar** toggles between Add mode (with optional parent select for tree types) and Edit mode (rename + reparent, with circular-reference guard) via Alpine.js.
+- Type→table config map lives entirely inside `LookupIndexController::config()`.
+
+### `lookups:flatten-to-tree` artisan command
+
+One-time data migration tool. Converts flat dash-separated names (e.g. "Kampen - Polen - Auschwitz") into proper tree nodes.
+
+- Entries whose prefix is shared by ≥2 others are auto-planned.
+- Entries with a unique prefix are shown interactively per group for manual approval.
+- Supports `all` to process every tree type in one run.
+- Idempotent: checks for existing nodes before inserting. Runs inside a transaction.
+
+```bash
+docker compose exec laravel.test php artisan lookups:flatten-to-tree all
+docker compose exec laravel.test php artisan lookups:flatten-to-tree book-topics
+```
 
 ### Media system
 
@@ -118,4 +170,4 @@ Admin book views use partials: `_fields.blade.php` (form fields), `_form.blade.p
 
 ### Origins
 
-The `origins` table (formerly `item_origins`) is shared between `Book` and `Item` models via `origin_id → origins.id`.
+The `origins` table (formerly `item_origins`) is shared between `Book` and `Item` models via `origin_id → origins.id`. It supports the tree structure (`parent_id`) like all other tree lookup tables.

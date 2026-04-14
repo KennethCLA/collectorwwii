@@ -77,13 +77,19 @@
                         {{-- Category --}}
                         <div class="space-y-2">
                             <label class="text-sm font-medium text-white/80">Category</label>
-                            <select name="category_id"
-                                class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
-                                <option value="">—</option>
-                                @foreach($categories as $c)
-                                <option value="{{ $c->id }}" @selected((string)$val('category_id')===(string)$c->id)>{{ $c->name }}</option>
-                                @endforeach
-                            </select>
+                            <div class="flex items-center gap-2">
+                                <select id="category_id" name="category_id"
+                                    class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                    <option value="">—</option>
+                                    @foreach($categories as $c)
+                                    <option value="{{ $c->id }}" @selected((string)$val('category_id')===(string)$c->id)>{{ $c->name }}</option>
+                                    @endforeach
+                                </select>
+                                <button type="button"
+                                    class="h-10 w-10 shrink-0 rounded-md border border-white/10 bg-white/10 text-white hover:bg-white/15"
+                                    data-lookup-add data-type="item-category" data-select="#category_id"
+                                    title="Add category">+</button>
+                            </div>
                         </div>
 
                         {{-- Nationality --}}
@@ -101,13 +107,19 @@
                         {{-- Organization --}}
                         <div class="space-y-2">
                             <label class="text-sm font-medium text-white/80">Organization</label>
-                            <select name="organization_id"
-                                class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
-                                <option value="">—</option>
-                                @foreach($organizations as $o)
-                                <option value="{{ $o->id }}" @selected((string)$val('organization_id')===(string)$o->id)>{{ $o->name }}</option>
-                                @endforeach
-                            </select>
+                            <div class="flex items-center gap-2">
+                                <select id="organization_id" name="organization_id"
+                                    class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                    <option value="">—</option>
+                                    @foreach($organizations as $o)
+                                    <option value="{{ $o->id }}" @selected((string)$val('organization_id')===(string)$o->id)>{{ $o->name }}</option>
+                                    @endforeach
+                                </select>
+                                <button type="button"
+                                    class="h-10 w-10 shrink-0 rounded-md border border-white/10 bg-white/10 text-white hover:bg-white/15"
+                                    data-lookup-add data-type="item-organization" data-select="#organization_id"
+                                    title="Add organization">+</button>
+                            </div>
                         </div>
 
                         {{-- For sale --}}
@@ -153,13 +165,19 @@
                         {{-- Purchase origin --}}
                         <div class="space-y-2">
                             <label class="text-sm font-medium text-white/80">Purchase origin</label>
-                            <select name="origin_id"
-                                class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
-                                <option value="">—</option>
-                                @foreach($origins as $o)
-                                <option value="{{ $o->id }}" @selected((string)$val('origin_id')===(string)$o->id)>{{ $o->name }}</option>
-                                @endforeach
-                            </select>
+                            <div class="flex items-center gap-2">
+                                <select id="origin_id" name="origin_id"
+                                    class="js-select w-full rounded-md border border-black/30 bg-white/10 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                                    <option value="">—</option>
+                                    @foreach($origins as $o)
+                                    <option value="{{ $o->id }}" @selected((string)$val('origin_id')===(string)$o->id)>{{ $o->name }}</option>
+                                    @endforeach
+                                </select>
+                                <button type="button"
+                                    class="h-10 w-10 shrink-0 rounded-md border border-white/10 bg-white/10 text-white hover:bg-white/15"
+                                    data-lookup-add data-type="origin" data-select="#origin_id"
+                                    title="Add origin">+</button>
+                            </div>
                         </div>
 
                         {{-- Purchase date --}}
@@ -227,4 +245,6 @@
                 </div>
             </div>
         </form>
+
+    @include('admin.partials.lookup-modal')
 @endsection

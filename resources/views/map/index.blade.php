@@ -94,6 +94,22 @@
             });
         }
 
+        map.on('popupopen', function(e) {
+            const popupEl = e.popup.getElement();
+            if (!popupEl) return;
+            popupEl.querySelectorAll('[data-fancybox]').forEach(function(el) {
+                el.addEventListener('click', function(ev) {
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    const gallery = el.dataset.fancybox;
+                    const anchors = Array.from(popupEl.querySelectorAll('[data-fancybox="' + gallery + '"]'));
+                    const items = anchors.map(function(a) { return { src: a.href, type: 'image' }; });
+                    const idx = anchors.indexOf(el);
+                    window.Fancybox.show(items, { startIndex: Math.max(0, idx) });
+                });
+            });
+        });
+
         window.focusMarker = (id) => {
             const marker = markers[id];
             if (!marker) return;

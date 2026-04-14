@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Newspaper;
+use App\Models\NewspaperSeries;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -29,7 +30,7 @@ class NewspaperController extends Controller
             $query->where('for_sale', (bool) (int) $request->input('for_sale'));
         }
 
-        $newspapers = $query->orderByDesc('created_at')->paginate(50);
+        $newspapers = $query->with('series')->orderByDesc('created_at')->paginate(50);
 
         return view('admin.newspapers.index', compact('newspapers'));
     }
@@ -38,7 +39,9 @@ class NewspaperController extends Controller
     {
         $this->authorize('create', Newspaper::class);
 
-        return view('admin.newspapers.create');
+        return view('admin.newspapers.create', [
+            'series' => NewspaperSeries::flatTree(),
+        ]);
     }
 
     public function store(Request $request)
@@ -46,6 +49,7 @@ class NewspaperController extends Controller
         $this->authorize('create', Newspaper::class);
 
         $validated = $request->validate([
+            'series_id' => 'nullable|exists:newspaper_series,id',
             'title' => 'required|string|max:255',
             'publisher' => 'nullable|string|max:255',
             'publication_date' => 'nullable|date',
@@ -78,7 +82,10 @@ class NewspaperController extends Controller
 
         $newspaper->load(['images', 'files']);
 
-        return view('admin.newspapers.edit', compact('newspaper'));
+        return view('admin.newspapers.edit', [
+            'newspaper' => $newspaper,
+            'series' => NewspaperSeries::flatTree(),
+        ]);
     }
 
     public function update(Request $request, Newspaper $newspaper)
@@ -86,6 +93,7 @@ class NewspaperController extends Controller
         $this->authorize('update', $newspaper);
 
         $validated = $request->validate([
+            'series_id' => 'nullable|exists:newspaper_series,id',
             'title' => 'required|string|max:255',
             'publisher' => 'nullable|string|max:255',
             'publication_date' => 'nullable|date',

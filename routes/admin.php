@@ -58,6 +58,7 @@ Route::get('lookups/{type}', [LookupIndexController::class, 'index'])
     ->whereIn('type', [
         'book-topics', 'book-covers', 'book-series', 'origins', 'locations',
         'item-categories', 'item-nationalities', 'item-organizations',
+        'magazine-series', 'newspaper-series',
         'countries', 'currencies', 'nominal-values',
         'banknote-series', 'banknote-time-periods', 'banknote-designers', 'banknote-watermarks',
         'heads-of-state', 'colours', 'print-types',
@@ -73,6 +74,7 @@ Route::post('lookups/{type}', [LookupIndexController::class, 'store'])
     ->whereIn('type', [
         'book-topics', 'book-covers', 'book-series', 'origins', 'locations',
         'item-categories', 'item-nationalities', 'item-organizations',
+        'magazine-series', 'newspaper-series',
         'countries', 'currencies', 'nominal-values',
         'banknote-series', 'banknote-time-periods', 'banknote-designers', 'banknote-watermarks',
         'heads-of-state', 'colours', 'print-types',
@@ -84,10 +86,27 @@ Route::post('lookups/{type}', [LookupIndexController::class, 'store'])
         'stamp-perforations', 'stamp-printing-houses',
     ])
     ->name('lookups.store');
+Route::patch('lookups/{type}/{id}', [LookupIndexController::class, 'update'])
+    ->whereIn('type', [
+        'book-topics', 'book-covers', 'book-series', 'origins', 'locations',
+        'item-categories', 'item-nationalities', 'item-organizations',
+        'magazine-series', 'newspaper-series',
+        'countries', 'currencies', 'nominal-values',
+        'banknote-series', 'banknote-time-periods', 'banknote-designers', 'banknote-watermarks',
+        'heads-of-state', 'colours', 'print-types',
+        'coin-shapes', 'coin-materials', 'coin-occasions', 'coin-designers',
+        'coin-strike-marks', 'coin-front-images', 'coin-front-texts',
+        'coin-reverse-images', 'coin-reverse-texts', 'coin-rims', 'coin-rim-texts',
+        'postcard-types', 'postcard-valuation-images',
+        'stamp-types', 'stamp-designers', 'stamp-watermarks', 'stamp-gums',
+        'stamp-perforations', 'stamp-printing-houses',
+    ])
+    ->name('lookups.update');
 Route::delete('lookups/{type}/{id}', [LookupIndexController::class, 'destroy'])
     ->whereIn('type', [
         'book-topics', 'book-covers', 'book-series', 'origins', 'locations',
         'item-categories', 'item-nationalities', 'item-organizations',
+        'magazine-series', 'newspaper-series',
         'countries', 'currencies', 'nominal-values',
         'banknote-series', 'banknote-time-periods', 'banknote-designers', 'banknote-watermarks',
         'heads-of-state', 'colours', 'print-types',
@@ -99,6 +118,9 @@ Route::delete('lookups/{type}/{id}', [LookupIndexController::class, 'destroy'])
         'stamp-perforations', 'stamp-printing-houses',
     ])
     ->name('lookups.destroy');
+
+Route::get('lookups/ajax/{type}/parents', [LookupController::class, 'parents'])
+    ->name('lookups.ajax.parents');
 
 Route::post('lookups/ajax/{type}', [LookupController::class, 'store'])
     ->name('lookups.ajax.store');

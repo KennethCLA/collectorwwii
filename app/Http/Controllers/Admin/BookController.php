@@ -91,10 +91,10 @@ class BookController extends Controller
 
         return view('books.index', [
             'books' => $books,
-            'topics' => BookTopic::orderBy('name', 'asc')->get(),
+            'topics' => BookTopic::flatTree(),
             'series' => BookSeries::orderBy('name', 'asc')->get(),
             'covers' => BookCover::orderBy('name', 'asc')->get(),
-            'locations' => Location::orderBy('name', 'asc')->get(),
+            'locations' => Location::flatTree(),
         ]);
     }
 
@@ -224,11 +224,11 @@ class BookController extends Controller
         }
 
         return view('admin.books.create', [
-            'topics' => BookTopic::orderBy('name')->get(),
+            'topics' => BookTopic::flatTree(),
             'series' => BookSeries::orderBy('name')->get(),
             'covers' => BookCover::orderBy('name')->get(),
-            'locations' => Location::orderBy('name')->get(),
-            'origins' => Origin::orderBy('name')->get(),
+            'locations' => Location::flatTree(),
+            'origins' => Origin::flatTree(),
             'isbn' => $isbn,
             'bookData' => $bookData,
             'isbnLookupFailed' => $isbnLookupFailed,
@@ -381,11 +381,11 @@ class BookController extends Controller
 
         return view('admin.books.edit', [
             'book' => $book,
-            'topics' => BookTopic::orderBy('name')->get(),
+            'topics' => BookTopic::flatTree(),
             'series' => BookSeries::orderBy('name')->get(),
             'covers' => BookCover::orderBy('name')->get(),
-            'locations' => Location::orderBy('name')->get(),
-            'origins' => Origin::orderBy('name')->get(),
+            'locations' => Location::flatTree(),
+            'origins' => Origin::flatTree(),
             'bookData' => [],
         ]);
     }

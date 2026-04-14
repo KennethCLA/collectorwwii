@@ -1,6 +1,6 @@
 # CollectorWWII — Roadmap
 
-Last updated: 2026-03-01 (session 2)
+Last updated: 2026-03-08 (session 3)
 
 ---
 
@@ -61,6 +61,24 @@ Military design language: Wehrmacht field manuals, Heer stencil markings, Kriegs
 - **Color palette** — all hex colors replaced with Tailwind aliases: `sage-650` (#636c65), `sage-950` (#2c3335) added
 - **Language audit** — all Dutch UI text purged; site is now consistently English + German only (blog excluded)
 
+### Lookup hierarchy & data quality — Phase 5 (March 2026)
+
+- **Self-referential tree on 5 lookup tables** — `parent_id` FK added to `book_topics`, `item_categories`, `item_organizations`, `locations`, `origins`. Each model gets `parent()`, `children()`, and `flatTree()` helpers.
+- **Two new tree tables** — `magazine_series` and `newspaper_series` (self-referential, with soft deletes). `magazines.series_id` and `newspapers.series_id` FK columns added.
+- **MagazineSeries / NewspaperSeries models** — same tree pattern; linked from Magazine and Newspaper models.
+- **Lookup admin overhaul** — `LookupIndexController` rewritten:
+  - Tree types: indented display with depth-prefixed rows, recursive usage total (node + all descendants), add with parent select, edit (rename + reparent with cycle guard).
+  - Flat types: sortable columns (name, in-use count, created date).
+  - Edit sidebar — Alpine.js toggle between Add and Edit mode; PATCH route.
+- **Unique constraint upgrade** — global `UNIQUE(active_name)` replaced with `UNIQUE(name, parent_id)` on all 4 affected tree tables. Allows the same name to exist under different parents.
+- **`lookups:flatten-to-tree` artisan command** — one-time migration tool that converts flat dash-separated names (e.g. "Kampen - Polen - Auschwitz") into a proper tree:
+  - Shared-prefix entries (≥2 siblings) auto-planned.
+  - Unique-prefix entries shown interactively per group so exceptions like "KdF - Kraft durch Freude" can be skipped.
+  - Indented tree preview before execution; runs inside a transaction.
+  - Supports `all` argument to process every tree type in sequence.
+- **All controller dropdowns updated** — `BookController`, `ItemController`, `BanknoteController`, `CoinController`, `PostcardController`, `StampController`, `MagazineController`, `NewspaperController` all use `flatTree()` instead of flat `orderBy('name')` queries.
+- **Magazine / Newspaper index** — "Series" column added with eager-loaded `series` relation.
+
 ### Feature additions — Phase 4 (March 2026)
 - **Condition grading** — `condition` field (varchar 50, nullable) added to all 8 tables. Select: Mint / Extremely Fine / Very Fine / Fine / Very Good / Good / Poor. Visible on public show pages, displayed as badge on index cards, editable in admin.
 - **Sold tracking** — `sold_at` (date) + `sold_price` (decimal) added to all 8 tables. When sold_at is set, `for_sale` is auto-cleared. Admin toggle with date + price inputs (Alpine.js). Sold badge on show page.
@@ -112,6 +130,8 @@ Military design language: Wehrmacht field manuals, Heer stencil markings, Kriegs
 | Show page depth | Books have 20+ fields; other sections have 3–6. Consider tabbed layout for books long-term. |
 | Admin nav | No active highlighting in admin sidebar beyond the current section |
 | Accessibility | Decorative SVGs not all `aria-hidden`. Some icon-only buttons lack `aria-label`. |
+| Tree root uniqueness | `UNIQUE(name, parent_id)` allows duplicate root-level names (MySQL treats NULL as distinct). Low risk in practice. |
+| `flatTree()` performance | Recursive PHP queries — fine at current data sizes but would need a nested-set or CTE approach for very deep/wide trees. |
 
 ---
 

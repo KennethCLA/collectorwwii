@@ -47,6 +47,7 @@
                 <thead class="border-b border-white/10 text-white/60 uppercase text-xs">
                     <tr>
                         <th class="px-4 py-3 text-left">Title</th>
+                        <th class="px-4 py-3 text-left">Series</th>
                         <th class="px-4 py-3 text-left">Issue</th>
                         <th class="px-4 py-3 text-left">Publisher</th>
                         <th class="px-4 py-3 text-left">For Sale</th>
@@ -58,6 +59,7 @@
                     @forelse($magazines as $magazine)
                     <tr class="hover:bg-white/5 transition">
                         <td class="px-4 py-3 font-medium">{{ $magazine->title }}</td>
+                        <td class="px-4 py-3 text-white/70">{{ $magazine->series->name ?? '—' }}</td>
                         <td class="px-4 py-3 text-white/70">
                             {{ $magazine->issue_number ? '#' . $magazine->issue_number : '—' }}
                             {{ $magazine->issue_year ? '(' . $magazine->issue_year . ')' : '' }}
@@ -87,7 +89,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="px-4 py-8 text-center text-white/40">No magazines found.</td>
+                        <td colspan="7" class="px-4 py-8 text-center text-white/40">No magazines found.</td>
                     </tr>
                     @endforelse
                 </tbody>

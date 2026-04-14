@@ -50,7 +50,7 @@ class PostcardController extends Controller
         return view('admin.postcards.create', [
             'countries' => Country::orderBy('name')->get(),
             'postcardTypes' => PostcardType::orderBy('name')->get(),
-            'locations' => Location::orderBy('name')->get(),
+            'locations' => Location::flatTree(),
             'currencies' => Currency::orderBy('name')->get(),
             'nominalValues' => NominalValue::orderBy('name')->get(),
             'valuationImages' => DB::table('postcard_valuation_images')->orderBy('name')->get(),
@@ -126,7 +126,7 @@ class PostcardController extends Controller
             'postcard' => $postcard,
             'countries' => Country::orderBy('name')->get(),
             'postcardTypes' => PostcardType::orderBy('name')->get(),
-            'locations' => Location::orderBy('name')->get(),
+            'locations' => Location::flatTree(),
             'currencies' => Currency::orderBy('name')->get(),
             'nominalValues' => NominalValue::orderBy('name')->get(),
             'valuationImages' => DB::table('postcard_valuation_images')->orderBy('name')->get(),

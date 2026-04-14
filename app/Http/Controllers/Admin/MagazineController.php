@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Magazine;
+use App\Models\MagazineSeries;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -29,7 +30,7 @@ class MagazineController extends Controller
             $query->where('for_sale', (bool) (int) $request->input('for_sale'));
         }
 
-        $magazines = $query->orderByDesc('created_at')->paginate(50);
+        $magazines = $query->with('series')->orderByDesc('created_at')->paginate(50);
 
         return view('admin.magazines.index', compact('magazines'));
     }
@@ -38,7 +39,9 @@ class MagazineController extends Controller
     {
         $this->authorize('create', Magazine::class);
 
-        return view('admin.magazines.create');
+        return view('admin.magazines.create', [
+            'series' => MagazineSeries::flatTree(),
+        ]);
     }
 
     public function store(Request $request)
@@ -46,6 +49,7 @@ class MagazineController extends Controller
         $this->authorize('create', Magazine::class);
 
         $validated = $request->validate([
+            'series_id' => 'nullable|exists:magazine_series,id',
             'title' => 'required|string|max:255',
             'subtitle' => 'nullable|string|max:255',
             'publisher' => 'nullable|string|max:255',
@@ -80,7 +84,10 @@ class MagazineController extends Controller
 
         $magazine->load(['images', 'files']);
 
-        return view('admin.magazines.edit', compact('magazine'));
+        return view('admin.magazines.edit', [
+            'magazine' => $magazine,
+            'series' => MagazineSeries::flatTree(),
+        ]);
     }
 
     public function update(Request $request, Magazine $magazine)
@@ -88,6 +95,7 @@ class MagazineController extends Controller
         $this->authorize('update', $magazine);
 
         $validated = $request->validate([
+            'series_id' => 'nullable|exists:magazine_series,id',
             'title' => 'required|string|max:255',
             'subtitle' => 'nullable|string|max:255',
             'publisher' => 'nullable|string|max:255',
