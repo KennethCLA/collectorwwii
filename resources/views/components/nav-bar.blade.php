@@ -150,14 +150,14 @@
        {{-- Mobile menu (outside desktop-only bar, toggled by Alpine) --}}
        <div x-show="open" x-cloak id="mobile-menu"
            x-transition:enter="transition ease-out duration-150"
-           x-transition:enter-start="opacity-0 -translate-y-2"
-           x-transition:enter-end="opacity-100 translate-y-0"
+           x-transition:enter-start="opacity-0"
+           x-transition:enter-end="opacity-100"
            x-transition:leave="transition ease-in duration-100"
-           x-transition:leave-start="opacity-100 translate-y-0"
-           x-transition:leave-end="opacity-0 -translate-y-2"
+           x-transition:leave-start="opacity-100"
+           x-transition:leave-end="opacity-0"
            @click="if ($event.target.closest('a[href]')) open = false"
-           class="overflow-y-auto max-h-[calc(100dvh-4rem)]">
-           <div class="bg-sage-650 border-t border-black/30">
+           class="fixed inset-x-0 top-[var(--header-h,4rem)] bottom-0 z-40 overflow-y-auto overscroll-contain bg-sage-650 border-t border-black/30">
+           <div class="">
                <div class="px-4 py-4 space-y-4">
 
                    {{-- Search (mobile) --}}
