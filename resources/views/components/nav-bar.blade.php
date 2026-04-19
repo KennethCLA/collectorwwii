@@ -156,7 +156,8 @@
            x-transition:leave-start="opacity-100"
            x-transition:leave-end="opacity-0"
            @click="if ($event.target.closest('a[href]')) open = false"
-           class="fixed inset-x-0 top-[var(--header-h,4rem)] bottom-0 z-40 overflow-y-auto overscroll-contain bg-sage-650 border-t border-black/30">
+           class="fixed inset-x-0 top-[var(--header-h,4rem)] bottom-0 z-40 overflow-y-scroll bg-sage-650 border-t border-black/30"
+           style="-webkit-overflow-scrolling: touch;">
            <div class="">
                <div class="px-4 py-4 space-y-4">
 
