@@ -1,5 +1,14 @@
    {{-- resources/views/components/nav-bar.blade.php --}}
-   <div class="transition-shadow" x-data="{ open: false }" x-effect="document.body.classList.toggle('overflow-hidden', open)">
+   <div class="transition-shadow" x-data="{ open: false, savedY: 0 }"
+       x-effect="
+           if (open) {
+               savedY = window.scrollY;
+               Object.assign(document.body.style, { position: 'fixed', top: '-' + savedY + 'px', left: '0', right: '0' });
+           } else {
+               Object.assign(document.body.style, { position: '', top: '', left: '', right: '' });
+               window.scrollTo(0, savedY);
+           }
+       ">
        {{-- BAR 1 --}}
        <div class="bg-sage-600/95 backdrop-blur-sm">
            <div class="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
