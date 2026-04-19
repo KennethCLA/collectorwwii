@@ -1,5 +1,5 @@
    {{-- resources/views/components/nav-bar.blade.php --}}
-   <div class="transition-shadow" x-data="{ open: false }">
+   <div class="transition-shadow" x-data="{ open: false }" x-effect="document.body.classList.toggle('overflow-hidden', open)">
        {{-- BAR 1 --}}
        <div class="bg-sage-600/95 backdrop-blur-sm">
            <div class="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
@@ -156,8 +156,8 @@
            x-transition:leave-start="opacity-100"
            x-transition:leave-end="opacity-0"
            @click="if ($event.target.closest('a[href]')) open = false"
-           class="fixed inset-x-0 top-[var(--header-h,4rem)] bottom-0 z-40 overflow-y-scroll bg-sage-650 border-t border-black/30"
-           style="-webkit-overflow-scrolling: touch;">
+           class="fixed inset-x-0 bottom-0 z-40 overflow-y-scroll bg-sage-650 border-t border-black/30"
+           style="top: var(--header-h, 4rem); -webkit-overflow-scrolling: touch;">
            <div class="">
                <div class="px-4 py-4 space-y-4">
 
