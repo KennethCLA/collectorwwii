@@ -34,6 +34,10 @@ $useAdminHeader = $useAdminHeader ?? $autoAdmin;
     <meta property="og:site_name" content="CollectorWWII">
 
     @vite(['resources/css/app.css','resources/js/app.js'])
+    {{-- Ensure print-only elements are hidden on screen regardless of build state --}}
+    <style>.print-document-header,.print-main-image{display:none}</style>
+    {{-- Expose Fancybox globally so Alpine x-data expressions can call Fancybox.show() --}}
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
