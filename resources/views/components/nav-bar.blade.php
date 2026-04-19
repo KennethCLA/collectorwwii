@@ -1,14 +1,5 @@
    {{-- resources/views/components/nav-bar.blade.php --}}
-   <div class="transition-shadow" x-data="{ open: false, savedY: 0 }"
-       x-effect="
-           if (open) {
-               savedY = window.scrollY;
-               Object.assign(document.body.style, { position: 'fixed', top: '-' + savedY + 'px', left: '0', right: '0' });
-           } else {
-               Object.assign(document.body.style, { position: '', top: '', left: '', right: '' });
-               window.scrollTo(0, savedY);
-           }
-       ">
+   <div class="transition-shadow" x-data>
        {{-- BAR 1 --}}
        <div class="bg-sage-600/95 backdrop-blur-sm">
            <div class="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
@@ -63,8 +54,7 @@
 
                    {{-- Mobile toggle --}}
                    <button type="button"
-                       @click="open = !open"
-                       :aria-expanded="open"
+                       @click="$dispatch('toggle-mobile-menu')"
                        class="md:hidden inline-flex items-center justify-center rounded-md bg-black/20 p-2 text-white/80 hover:bg-black/30 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/30"
                        aria-controls="mobile-menu">
                        <span class="sr-only">Open main menu</span>
@@ -155,103 +145,4 @@
                </div>
            </div>
        </div>
-
-       {{-- Mobile menu — teleported to body so it is never a child of the fixed header --}}
-       <template x-teleport="body">
-       <div x-show="open" x-cloak id="mobile-menu"
-           x-transition:enter="transition ease-out duration-150"
-           x-transition:enter-start="opacity-0"
-           x-transition:enter-end="opacity-100"
-           x-transition:leave="transition ease-in duration-100"
-           x-transition:leave-start="opacity-100"
-           x-transition:leave-end="opacity-0"
-           @click="if ($event.target.closest('a[href]')) open = false"
-           class="fixed inset-x-0 bottom-0 overflow-y-scroll bg-sage-650 border-t border-black/30"
-           style="z-index: 60; top: var(--header-h, 4rem); -webkit-overflow-scrolling: touch;">
-           <div class="">
-               <div class="px-4 py-4 space-y-4">
-
-                   {{-- Search (mobile) --}}
-                   <form method="GET" action="{{ route('search.index') }}" class="flex gap-2">
-                       <input
-                           type="search"
-                           name="q"
-                           value="{{ request('q') }}"
-                           placeholder="Search the collection…"
-                           class="flex-1 rounded-md border border-white/10 bg-black/30 px-3 py-2 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-1 focus:ring-white/30">
-                       <button type="submit"
-                           class="rounded-md bg-white/10 px-4 py-2 text-sm text-white hover:bg-white/15 transition">
-                           Go
-                       </button>
-                   </form>
-
-                   <div class="rounded-xl bg-black/20 ring-1 ring-black/30 p-3">
-                        <div class="font-stencil text-xs tracking-[0.2em] text-white/70 mb-2">MAIN</div>
-                        <div class="flex flex-col gap-2">
-                            <x-nav-link href="/blog" :active="request()->is('blog')">Blog</x-nav-link>
-                            <x-nav-link href="{{ route('map.index') }}" :active="request()->routeIs('map.*')">Map</x-nav-link>
-                            <x-nav-link href="/for-sale" :active="request()->is('for-sale')">For Sale</x-nav-link>
-                            <x-nav-link href="/contact" :active="request()->is('contact')">Contact</x-nav-link>
-                        </div>
-                   </div>
-
-                   <div class="rounded-xl bg-black/20 ring-1 ring-black/30 p-3">
-                       <div class="font-stencil text-xs tracking-[0.2em] text-white/70 mb-2">COLLECTION</div>
-                       <div class="flex flex-col gap-2">
-                           @if(config('collector.enabled_sections.books'))
-                           <x-nav-link href="{{ route('books.index') }}" :active="request()->routeIs('books.*')">Books</x-nav-link>
-                           @endif
-                           @if(config('collector.enabled_sections.items'))
-                           <x-nav-link href="{{ route('items.index') }}" :active="request()->routeIs('items.*')">Items</x-nav-link>
-                           @endif
-                           @if(config('collector.enabled_sections.magazines'))
-                           <x-nav-link href="{{ route('magazines.index') }}" :active="request()->routeIs('magazines.*')">Magazines</x-nav-link>
-                           @endif
-                           @if(config('collector.enabled_sections.newspapers'))
-                           <x-nav-link href="{{ route('newspapers.index') }}" :active="request()->routeIs('newspapers.*')">Newspapers</x-nav-link>
-                           @endif
-                           @if(config('collector.enabled_sections.banknotes'))
-                           <x-nav-link href="{{ route('banknotes.index') }}" :active="request()->routeIs('banknotes.*')">Banknotes</x-nav-link>
-                           @endif
-                           @if(config('collector.enabled_sections.coins'))
-                           <x-nav-link href="{{ route('coins.index') }}" :active="request()->routeIs('coins.*')">Coins</x-nav-link>
-                           @endif
-                           @if(config('collector.enabled_sections.postcards'))
-                           <x-nav-link href="{{ route('postcards.index') }}" :active="request()->routeIs('postcards.*')">Postcards</x-nav-link>
-                           @endif
-                           @if(config('collector.enabled_sections.stamps'))
-                           <x-nav-link href="{{ route('stamps.index') }}" :active="request()->routeIs('stamps.*')">Stamps</x-nav-link>
-                           @endif
-                       </div>
-                   </div>
-
-                   <div class="rounded-xl bg-black/20 ring-1 ring-black/30 p-3">
-                       <div class="font-stencil text-xs tracking-[0.2em] text-white/70 mb-2">ACCOUNT</div>
-
-                       @guest
-                       <a href="{{ route('login') }}"
-                           class="block rounded-md px-3 py-2 text-sm font-medium text-gray-200 hover:bg-black/20 hover:text-white transition">
-                           Login
-                       </a>
-                       @else
-                       @can('viewAny', \App\Models\Book::class)
-                       <a href="{{ route('admin.dashboard') }}"
-                           class="block rounded-md px-3 py-2 text-sm font-medium text-gray-200 hover:bg-black/20 hover:text-white transition">
-                           Dashboard
-                       </a>
-                       @endcan
-
-                       <form method="POST" action="{{ route('logout') }}">
-                           @csrf
-                           <button type="submit"
-                               class="w-full text-left rounded-md px-3 py-2 text-sm font-medium text-gray-200 hover:bg-black/20 hover:text-white transition">
-                               Logout
-                           </button>
-                       </form>
-                       @endguest
-                   </div>
-               </div>
-           </div>
-       </div>
-       </template>
    </div>
