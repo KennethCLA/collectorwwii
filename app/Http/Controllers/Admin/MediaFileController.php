@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Intervention\Image\Laravel\Facades\Image;
 
 class MediaFileController extends Controller
 {
@@ -224,29 +225,43 @@ class MediaFileController extends Controller
 
         foreach ($request->file('files', []) as $i => $uploaded) {
             $folder = "{$cfg['folder']}/{$attachable->id}";
-            $ext = strtolower($uploaded->extension() ?: 'bin');
-            $filename = (string) Str::uuid().'.'.$ext;
-
-            // 1) eerst uploaden
-            $path = $uploaded->storeAs($folder, $filename, $disk);
-            $uploadedPaths[] = [$disk, $path];
-
             $makeMain = ($collection === 'images') && (! $hasMainImage && $i === 0);
 
-            // 2) dan DB record
+            // Convert images to WebP for smaller file size and faster loads
+            if ($collection === 'images' && in_array($uploaded->getMimeType(), [
+                'image/jpeg', 'image/png', 'image/gif', 'image/webp',
+                'image/heic', 'image/heif',
+            ])) {
+                $filename = (string) Str::uuid().'.webp';
+                $webpData = Image::read($uploaded->getRealPath())
+                    ->toWebp(quality: 85)
+                    ->toString();
+                $path = "{$folder}/{$filename}";
+                Storage::disk($disk)->put($path, $webpData);
+                $mimeType = 'image/webp';
+                $size = strlen($webpData);
+            } else {
+                $ext = strtolower($uploaded->extension() ?: 'bin');
+                $filename = (string) Str::uuid().'.'.$ext;
+                $path = $uploaded->storeAs($folder, $filename, $disk);
+                $mimeType = $uploaded->getMimeType();
+                $size = $uploaded->getSize();
+            }
+
+            $uploadedPaths[] = [$disk, $path];
+
             try {
                 $attachable->media()->create([
-                    'disk' => $disk,
-                    'path' => $path,
-                    'mime_type' => $uploaded->getMimeType(),
-                    'size' => $uploaded->getSize(),
+                    'disk'          => $disk,
+                    'path'          => $path,
+                    'mime_type'     => $mimeType,
+                    'size'          => $size,
                     'original_name' => $uploaded->getClientOriginalName(),
-                    'collection' => $collection,
-                    'is_main' => $makeMain,
-                    'sort_order' => $collection === 'images' ? $nextSort++ : null,
+                    'collection'    => $collection,
+                    'is_main'       => $makeMain,
+                    'sort_order'    => $collection === 'images' ? $nextSort++ : null,
                 ]);
             } catch (\Throwable $e) {
-                // DB faalde → delete net geüploade file (best effort)
                 try {
                     Storage::disk($disk)->delete($path);
                 } catch (\Throwable $deleteErr) {
@@ -325,6 +340,38 @@ class MediaFileController extends Controller
         }
 
         return back()->with('success', 'File deleted.');
+    }
+
+    public function reorder(Request $request, string $type, int $id): \Illuminate\Http\JsonResponse
+    {
+        $cfg = $this->typeConfigOrFail($type);
+        $attachable = $this->resolveAttachableOrFail($type, $id);
+
+        $this->authorize('update', $attachable);
+
+        $validated = $request->validate([
+            'ids'   => ['required', 'array', 'min:1'],
+            'ids.*' => ['required', 'integer', 'min:1'],
+        ]);
+
+        $ids = array_values(array_unique($validated['ids']));
+
+        // Verify every supplied ID belongs to this attachable's image collection
+        $count = MediaFile::where('attachable_type', $cfg['model'])
+            ->where('attachable_id', $attachable->id)
+            ->where('collection', 'images')
+            ->whereIn('id', $ids)
+            ->count();
+
+        abort_if($count !== count($ids), 422);
+
+        DB::transaction(function () use ($ids) {
+            foreach ($ids as $sortOrder => $mediaId) {
+                MediaFile::where('id', $mediaId)->update(['sort_order' => $sortOrder]);
+            }
+        });
+
+        return response()->json(['ok' => true]);
     }
 
     public function makeMain(Request $request, string $type, MediaFile $file)

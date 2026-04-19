@@ -4,6 +4,7 @@
 
 use App\Http\Controllers\Admin\Ajax\LookupController;
 use App\Http\Controllers\Admin\BanknoteController;
+use App\Http\Controllers\Admin\BulkActionController;
 use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\BookController;
 use App\Http\Controllers\Admin\CoinController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\Admin\MediaFileController;
 use App\Http\Controllers\Admin\NewspaperController;
 use App\Http\Controllers\Admin\PostcardController;
 use App\Http\Controllers\Admin\StampController;
+use App\Http\Controllers\Admin\PdfController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +34,11 @@ Route::get('blog/{id}/edit', [BlogController::class, 'edit'])->name('blog.edit')
 Route::put('blog/{id}/edit', [BlogController::class, 'update'])->name('blog.update');
 Route::delete('blog/{id}', [BlogController::class, 'destroy'])->name('blog.destroy');
 
+// PDF download
+Route::get('{type}/{id}/pdf', [PdfController::class, 'download'])
+    ->whereIn('type', array_keys(PdfController::TYPES))
+    ->name('pdf');
+
 // Polymorphic media
 Route::post('{type}/{id}/media', [MediaFileController::class, 'store'])
     ->whereIn('type', ['books', 'items', 'banknotes', 'coins', 'magazines', 'newspapers', 'postcards', 'stamps', 'map-locations'])
@@ -44,6 +51,14 @@ Route::delete('{type}/media/{file}', [MediaFileController::class, 'destroy'])
 Route::patch('{type}/media/{file}/main', [MediaFileController::class, 'makeMain'])
     ->whereIn('type', ['books', 'items', 'banknotes', 'coins', 'magazines', 'newspapers', 'postcards', 'stamps', 'map-locations'])
     ->name('media.main');
+
+Route::post('{type}/{id}/media/reorder', [MediaFileController::class, 'reorder'])
+    ->whereIn('type', ['books', 'items', 'banknotes', 'coins', 'magazines', 'newspapers', 'postcards', 'stamps', 'map-locations'])
+    ->name('media.reorder');
+
+Route::post('{type}/bulk', BulkActionController::class)
+    ->whereIn('type', ['items', 'banknotes', 'coins', 'magazines', 'newspapers', 'postcards', 'stamps'])
+    ->name('bulk');
 
 Route::resource('newspapers', NewspaperController::class);
 Route::resource('magazines', MagazineController::class);

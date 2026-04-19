@@ -1,6 +1,6 @@
 {{-- resources/views/postcards/show.blade.php --}}
 
-<x-layout :mainClass="'mx-auto w-full max-w-none px-0 py-8'">
+<x-layout :title="$postcard->card_title" :mainClass="'mx-auto w-full max-w-none px-0 py-8'">
     @php
     $images = $postcard->images;
     $main = $postcard->mainImageFile();
@@ -12,13 +12,29 @@
 
 
     <div class="w-full max-w-[2200px] mx-auto px-4 sm:px-8 lg:px-16 2xl:px-24">
-        <nav class="font-mono flex items-center gap-2 text-sm text-white/70 mb-10">
-            <a href="{{ route('home') }}" class="hover:text-white hover:underline">Home</a>
-            <span class="opacity-50">›</span>
-            <a href="{{ route('postcards.index') }}" class="hover:text-white hover:underline">Postcards</a>
-            <span class="opacity-50">›</span>
-            <span class="text-white font-medium">{{ $postcard->card_title }}</span>
-        </nav>
+
+        <div class="print-document-header">
+            <div class="print-logo">CollectorWWII — Catalogue</div>
+            <div class="print-section">Postcards</div>
+            <div class="print-title">{{ $postcard->card_title }}</div>
+            <div class="print-id">#{{ str_pad($postcard->id, 4, '0', STR_PAD_LEFT) }} &nbsp;·&nbsp; {{ now()->format('d/m/Y') }}</div>
+        </div>
+
+        <div class="flex items-center justify-between mb-10 print-hide">
+            <nav class="font-mono flex items-center gap-2 text-sm text-white/70">
+                <a href="{{ route('home') }}" class="hover:text-white hover:underline">Home</a>
+                <span class="opacity-50">›</span>
+                <a href="{{ route('postcards.index') }}" class="hover:text-white hover:underline">Postcards</a>
+                <span class="opacity-50">›</span>
+                <span class="text-white font-medium">{{ $postcard->card_title }}</span>
+            </nav>
+            @if(auth()->user()?->isAdmin())
+            <a href="{{ route('admin.pdf', ['postcards', $postcard->id]) }}"
+                class="font-mono text-[10px] tracking-[0.15em] text-white/40 hover:text-white/70 uppercase transition">
+                ⬇ PDF
+            </a>
+            @endif
+        </div>
 
         <div class="item-layout">
             <aside class="item-sticky sticky top-8 space-y-10">
@@ -33,6 +49,11 @@
             </aside>
 
             <div class="space-y-10">
+                @if($mainUrl)
+                <div class="print-main-image" hidden data-caption="Fotodokumentation">
+                    <img src="{{ $mainUrl }}" alt="{{ $postcard->card_title }}">
+                </div>
+                @endif
                 <section class="bg-sage text-white rounded-2xl shadow-lg border border-black/20 overflow-hidden">
                     <div class="px-6 py-3 border-b border-black/25 bg-black/15">
                         <p class="font-stencil text-[10px] uppercase tracking-[0.25em] text-khaki/60">Feldbericht · Objektakte</p>
@@ -159,7 +180,7 @@
         </div>
 
         @if($previousPostcard || $nextPostcard)
-        <div class="mb-10 mt-10 flex items-center justify-between gap-3">
+        <div class="mb-10 mt-10 flex items-center justify-between gap-3 print-hide">
             <div class="w-1/2">
                 @if($previousPostcard)
                 <a href="{{ route('postcards.show', $previousPostcard) }}"

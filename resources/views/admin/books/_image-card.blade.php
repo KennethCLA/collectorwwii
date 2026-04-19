@@ -4,10 +4,18 @@
 $url = $img->url();
 @endphp
 
-<div class="group w-32 shrink-0 rounded-md bg-sage-900 border border-white/10 overflow-hidden">
+<div class="group w-32 shrink-0 rounded-md bg-sage-900 border border-white/10 overflow-hidden cursor-grab active:cursor-grabbing"
+    draggable="true"
+    data-media-id="{{ $img->id }}">
+
+    {{-- Drag handle --}}
+    <div class="flex items-center justify-center h-5 text-white/25 group-hover:text-white/50 select-none text-[11px] tracking-widest">
+        ⠿ ⠿ ⠿
+    </div>
+
     {{-- Preview --}}
     @if($url)
-    <a href="{{ $url }}" target="_blank" rel="noopener" class="block">
+    <a href="{{ $url }}" target="_blank" rel="noopener" class="block" draggable="false">
         <div class="w-32 h-44 bg-black/10 flex items-center justify-center overflow-hidden">
             <img
                 src="{{ $url }}"

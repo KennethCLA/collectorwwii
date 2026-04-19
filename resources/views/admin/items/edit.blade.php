@@ -296,7 +296,9 @@
                             @if($mediaImages->isEmpty())
                             <p class="text-white/80 text-sm">No images uploaded yet.</p>
                             @else
-                            <div class="flex flex-wrap gap-2 items-start">
+                            <div class="flex flex-wrap gap-2 items-start"
+                                data-reorder-container
+                                data-reorder-url="{{ route('admin.media.reorder', ['type' => 'items', 'id' => $item->id]) }}">
                                 @foreach($mediaImages as $img)
                                 @include('admin.books._image-card', ['img' => $img, 'type' => 'items'])
                                 @endforeach

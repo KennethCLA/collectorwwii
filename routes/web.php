@@ -14,6 +14,7 @@ use App\Http\Controllers\Public\MapController;
 use App\Http\Controllers\Public\NewspaperController as PublicNewspaperController;
 use App\Http\Controllers\Public\PostcardController as PublicPostcardController;
 use App\Http\Controllers\Public\SectionController;
+use App\Http\Controllers\Public\SearchController;
 use App\Http\Controllers\Public\StampController as PublicStampController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -29,10 +30,11 @@ Route::get('/change-language/{language}', function (string $language) {
 Route::get('/blog', [BlogController::class, 'showAllPosts'])->name('blog');
 
 Route::get('/contact', [ContactController::class, 'show'])->name('contact');
-Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:5,1')->name('contact.store');
 
 Route::get('/for-sale', [ForSaleController::class, 'index'])->name('for-sale.index');
 Route::get('/map', [MapController::class, 'index'])->name('map.index');
+Route::get('/search', [SearchController::class, 'index'])->name('search.index');
 
 // PUBLIC: Books
 Route::get('/books', [PublicBookController::class, 'index'])->name('books.index');

@@ -99,7 +99,9 @@
                 @if($location->images->isEmpty())
                 <p class="text-white/80 text-sm">No images uploaded yet.</p>
                 @else
-                <div class="flex flex-wrap gap-2 items-start">
+                <div class="flex flex-wrap gap-2 items-start"
+                    data-reorder-container
+                    data-reorder-url="{{ route('admin.media.reorder', ['type' => 'map-locations', 'id' => $location->id]) }}">
                     @foreach($location->images as $img)
                     @include('admin.books._image-card', ['img' => $img, 'type' => 'map-locations'])
                     @endforeach

@@ -18,8 +18,21 @@
                    <x-nav-link href="/contact" :active="request()->is('contact')">Contact</x-nav-link>
                </nav>
 
-               {{-- RIGHT: User actions + hamburger --}}
-               <div class="flex items-center gap-4">
+               {{-- RIGHT: Search + user actions + hamburger --}}
+               <div class="flex items-center gap-3">
+                   {{-- Search (desktop) --}}
+                   <form method="GET" action="{{ route('search.index') }}"
+                       class="hidden md:flex items-center">
+                       <div class="relative">
+                           <input
+                               type="search"
+                               name="q"
+                               value="{{ request('q') }}"
+                               placeholder="Search…"
+                               class="w-40 lg:w-52 rounded-md border border-white/10 bg-white/10 px-3 py-1.5 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-1 focus:ring-white/30 focus:w-56 lg:focus:w-64 transition-all">
+                       </div>
+                   </form>
+
                    <div class="hidden md:flex items-center gap-4">
                        @guest
                        <a href="{{ route('login') }}" class="opacity-90 hover:opacity-100 transition" aria-label="Login">
@@ -137,8 +150,22 @@
        {{-- Mobile menu (outside desktop-only bar, toggled by Alpine) --}}
        <div x-show="open" x-collapse x-cloak id="mobile-menu"
            @click="if ($event.target.closest('a[href]')) open = false">
-           <div class="bg-sage-650 border-t border-black/30">
+           <div class="bg-sage-650 border-t border-black/30 overflow-y-auto max-h-[calc(100dvh-4rem)]">
                <div class="px-4 py-4 space-y-4">
+
+                   {{-- Search (mobile) --}}
+                   <form method="GET" action="{{ route('search.index') }}" class="flex gap-2">
+                       <input
+                           type="search"
+                           name="q"
+                           value="{{ request('q') }}"
+                           placeholder="Search the collection…"
+                           class="flex-1 rounded-md border border-white/10 bg-black/30 px-3 py-2 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-1 focus:ring-white/30">
+                       <button type="submit"
+                           class="rounded-md bg-white/10 px-4 py-2 text-sm text-white hover:bg-white/15 transition">
+                           Go
+                       </button>
+                   </form>
 
                    <div class="rounded-xl bg-black/20 ring-1 ring-black/30 p-3">
                         <div class="font-stencil text-xs tracking-[0.2em] text-white/70 mb-2">MAIN</div>
