@@ -148,9 +148,16 @@
        </div>
 
        {{-- Mobile menu (outside desktop-only bar, toggled by Alpine) --}}
-       <div x-show="open" x-collapse x-cloak id="mobile-menu"
-           @click="if ($event.target.closest('a[href]')) open = false">
-           <div class="bg-sage-650 border-t border-black/30 overflow-y-auto max-h-[calc(100dvh-4rem)]">
+       <div x-show="open" x-cloak id="mobile-menu"
+           x-transition:enter="transition ease-out duration-150"
+           x-transition:enter-start="opacity-0 -translate-y-2"
+           x-transition:enter-end="opacity-100 translate-y-0"
+           x-transition:leave="transition ease-in duration-100"
+           x-transition:leave-start="opacity-100 translate-y-0"
+           x-transition:leave-end="opacity-0 -translate-y-2"
+           @click="if ($event.target.closest('a[href]')) open = false"
+           class="overflow-y-auto max-h-[calc(100dvh-4rem)]">
+           <div class="bg-sage-650 border-t border-black/30">
                <div class="px-4 py-4 space-y-4">
 
                    {{-- Search (mobile) --}}
