@@ -10,17 +10,11 @@ $initialUrl = $mainUrl ?? ($allImageUrls[0] ?? null);
 $thumbCount = $allImages->count();
 @endphp
 
+@php $galleryId = 'gallery-' . uniqid(); @endphp
 {{-- IMAGE CARD --}}
 <section class="bg-sage text-white rounded-2xl border border-black/20 overflow-hidden noise-texture"
     style="box-shadow: 0 2px 8px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.06), inset 0 0 0 5px rgba(0,0,0,0.18);"
-    x-data="{
-        active: {{ $initialUrl ? "'" . $initialUrl . "'" : 'null' }},
-        items: {{ json_encode(array_map(fn($u) => ['src' => $u], $allImageUrls)) }},
-        open() {
-            const idx = this.items.findIndex(i => i.src === this.active);
-            Fancybox.show(this.items, { startIndex: idx >= 0 ? idx : 0 });
-        }
-    }">
+    x-data="{ active: {{ $initialUrl ? "'" . $initialUrl . "'" : 'null' }} }">
 
     {{-- Header bar --}}
     <div class="px-5 py-3 border-b border-black/25 bg-black/20 flex items-start justify-between gap-3">
@@ -39,11 +33,16 @@ $thumbCount = $allImages->count();
     {{-- Main image well --}}
     <div class="bg-sage-900 border-b border-black/30 flex items-center justify-center" style="height: var(--media-frame-h);">
         @if ($initialUrl)
-        <button @click="open()" type="button" class="block cursor-zoom-in group p-3">
+        {{-- Hidden anchors for every image so Fancybox builds the full gallery --}}
+        @foreach($allImages as $img)
+        <a href="{{ $img->url() }}" data-fancybox="{{ $galleryId }}" class="hidden"></a>
+        @endforeach
+        {{-- Clicking the visible anchor opens Fancybox at the active image --}}
+        <a :href="active" data-fancybox="{{ $galleryId }}" class="block cursor-zoom-in group p-3">
             <img :src="active" alt="{{ $title }}"
                 class="w-auto max-w-full object-contain rounded group-hover:opacity-90 transition"
                 style="max-height: var(--media-img-max);" loading="lazy">
-        </button>
+        </a>
         @else
         <img src="{{ asset('images/error-image-not-found.png') }}" alt="No image"
             class="w-auto max-w-full object-contain rounded opacity-20 p-3"
