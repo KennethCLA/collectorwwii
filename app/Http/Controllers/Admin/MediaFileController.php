@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Intervention\Image\Encoders\WebpEncoder;
 use Intervention\Image\Laravel\Facades\Image;
 
 class MediaFileController extends Controller
@@ -233,8 +234,8 @@ class MediaFileController extends Controller
                 'image/heic', 'image/heif',
             ])) {
                 $filename = (string) Str::uuid().'.webp';
-                $webpData = Image::read($uploaded->getRealPath())
-                    ->toWebp(quality: 85)
+                $webpData = Image::decode($uploaded->getRealPath())
+                    ->encode(new WebpEncoder(quality: 85))
                     ->toString();
                 $path = "{$folder}/{$filename}";
                 Storage::disk($disk)->put($path, $webpData);
